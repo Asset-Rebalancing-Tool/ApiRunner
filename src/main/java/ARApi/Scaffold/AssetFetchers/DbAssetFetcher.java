@@ -15,4 +15,9 @@ public class DbAssetFetcher implements IAssetFetcher{
     public PublicAsset FetchViaIsin(String isin) {
         return null;
     }
+
+    @Override
+    public String GetTargetHost() {
+        return "127.0.0.1";
+    }
 }

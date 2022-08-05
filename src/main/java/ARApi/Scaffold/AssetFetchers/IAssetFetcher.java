@@ -10,4 +10,6 @@ public interface IAssetFetcher {
 
     PublicAsset FetchViaIsin(String isin);
 
+    String GetTargetHost();
+
 }
