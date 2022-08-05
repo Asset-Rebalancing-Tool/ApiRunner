@@ -2,10 +2,11 @@ plugins {
 	id 'org.springframework.boot' version '2.7.2'
 	id 'io.spring.dependency-management' version '1.0.12.RELEASE'
 	id 'java'
+	id 'maven-publish'
 }
 
 group = 'ARApi'
-version = '0.0.1'
+version = '0.0.2-SNAPSHOT'
 sourceCompatibility = '17'
 
 repositories {
@@ -29,4 +30,22 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+publishing {
+	publications {
+		maven(MavenPublication) {
+
+			from components.java
+		}
+	}
+	repositories {
+		maven {
+			url 'https://nexus.tobias-huebner.tech/repository/maven-snapshots/'
+			credentials{
+				username = "$mavenUser"
+				password = "$mavenPassword"
+			}
+		}
+	}
 }
