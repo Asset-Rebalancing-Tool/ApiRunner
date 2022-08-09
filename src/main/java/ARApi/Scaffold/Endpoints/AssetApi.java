@@ -24,14 +24,12 @@ public class AssetApi {
 
     private AssetFetcherManager assetFetcherManager;
 
-    private SessionFactory sessionFactory;
-
     private InserterProvider bundledInserterService;
 
     @Autowired
-    public AssetApi(AssetFetcherManager assetFetcherManager, SessionFactory dbSessionProvider) {
+    public AssetApi(AssetFetcherManager assetFetcherManager, InserterProvider bundledInserterService) {
         this.assetFetcherManager = assetFetcherManager;
-        sessionFactory = dbSessionProvider;
+        this.bundledInserterService = bundledInserterService;
     }
 
     @PostMapping("/grouping")
@@ -52,18 +50,16 @@ public class AssetApi {
     @PostMapping("/asset/search")
     public List<ModelAsset> SearchAssets(@RequestBody SearchAssetRequest searchAssetRequest) {
 
-        var inserter = bundledInserterService.GetInserter(PublicAsset.class);
-
-        // fetch fitting assets from db
-        var dbSession = sessionFactory.openSession();
+        var inserter = bundledInserterService.GetInserter(PublicAsset.class, "Select pa " +
+                "from PublicAsset pa left join fetch pa.AssetPriceRecords apr left join fetch pa.AssetInformation ai");
+        // TODO: query mit als key usen, ansonsten schwierig bei verschiedenen varianten der gleichen klasse
 
         var trimmedLoweredSearchString = searchAssetRequest.SearchString.trim().toLowerCase(Locale.ROOT);
 
         PublicAsset fullMatch = null;
         List<PublicAsset> partMatches = new ArrayList<>();
 
-        var dbAssets = dbSession.createQuery("Select pa " +
-                "from PublicAsset pa left join pa.AssetPriceRecords apr left join pa.AssetInformation ai", PublicAsset.class).stream().distinct().toList();
+        var dbAssets = inserter.GetLoadedEntities();
 
         for (var asset : dbAssets) {
             if (asset.isin.toLowerCase(Locale.ROOT).equals(trimmedLoweredSearchString) || asset.symbol.toLowerCase(Locale.ROOT).equals(trimmedLoweredSearchString)) {
@@ -91,50 +87,9 @@ public class AssetApi {
 
         // run fetchers only if results not exact
         var fetchedAssets = assetFetcherManager.ExecuteWithFetcher(fetcher -> fetcher.FetchViaSearchString(trimmedLoweredSearchString));
-        var newAssets = new ArrayList<PublicAsset>();
-        var transaction = dbSession.beginTransaction();
-        for (var fetchedAsset : fetchedAssets) {
-            // check if asset already exists
-            if (fetchedAsset.isin != null) {
-                var assetWithIsin = dbAssets.stream().filter(dbAsset -> dbAsset.isin != null && dbAsset.isin == fetchedAsset.isin).findFirst();
-                if (assetWithIsin.isPresent()) {
-                    newAssets.add(assetWithIsin.get());
-                    // TODO: add newer price records
-                    continue;
-                }
-            }
-            newAssets.add(fetchedAsset);
-        }
 
-
-
-        transaction.commit();
-        dbSession.close();
+        var newAssets = inserter.Insert(fetchedAssets);
 
         return newAssets.stream().map(ModelAsset::new).toList();
     }
-
-    private List<PublicAsset> GetNewAssets(List<PublicAsset> fetchedAssets, List<PublicAsset> dbAssets) {
-        Set<String> existingIsins = new HashSet<>();
-        for (var dbAsset : dbAssets) {
-            if (dbAsset.isin != null) {
-                existingIsins.add(dbAsset.isin);
-            }
-        }
-        List<PublicAsset> newAssets = new ArrayList<>();
-        for (var fetchedAsset : fetchedAssets) {
-            var isin = fetchedAsset.isin;
-            if (isin == null) {
-                newAssets.add(fetchedAsset);
-            } else {
-                if (!existingIsins.contains(isin)) {
-                    existingIsins.add(isin);
-                    newAssets.add(fetchedAsset);
-                }
-            }
-        }
-        return newAssets;
-    }
-
-
 }

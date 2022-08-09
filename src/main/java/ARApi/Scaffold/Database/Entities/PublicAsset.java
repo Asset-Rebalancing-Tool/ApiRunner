@@ -4,8 +4,10 @@ import ARApi.Scaffold.Shared.AssetType;
 
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 @Entity
 public class PublicAsset extends BaseEntity {
@@ -22,11 +24,10 @@ public class PublicAsset extends BaseEntity {
 
     // property of DbAssetPriceRecord => tells hibernate that this property is used for mapping
     @OneToMany(mappedBy= "Asset")
-    public List<AssetPriceRecord> AssetPriceRecords;
+    public Set<AssetPriceRecord> AssetPriceRecords;
 
     @OneToMany(mappedBy= "Asset")
-    public List<PublicAssetInformation> AssetInformation;
-
+    public Set<PublicAssetInformation> AssetInformation;
 
     @Override
     public boolean equals(Object o){
@@ -43,6 +44,19 @@ public class PublicAsset extends BaseEntity {
             return isin.hashCode();
         }
         return super.hashCode();
+    }
+
+    @Override
+    public Set<BaseEntity> GetChildEntities(){
+        Set<BaseEntity> children = new HashSet<>();
+        if(AssetPriceRecords != null){
+            children.addAll(AssetPriceRecords);
+        }
+
+        if(AssetInformation != null){
+            children.addAll(AssetInformation);
+        }
+        return children;
     }
 
 }

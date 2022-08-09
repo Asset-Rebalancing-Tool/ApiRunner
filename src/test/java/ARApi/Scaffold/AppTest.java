@@ -17,6 +17,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 
 import java.util.Arrays;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -40,7 +41,7 @@ class AppTest {
         var dbAsset = new PublicAsset();
         var dbAssetRecord = new AssetPriceRecord();
         dbAssetRecord.Asset = dbAsset;
-        dbAsset.AssetPriceRecords = Arrays.asList(dbAssetRecord);
+        dbAsset.AssetPriceRecords = Set.of(dbAssetRecord);
         session.persist(dbAssetRecord);
         session.persist(dbAsset);
         trans.commit();
