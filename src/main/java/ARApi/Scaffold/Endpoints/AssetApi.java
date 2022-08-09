@@ -5,6 +5,7 @@ import ARApi.Scaffold.AssetFetchers.AssetFetcherManager;
 import ARApi.Scaffold.Database.Entities.PublicAsset;
 
 
+import ARApi.Scaffold.Services.InserterProvider;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -14,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Array;
 import java.util.*;
 
 @RestController
@@ -24,12 +24,14 @@ public class AssetApi {
 
     private AssetFetcherManager assetFetcherManager;
 
-    private SessionFactory DbSessionProvider;
+    private SessionFactory sessionFactory;
+
+    private InserterProvider bundledInserterService;
 
     @Autowired
     public AssetApi(AssetFetcherManager assetFetcherManager, SessionFactory dbSessionProvider) {
         this.assetFetcherManager = assetFetcherManager;
-        DbSessionProvider = dbSessionProvider;
+        sessionFactory = dbSessionProvider;
     }
 
     @PostMapping("/grouping")
@@ -49,8 +51,11 @@ public class AssetApi {
 
     @PostMapping("/asset/search")
     public List<ModelAsset> SearchAssets(@RequestBody SearchAssetRequest searchAssetRequest) {
+
+        var inserter = bundledInserterService.GetInserter(PublicAsset.class);
+
         // fetch fitting assets from db
-        var dbSession = DbSessionProvider.openSession();
+        var dbSession = sessionFactory.openSession();
 
         var trimmedLoweredSearchString = searchAssetRequest.SearchString.trim().toLowerCase(Locale.ROOT);
 
@@ -98,19 +103,10 @@ public class AssetApi {
                     continue;
                 }
             }
-
-            dbSession.save(fetchedAsset);
-            if (fetchedAsset.AssetPriceRecords != null)
-                for (var priceRecord : fetchedAsset.AssetPriceRecords) {
-                    dbSession.save(priceRecord);
-                }
-            if (fetchedAsset.AssetInformation != null)
-                for (var priceInfo : fetchedAsset.AssetInformation) {
-                    dbSession.save(priceInfo);
-                }
             newAssets.add(fetchedAsset);
-
         }
+
+
 
         transaction.commit();
         dbSession.close();
