@@ -62,7 +62,11 @@ public class AssetApi {
         var dbAssets = inserter.GetLoadedEntities();
 
         for (var asset : dbAssets) {
-            if (asset.isin.toLowerCase(Locale.ROOT).equals(trimmedLoweredSearchString) || asset.symbol.toLowerCase(Locale.ROOT).equals(trimmedLoweredSearchString)) {
+            // full match check
+            var exactIsinMatch = asset.isin == null ? false : asset.isin.toLowerCase(Locale.ROOT).equals(trimmedLoweredSearchString);
+            var exactSymbolMatch = asset.symbol == null ? false : asset.symbol.toLowerCase(Locale.ROOT).equals(trimmedLoweredSearchString);
+
+            if (exactIsinMatch || exactSymbolMatch) {
                 fullMatch = asset;
                 break;
             }
