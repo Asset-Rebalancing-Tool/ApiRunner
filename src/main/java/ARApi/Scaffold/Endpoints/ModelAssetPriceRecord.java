@@ -10,13 +10,13 @@ import java.time.LocalDateTime;
 public class ModelAssetPriceRecord {
 
     public ModelAssetPriceRecord(AssetPriceRecord assetPriceRecord){
-        Currency = assetPriceRecord.currency;
+        currency = assetPriceRecord.currency;
         tsPrice = assetPriceRecord.ts_price;
         price = assetPriceRecord.price;
         priceType = assetPriceRecord.price_type;
     }
 
-    public Currency Currency;
+    public Currency currency;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     public LocalDateTime tsPrice;
