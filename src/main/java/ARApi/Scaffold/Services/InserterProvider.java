@@ -21,7 +21,7 @@ public class InserterProvider {
 
     private final SessionFactory sessionFactory;
 
-    private final Map<Class<?>, Inserter> entityTypeInserterMap = new HashMap<>();
+    private final Map<Class<?>, Inserter<?>> entityTypeInserterMap = new HashMap<>();
 
     private final Map<Class<?>, ReentrantLock> inserterLockMap = new HashMap<>();
 
@@ -32,12 +32,12 @@ public class InserterProvider {
         return inserterLockMap.get(clazz);
     }
 
-    private <T extends BaseEntity> Inserter GetInstance(Class<T> clazz, String query){
-        Inserter inserter;
+    private <T extends BaseEntity> Inserter<T> GetInstance(Class<T> clazz, String query){
+        Inserter<T> inserter;
         if(query == null){
-            inserter = new Inserter<T>(clazz, sessionFactory, GetLock(clazz));
+            inserter = new Inserter<>(clazz, sessionFactory, GetLock(clazz));
         }else{
-            inserter = new Inserter<T>(clazz, query, sessionFactory, GetLock(clazz));
+            inserter = new Inserter<>(clazz, query, sessionFactory, GetLock(clazz));
         }
         return inserter;
     }
@@ -49,30 +49,28 @@ public class InserterProvider {
     public synchronized  <T extends BaseEntity> Inserter<T> GetInserter(Class<T> clazz, String query){
 
         if(!entityTypeInserterMap.containsKey(clazz)){
-            Inserter inserter = GetInstance(clazz, query);
+            Inserter<T> inserter = GetInstance(clazz, query);
             entityTypeInserterMap.put(clazz, inserter);
             return inserter;
         }
 
-        Inserter inserter = entityTypeInserterMap.get(clazz);
         if(GetLock(clazz).tryLock()){
             try{
                 // could lock, this means the inserter is not running,
                 // thus we can reset and return new one
                 entityTypeInserterMap.remove(clazz);
 
-                inserter = GetInstance(clazz, query);
+                Inserter<T> inserter = GetInstance(clazz, query);
                 entityTypeInserterMap.put(clazz, inserter);
                 return inserter;
             }finally {
                 GetLock(clazz).unlock();
             }
         }
+
         // means inserter is already running, return instance so normal run lock
         // functionality can have effect
-        return entityTypeInserterMap.get(clazz);
-
+        return (Inserter<T>) entityTypeInserterMap.get(clazz);
     }
-
 
 }

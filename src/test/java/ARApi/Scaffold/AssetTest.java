@@ -2,6 +2,7 @@ package ARApi.Scaffold;
 
 import ARApi.Scaffold.Database.Entities.PublicAsset;
 import ARApi.Scaffold.Services.Inserter;
+import ARApi.Scaffold.Services.InserterProvider;
 import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,6 +21,9 @@ public class AssetTest {
 
     @Autowired
     SessionFactory sessionFactory;
+
+    @Autowired
+    InserterProvider inserterProvider;
 
     @Test void TestOverwrites(){
         var containsMap = new HashMap<PublicAsset, PublicAsset>();
@@ -45,11 +49,11 @@ public class AssetTest {
 
         var isinQueue = new ArrayDeque<>(Arrays.asList("tes", "!3123123", "eafasd", "aedsdasd"));
 
-        var inserter = new Inserter<PublicAsset>(PublicAsset.class, sessionFactory);
+        var inserter = new Inserter<>(PublicAsset.class, sessionFactory, inserterProvider.GetLock(PublicAsset.class));
 
         List<List<PublicAsset>> listofListsToInsert = new ArrayList<>();
 
-        for(int i_total_lists = 0; i_total_lists < 10; i_total_lists++){
+        for(int i_total_lists = 0; i_total_lists < 100; i_total_lists++){
             var list = new ArrayList<PublicAsset>();
             for(int i_list = 0; i_list < 100; i_list++){
                 var isin = isinQueue.removeFirst();
