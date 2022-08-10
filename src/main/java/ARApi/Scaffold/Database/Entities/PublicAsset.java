@@ -28,4 +28,6 @@ public class PublicAsset extends BaseEntity {
 
     @OneToMany(mappedBy= "Asset")
     public Set<PublicAssetInformation> AssetInformation= new HashSet<>();
+
+    public long searchHits = 0;
 }
