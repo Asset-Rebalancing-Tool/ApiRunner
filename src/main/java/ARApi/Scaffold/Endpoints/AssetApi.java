@@ -5,8 +5,9 @@ import ARApi.Scaffold.AssetFetchers.AssetFetcherManager;
 import ARApi.Scaffold.Database.Entities.PublicAsset;
 
 
-import ARApi.Scaffold.Services.InserterProvider;
-import org.hibernate.SessionFactory;
+import ARApi.Scaffold.Services.StringProcessingService;
+import ARApi.Scaffold.Services.QueryInserterService;
+import ARApi.Scaffold.Services.PublicAssetInserter;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
@@ -24,12 +25,15 @@ public class AssetApi {
 
     private AssetFetcherManager assetFetcherManager;
 
-    private InserterProvider bundledInserterService;
+    private QueryInserterService queryInserterService;
+
+    private StringProcessingService fuzzyScore;
 
     @Autowired
-    public AssetApi(AssetFetcherManager assetFetcherManager, InserterProvider bundledInserterService) {
+    public AssetApi(AssetFetcherManager assetFetcherManager, QueryInserterService queryInserterService, StringProcessingService fuzzyScore) {
         this.assetFetcherManager = assetFetcherManager;
-        this.bundledInserterService = bundledInserterService;
+        this.fuzzyScore = fuzzyScore;
+        this.queryInserterService = queryInserterService;
     }
 
     @PostMapping("/grouping")
@@ -48,13 +52,18 @@ public class AssetApi {
     }
 
     @PostMapping("/asset/search")
-    public List<ModelAsset> SearchAssets(@RequestBody SearchAssetRequest searchAssetRequest) {
+    public ModelResponse<List<ModelAsset>> SearchAssets(@RequestBody SearchAssetRequest searchAssetRequest) {
 
-        var inserter = bundledInserterService.GetInserter(PublicAsset.class, "Select pa " +
-                "from PublicAsset pa left join fetch pa.AssetPriceRecords apr left join fetch pa.AssetInformation ai");
-        // TODO: query mit als key usen, ansonsten schwierig bei verschiedenen varianten der gleichen klasse
+        if(searchAssetRequest.SearchString.length() < 3){
+            return new ModelResponse<>("Searchstring has to be longer than 3", HttpStatus.BAD_REQUEST);
+        }
 
-        var trimmedLoweredSearchString = searchAssetRequest.SearchString.trim().toLowerCase(Locale.ROOT);
+        var inserter = queryInserterService.GetInserter(
+                (sessionFactory, lock, query) -> new PublicAssetInserter(query, sessionFactory, lock),
+                "Select pa from PublicAsset pa " +
+                        "left join fetch pa.AssetPriceRecords apr " +
+                        "left join fetch pa.AssetInformation ai"
+                 );
 
         PublicAsset fullMatch = null;
         List<PublicAsset> partMatches = new ArrayList<>();
@@ -63,37 +72,37 @@ public class AssetApi {
 
         for (var asset : dbAssets) {
             // full match check
-            var exactIsinMatch = asset.isin == null ? false : asset.isin.toLowerCase(Locale.ROOT).equals(trimmedLoweredSearchString);
-            var exactSymbolMatch = asset.symbol == null ? false : asset.symbol.toLowerCase(Locale.ROOT).equals(trimmedLoweredSearchString);
+            var exactIsinMatch = asset.isin == null ? false : fuzzyScore.Same(asset.isin, searchAssetRequest.SearchString);
+            var exactSymbolMatch = asset.symbol == null ? false : fuzzyScore.Same(asset.symbol, searchAssetRequest.SearchString);
 
             if (exactIsinMatch || exactSymbolMatch) {
                 fullMatch = asset;
                 break;
             }
 
-            var symbolMatches = asset.symbol == null ? false : asset.symbol.toLowerCase(Locale.ROOT).contains(trimmedLoweredSearchString);
+            var symbolMatches = asset.symbol == null ? false : fuzzyScore.SimilarEnough(asset.symbol, searchAssetRequest.SearchString);
 
-            var assetNameMatches = asset.assetName == null ? false : asset.assetName.toLowerCase(Locale.ROOT).contains(trimmedLoweredSearchString);
+            var assetNameMatches = asset.assetName == null ? false : fuzzyScore.SimilarEnough(asset.assetName, searchAssetRequest.SearchString);
 
             if (symbolMatches || assetNameMatches) {
                 partMatches.add(asset);
             }
         }
 
-        if (fullMatch != null || partMatches.size() >= 5) {
+        if (fullMatch != null || partMatches.size() >= 4) {
             var modelAssetList = new ArrayList<>(partMatches.stream().map(ModelAsset::new).toList());
             if (fullMatch != null) {
                 modelAssetList.add(0, new ModelAsset(fullMatch));
             }
 
-            return modelAssetList;
+            return new ModelResponse<>(modelAssetList, HttpStatus.OK);
         }
 
         // run fetchers only if results not exact
-        var fetchedAssets = assetFetcherManager.ExecuteWithFetcher(fetcher -> fetcher.FetchViaSearchString(trimmedLoweredSearchString));
+        var fetchedAssets = assetFetcherManager.ExecuteWithFetcher(fetcher -> fetcher.FetchViaSearchString(fuzzyScore.Process(searchAssetRequest.SearchString)));
 
-        var newAssets = inserter.Insert(fetchedAssets);
+        var newAssets = inserter.InsertLocked(fetchedAssets);
 
-        return newAssets.stream().map(ModelAsset::new).toList();
+        return new ModelResponse<>(newAssets.stream().map(ModelAsset::new).toList(), HttpStatus.OK);
     }
 }
