@@ -2,8 +2,6 @@ package ARApi.Scaffold.Endpoints;
 
 import ARApi.Scaffold.Database.Entities.AssetPriceRecord;
 import ARApi.Scaffold.Database.Entities.PublicAsset;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiModel;
 
 import javax.annotation.Nullable;
 import java.util.Comparator;
