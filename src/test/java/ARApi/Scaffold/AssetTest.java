@@ -49,7 +49,7 @@ public class AssetTest {
 
         var isinQueue = new ArrayDeque<>(Arrays.asList("tes", "!3123123", "eafasd", "aedsdasd"));
 
-        var inserter = new PublicAssetInserter(sessionFactory, inserterProvider.GetLock("RandomId"));
+        var inserter = new PublicAssetInserter(sessionFactory, inserterProvider.GetQueryLock("RandomId"));
 
         List<List<PublicAsset>> listofListsToInsert = new ArrayList<>();
 
