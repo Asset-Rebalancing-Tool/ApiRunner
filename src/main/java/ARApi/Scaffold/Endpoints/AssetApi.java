@@ -8,6 +8,7 @@ import ARApi.Scaffold.Database.Entities.PublicAsset;
 import ARApi.Scaffold.Services.StringProcessingService;
 import ARApi.Scaffold.Services.QueryInserterService;
 import ARApi.Scaffold.Services.PublicAssetInserter;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
@@ -23,15 +24,24 @@ import java.util.*;
 @RequestMapping("asset_api")
 public class AssetApi {
 
+    private final int MIN_SEARCH_STRING_LENGHT = 3;
+
+    private final int MIN_FUZZY_SCORE = 3;
+
+    private final int MIN_FUZZY_MATCHES = 3;
+
     private AssetFetcherManager assetFetcherManager;
 
     private QueryInserterService queryInserterService;
 
     private StringProcessingService fuzzyScore;
 
+    private SessionFactory sessionFactory;
+
     @Autowired
-    public AssetApi(AssetFetcherManager assetFetcherManager, QueryInserterService queryInserterService, StringProcessingService fuzzyScore) {
+    public AssetApi(SessionFactory sessionFactory, AssetFetcherManager assetFetcherManager, QueryInserterService queryInserterService, StringProcessingService fuzzyScore) {
         this.assetFetcherManager = assetFetcherManager;
+        this.sessionFactory = sessionFactory;
         this.fuzzyScore = fuzzyScore;
         this.queryInserterService = queryInserterService;
     }
@@ -54,8 +64,8 @@ public class AssetApi {
     @PostMapping("/asset/search")
     public ModelResponse<List<ModelAsset>> SearchAssets(@RequestBody SearchAssetRequest searchAssetRequest) {
 
-        if(searchAssetRequest.SearchString.length() < 3){
-            return new ModelResponse<>("Searchstring has to be longer than 3", HttpStatus.BAD_REQUEST);
+        if(searchAssetRequest.SearchString.length() < MIN_SEARCH_STRING_LENGHT){
+            return new ModelResponse<>("SearchString has to be longer than " + (MIN_SEARCH_STRING_LENGHT -1), HttpStatus.BAD_REQUEST);
         }
 
         var inserter = queryInserterService.GetInserter(
@@ -66,7 +76,7 @@ public class AssetApi {
                  );
 
         PublicAsset fullMatch = null;
-        List<PublicAsset> partMatches = new ArrayList<>();
+        List<HighScoreAsset> highScoreAssets = new ArrayList<>();
 
         var dbAssets = inserter.GetLoadedEntities();
 
@@ -80,20 +90,35 @@ public class AssetApi {
                 break;
             }
 
-            var symbolMatches = asset.symbol == null ? false : fuzzyScore.SimilarEnough(asset.symbol, searchAssetRequest.SearchString);
+            var symbolScore = asset.symbol == null ? 0 : fuzzyScore.fuzzyScore(asset.symbol, searchAssetRequest.SearchString);
+            var assetNameScore = asset.assetName == null ? 0 : fuzzyScore.fuzzyScore(asset.assetName, searchAssetRequest.SearchString);
+            var isinScore = asset.isin == null ? 0 : fuzzyScore.fuzzyScore(asset.isin, searchAssetRequest.SearchString);
 
-            var assetNameMatches = asset.assetName == null ? false : fuzzyScore.SimilarEnough(asset.assetName, searchAssetRequest.SearchString);
+            int highestScore = Collections.max(Arrays.asList(symbolScore, assetNameScore, isinScore));
 
-            if (symbolMatches || assetNameMatches) {
-                partMatches.add(asset);
-            }
+            highScoreAssets.add(new HighScoreAsset(asset, highestScore));
         }
 
-        if (fullMatch != null || partMatches.size() >= 4) {
-            var modelAssetList = new ArrayList<>(partMatches.stream().map(ModelAsset::new).toList());
+        highScoreAssets = highScoreAssets.stream().filter(ha -> ha.highestFuzzyScore > MIN_FUZZY_SCORE)
+                .sorted(Comparator.comparingInt(o -> o.highestFuzzyScore)).toList();
+
+        var session = sessionFactory.openSession();
+        session.beginTransaction();
+        for(var highScoreAsset : highScoreAssets){
+            var updated = session.createQuery("Update PublicAsset p " +
+                            "set p.searchHitsTotal = p.searchHitsTotal + 1 " +
+                            "where p.uuid = :uuid")
+                    .setParameter("uuid", highScoreAsset.publicAsset.uuid).executeUpdate();
+        }
+        session.getTransaction().commit();
+        session.close();
+
+        if (fullMatch != null || highScoreAssets.size() >= MIN_FUZZY_MATCHES) {
+            var modelAssetList = new ArrayList<ModelAsset>();
             if (fullMatch != null) {
                 modelAssetList.add(0, new ModelAsset(fullMatch));
             }
+            highScoreAssets.forEach(hA -> modelAssetList.add(new ModelAsset(hA.publicAsset)));
 
             return new ModelResponse<>(modelAssetList, HttpStatus.OK);
         }
