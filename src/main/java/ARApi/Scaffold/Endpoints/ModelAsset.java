@@ -2,10 +2,13 @@ package ARApi.Scaffold.Endpoints;
 
 import ARApi.Scaffold.Database.Entities.AssetPriceRecord;
 import ARApi.Scaffold.Database.Entities.PublicAsset;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiModel;
 
 import javax.annotation.Nullable;
 import java.util.Comparator;
 import java.util.List;
+
 
 public class ModelAsset {
 
@@ -15,14 +18,12 @@ public class ModelAsset {
       assetType = dbAsset.assetType;
       isin = dbAsset.isin;
       symbol = dbAsset.symbol;
-      if(dbAsset.AssetPriceRecords != null && !dbAsset.AssetPriceRecords.isEmpty()){
-         var recordComp = Comparator.comparing(AssetPriceRecord::GetTimeOfPrice).reversed();
-         priceRecords = dbAsset.AssetPriceRecords.stream().sorted(recordComp).map(ModelAssetPriceRecord::new).toList();
-      }
 
-      if(dbAsset.AssetInformation != null){
-         assetInformations = dbAsset.AssetInformation.stream().map(ModelAssetInformation::new).filter(mai -> mai.stringValue != null).toList();
-      }
+      var recordComp = Comparator.comparing(AssetPriceRecord::GetTimeOfPrice).reversed();
+      priceRecords = dbAsset.AssetPriceRecords.stream().sorted(recordComp).map(ModelAssetPriceRecord::new).toList();
+
+      assetInformations = dbAsset.AssetInformation.stream().map(ModelAssetInformation::new).filter(mai -> mai.stringValue != null).toList();
+
    }
 
    public List<ModelAssetPriceRecord> priceRecords;
