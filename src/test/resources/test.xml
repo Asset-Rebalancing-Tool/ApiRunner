@@ -7,7 +7,9 @@
     <bean class="ARApi.Scaffold.AssetFetchers.DbAssetFetcher"/>
     <bean class="ARApi.Scaffold.AssetFetchers.AssetFetcherManager"/>
     <bean class="ARApi.Scaffold.WebDriver.LocalChromeProvider"/>
-    <bean class="ARApi.Scaffold.Services.InserterProvider"/>
+    <bean class="ARApi.Scaffold.Services.QueryInserterService"/>
+    <bean class="ARApi.Scaffold.Services.StringProcessingService"/>
+    <bean class="ARApi.Scaffold.Services.LocaleProvider"/>
 
     <bean class="ARApi.Scaffold.Endpoints.AssetApi"/>
 
