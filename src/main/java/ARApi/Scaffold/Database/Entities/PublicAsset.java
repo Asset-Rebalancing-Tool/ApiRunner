@@ -5,8 +5,6 @@ import ARApi.Scaffold.Shared.AssetType;
 
 import javax.persistence.*;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 
 @Entity
@@ -29,5 +27,5 @@ public class PublicAsset extends BaseEntity {
     @OneToMany(mappedBy= "Asset")
     public Set<PublicAssetInformation> AssetInformation= new HashSet<>();
 
-    public long searchHits = 0;
+    public long searchHitsTotal = 1;
 }
