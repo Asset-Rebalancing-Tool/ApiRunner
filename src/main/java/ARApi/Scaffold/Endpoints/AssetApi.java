@@ -52,12 +52,12 @@ public class AssetApi {
     }
 
     @PostMapping("/asset/owned/public")
-    public ResponseEntity<HttpStatus> PostOwnedPublicAssets(@RequestBody PostOwnedAssetRequest postOwnedShareRequest) {
+    public ResponseEntity<HttpStatus> PostOwnedPublicAssets(@RequestBody PostOwnedAssetRequest postOwnedAssetRequest) {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/asset/owned/private")
-    public ResponseEntity<HttpStatus> PostOwnedPrivateAssets(@RequestBody PostOwnedAssetRequest postOwnedShareRequest) {
+    public ResponseEntity<HttpStatus> PostOwnedPrivateAssets(@RequestBody PostOwnedAssetRequest postOwnedAssetRequest) {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
