@@ -15,9 +15,4 @@ public abstract class BaseEntity {
     @GeneratedValue
     @Column(columnDefinition = "BINARY(16)")
     public UUID uuid;
-
-    public Set<BaseEntity> GetChildEntities(){
-        return new HashSet<>();// default no children
-        // TODO: reflection to get oneToMany Annotated members and get the items from the list/set
-    }
 }
