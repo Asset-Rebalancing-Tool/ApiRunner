@@ -5,8 +5,8 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
 @Service
@@ -19,11 +19,11 @@ public class QueryInserterService {
 
     private final SessionFactory sessionFactory;
 
-    private final Map<String, AbstractInserter<?>> queryInserterMap = new HashMap<>();
+    private final Map<String, AbstractInserter<?>> queryInserterMap = new ConcurrentHashMap<>();
 
-    private final Map<String, ReentrantLock> queryLockMap = new HashMap<>();
+    private final Map<String, ReentrantLock> queryLockMap = new ConcurrentHashMap<>();
 
-    public synchronized ReentrantLock GetLock(String queue) {
+    public synchronized ReentrantLock GetQueryLock(String queue) {
         if (!queryLockMap.containsKey(queue)) {
              queryLockMap.put(queue, new ReentrantLock());
         }
@@ -31,26 +31,27 @@ public class QueryInserterService {
     }
 
     private <E extends BaseEntity, T extends AbstractInserter<E>> T GetInstance(String query, InstanceCreateAction<E, T> createAction) {
-        return createAction.Create(sessionFactory, GetLock(query), query);
+        return createAction.Create(sessionFactory, GetQueryLock(query), query);
     }
 
-    public synchronized <E extends BaseEntity, T extends AbstractInserter<E>> T GetInserter(InstanceCreateAction<E, T> createAction, String query) {
-        var lock = GetLock(query);
+    public synchronized <E extends BaseEntity, T extends AbstractInserter<E>> T GetInserter(InstanceCreateAction<E, T> createAction, String queryString) {
 
-        if (!queryInserterMap.containsKey(query)) {
-            T inserter = GetInstance( query, createAction);
-            queryInserterMap.put(query, inserter);
+        // first request on query, create Inserter for it
+        if (!queryInserterMap.containsKey(queryString)) {
+            T inserter = GetInstance(queryString, createAction);
+            queryInserterMap.put(queryString, inserter);
             return inserter;
         }
 
+        var lock = GetQueryLock(queryString);
         if (lock.tryLock()) {
             try {
                 // could lock, this means the inserter is not running,
                 // thus we can reset and return new one
-                queryInserterMap.remove(query);
+                queryInserterMap.remove(queryString);
 
-                T inserter = GetInstance(query, createAction);
-                queryInserterMap.put(query, inserter);
+                T inserter = GetInstance(queryString, createAction);
+                queryInserterMap.put(queryString, inserter);
                 return inserter;
             } finally {
                 lock.unlock();
@@ -59,7 +60,7 @@ public class QueryInserterService {
 
         // means inserter is already running, return instance so normal run lock
         // functionality can have effect
-        return (T) queryInserterMap.get(query);
+        return (T) queryInserterMap.get(queryString);
     }
 
 }
