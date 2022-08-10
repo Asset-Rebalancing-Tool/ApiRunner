@@ -6,6 +6,4 @@ import javax.persistence.Entity;
 public class User extends BaseEntity {
 
     public String email;
-
-
 }

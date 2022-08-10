@@ -1,4 +1,4 @@
-package ARApi.Scaffold.Shared;
+package ARApi.Scaffold.Shared.Enums;
 
 public class CurrencyParser {
     public static Currency parse(String text) {

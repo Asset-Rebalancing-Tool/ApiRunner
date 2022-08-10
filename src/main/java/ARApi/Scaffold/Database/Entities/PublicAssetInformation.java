@@ -1,7 +1,7 @@
 package ARApi.Scaffold.Database.Entities;
 
-import ARApi.Scaffold.Shared.AssetInformationType;
-import ARApi.Scaffold.Shared.Language;
+import ARApi.Scaffold.Shared.Enums.AssetInformationType;
+import ARApi.Scaffold.Shared.Enums.Language;
 import org.springframework.util.SerializationUtils;
 
 import javax.persistence.*;
@@ -30,6 +30,7 @@ public class PublicAssetInformation extends BaseEntity {
     public PublicAssetInformation(){
 
     }
+
     @ManyToOne
     @JoinColumn(name = "asset_uuid")
     public PublicAsset Asset;

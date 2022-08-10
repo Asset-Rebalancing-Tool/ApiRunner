@@ -4,14 +4,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToOne;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @MappedSuperclass
-public class BaseUserEntity {
-
-    @Id
-    @GeneratedValue
-    public UUID uuid;
+public abstract class BaseUserEntity extends BaseEntity {
 
     @OneToOne
     public User user;

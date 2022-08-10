@@ -2,6 +2,7 @@ package ARApi.Scaffold.Endpoints;
 
 import ARApi.Scaffold.Database.Entities.AssetPriceRecord;
 import ARApi.Scaffold.Database.Entities.PublicAsset;
+import ARApi.Scaffold.Shared.Enums.AssetType;
 
 import javax.annotation.Nullable;
 import java.util.Comparator;
@@ -21,7 +22,6 @@ public class ModelAsset {
       priceRecords = dbAsset.AssetPriceRecords.stream().sorted(recordComp).map(ModelAssetPriceRecord::new).toList();
 
       assetInformations = dbAsset.AssetInformation.stream().map(ModelAssetInformation::new).filter(mai -> mai.stringValue != null).toList();
-
    }
 
    public List<ModelAssetPriceRecord> priceRecords;
@@ -32,7 +32,7 @@ public class ModelAsset {
 
    public String assetName;
 
-   public ARApi.Scaffold.Shared.AssetType assetType;
+   public AssetType assetType;
 
    @Nullable
    public String isin;

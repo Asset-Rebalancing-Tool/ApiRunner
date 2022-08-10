@@ -61,6 +61,29 @@ public class AssetApi {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    private void SaveHighScoreAssetHits(List<HighScoreAsset> highScoreAssets){
+        // increment search hits for all that have been good enough
+        var session = sessionFactory.openSession();
+        session.beginTransaction();
+        for(var highScoreAsset : highScoreAssets){
+            var updated = session.createQuery("Update PublicAsset p " +
+                            "set p.searchHitsTotal = p.searchHitsTotal + 1 " +
+                            "where p.uuid = :uuid")
+                    .setParameter("uuid", highScoreAsset.publicAsset.uuid).executeUpdate();
+        }
+        session.getTransaction().commit();
+        session.close();
+    }
+
+    private int GetHighestFuzzyScore(PublicAsset asset, String SearchString){
+        // find the highest fuzzy score based on other fields
+        var symbolScore = asset.symbol == null ? 0 : fuzzyScore.fuzzyScore(asset.symbol, SearchString);
+        var assetNameScore = asset.assetName == null ? 0 : fuzzyScore.fuzzyScore(asset.assetName, SearchString);
+        var isinScore = asset.isin == null ? 0 : fuzzyScore.fuzzyScore(asset.isin, SearchString);
+
+        return Collections.max(Arrays.asList(symbolScore, assetNameScore, isinScore));
+    }
+
     @PostMapping("/asset/search")
     public ModelResponse<List<ModelAsset>> SearchAssets(@RequestBody SearchAssetRequest searchAssetRequest) {
 
@@ -78,8 +101,8 @@ public class AssetApi {
         PublicAsset fullMatch = null;
         List<HighScoreAsset> highScoreAssets = new ArrayList<>();
 
+        // check database for perfect / good enough matches
         var dbAssets = inserter.GetLoadedEntities();
-
         for (var asset : dbAssets) {
             // full match check
             var exactIsinMatch = asset.isin == null ? false : fuzzyScore.Same(asset.isin, searchAssetRequest.SearchString);
@@ -87,32 +110,22 @@ public class AssetApi {
 
             if (exactIsinMatch || exactSymbolMatch) {
                 fullMatch = asset;
+                // found our fullmatch can return
                 break;
             }
 
-            var symbolScore = asset.symbol == null ? 0 : fuzzyScore.fuzzyScore(asset.symbol, searchAssetRequest.SearchString);
-            var assetNameScore = asset.assetName == null ? 0 : fuzzyScore.fuzzyScore(asset.assetName, searchAssetRequest.SearchString);
-            var isinScore = asset.isin == null ? 0 : fuzzyScore.fuzzyScore(asset.isin, searchAssetRequest.SearchString);
-
-            int highestScore = Collections.max(Arrays.asList(symbolScore, assetNameScore, isinScore));
+            int highestScore = GetHighestFuzzyScore(asset, searchAssetRequest.SearchString);
 
             highScoreAssets.add(new HighScoreAsset(asset, highestScore));
         }
 
+        // filter out too low scoring assets
         highScoreAssets = highScoreAssets.stream().filter(ha -> ha.highestFuzzyScore > MIN_FUZZY_SCORE)
                 .sorted(Comparator.comparingInt(o -> o.highestFuzzyScore)).toList();
 
-        var session = sessionFactory.openSession();
-        session.beginTransaction();
-        for(var highScoreAsset : highScoreAssets){
-            var updated = session.createQuery("Update PublicAsset p " +
-                            "set p.searchHitsTotal = p.searchHitsTotal + 1 " +
-                            "where p.uuid = :uuid")
-                    .setParameter("uuid", highScoreAsset.publicAsset.uuid).executeUpdate();
-        }
-        session.getTransaction().commit();
-        session.close();
+        SaveHighScoreAssetHits(highScoreAssets);
 
+        // check if db results are satisfactory enough ro return
         if (fullMatch != null || highScoreAssets.size() >= MIN_FUZZY_MATCHES) {
             var modelAssetList = new ArrayList<ModelAsset>();
             if (fullMatch != null) {
@@ -123,11 +136,13 @@ public class AssetApi {
             return new ModelResponse<>(modelAssetList, HttpStatus.OK);
         }
 
-        // run fetchers only if results not exact
+        // run fetchers to get information of asset
         var fetchedAssets = assetFetcherManager.ExecuteWithFetcher(fetcher -> fetcher.FetchViaSearchString(fuzzyScore.Process(searchAssetRequest.SearchString)));
 
+        // insert fetched assets safely
         var newAssets = inserter.InsertLocked(fetchedAssets);
 
+        // map to model and return
         return new ModelResponse<>(newAssets.stream().map(ModelAsset::new).toList(), HttpStatus.OK);
     }
 }

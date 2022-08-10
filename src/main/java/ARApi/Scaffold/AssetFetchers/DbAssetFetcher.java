@@ -1,10 +1,22 @@
 package ARApi.Scaffold.AssetFetchers;
 
 import ARApi.Scaffold.Database.Entities.PublicAsset;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import java.util.List;
 
+/**
+ * Fetches assets only from a specific database
+ */
 public class DbAssetFetcher implements IAssetFetcher{
+
+    @Autowired
+    SessionFactory sessionFactory;
+
+    @Autowired
+    DriverManagerDataSource ds;
 
     @Override
     public List<PublicAsset> FetchViaSearchString(String searchString) {
@@ -18,6 +30,6 @@ public class DbAssetFetcher implements IAssetFetcher{
 
     @Override
     public String GetTargetHost() {
-        return "127.0.0.1";
+        return ds.getUrl();
     }
 }

@@ -3,6 +3,7 @@ package ARApi.Scaffold.Services;
 import ARApi.Scaffold.Database.Entities.BaseEntity;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -10,8 +11,16 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
-public abstract class AbstractInserter<E extends BaseEntity> {
 
+/**
+ * Template for creating a db inserter that seamlessly deals with duplicates
+ * even in batch executions.
+ *
+ * Does not scale between multiple different processes and same db. Either rewrite mechanism or only scale by
+ * creating multiple monoliths (single process with lots of threads, per one db).
+ * @param <E> Some implementation of {@link BaseEntity}
+ */
+public abstract class AbstractInserter<E extends BaseEntity> {
 
     final Set<E> insertedEntities = ConcurrentHashMap.newKeySet();
 
@@ -51,7 +60,7 @@ public abstract class AbstractInserter<E extends BaseEntity> {
         try{
             var session = sessionFactory.openSession();
             session.beginTransaction();
-            var result = Insert(entitiesToInsert, session);
+            var result = TryFetchOrInsert(entitiesToInsert, session);
             session.getTransaction().commit();
             session.close();
             return result;
@@ -60,7 +69,11 @@ public abstract class AbstractInserter<E extends BaseEntity> {
         }
     }
 
-    protected abstract List<E> Insert(List<E> entitiesToInsert, Session autoCCOpenendSession);
-
-
+    /**
+     * This should only call {@link Session#save(Object)} and neither {@link Session#close()} nor {@link Transaction#commit()}
+     * @param entitiesToInsert the base entities that need to be saved (also call save for all the children you want to persist)
+     * @param autoCCOpenendSession the session to call save on
+     * @return a mix of inserted and already present objects that map the values provided
+     */
+    protected abstract List<E> TryFetchOrInsert(List<E> entitiesToInsert, Session autoCCOpenendSession);
 }

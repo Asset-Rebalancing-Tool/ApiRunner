@@ -1,8 +1,7 @@
 package ARApi.Scaffold.Database.Entities;
 
-import ARApi.Scaffold.Shared.AssetType;
-import ARApi.Scaffold.Shared.Currency;
-import ARApi.Scaffold.Shared.PriceType;
+import ARApi.Scaffold.Shared.Enums.Currency;
+import ARApi.Scaffold.Shared.Enums.PriceType;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

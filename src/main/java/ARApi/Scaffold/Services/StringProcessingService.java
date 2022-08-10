@@ -1,32 +1,17 @@
 package ARApi.Scaffold.Services;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Locale;
 
 /**
- * A matching algorithm that is similar to the searching algorithms implemented in editors such
- * as Sublime Text, TextMate, Atom and others.
- *
- * <p>
- * One point is given for every matched character. Subsequent matches yield two bonus points. A higher score
- * indicates a higher similarity.
- * </p>
- *
- * <p>
- * This code has been adapted from Apache Commons Lang 3.3.
- * </p>
- *
- * @since 1.0
+ * Modified from stackoverflow.
+ * Process strings, compare them / get their fuzzy matching score
  */
 @Service
 public class StringProcessingService {
 
-    /**
-     * Locale used to change the case of text.
-     */
     private final Locale locale;
 
     @Autowired
@@ -49,34 +34,6 @@ public class StringProcessingService {
         return termProcessed.contains(queryProcessed) || queryProcessed.contains(termProcessed);
     }
 
-    public boolean SimilarEnough(final CharSequence term, final CharSequence query){
-        var score = fuzzyScore(term, query);
-        return score > 5;
-    }
-    /**
-     * <p>
-     * Find the Fuzzy Score which indicates the similarity score between two
-     * Strings.
-     * </p>
-     *
-     * <pre>
-     * score.fuzzyScore(null, null, null)                                    = IllegalArgumentException
-     * score.fuzzyScore("", "", Locale.ENGLISH)                              = 0
-     * score.fuzzyScore("Workshop", "b", Locale.ENGLISH)                     = 0
-     * score.fuzzyScore("Room", "o", Locale.ENGLISH)                         = 1
-     * score.fuzzyScore("Workshop", "w", Locale.ENGLISH)                     = 1
-     * score.fuzzyScore("Workshop", "ws", Locale.ENGLISH)                    = 2
-     * score.fuzzyScore("Workshop", "wo", Locale.ENGLISH)                    = 4
-     * score.fuzzyScore("Apache Software Foundation", "asf", Locale.ENGLISH) = 3
-     * </pre>
-     *
-     * @param term a full term that should be matched against, must not be null
-     * @param query the query that will be matched against a term, must not be
-     *            null
-     * @return result score
-     * @throws IllegalArgumentException if either String input {@code null} or
-     *             Locale input {@code null}
-     */
     public Integer fuzzyScore(final CharSequence term, final CharSequence query) {
 
         if (term == null || query == null) {
@@ -130,11 +87,6 @@ public class StringProcessingService {
         return score;
     }
 
-    /**
-     * Gets the locale.
-     *
-     * @return the locale
-     */
     public Locale getLocale() {
         return locale;
     }

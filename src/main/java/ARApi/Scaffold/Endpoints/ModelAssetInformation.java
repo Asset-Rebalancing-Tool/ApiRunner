@@ -1,14 +1,11 @@
 package ARApi.Scaffold.Endpoints;
 
 import ARApi.Scaffold.Database.Entities.PublicAssetInformation;
-import ARApi.Scaffold.Shared.AssetInformationType;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import ARApi.Scaffold.Shared.Enums.AssetInformationType;
 import org.springframework.util.SerializationUtils;
 
-import java.lang.reflect.Type;
 import java.text.NumberFormat;
 import java.util.Locale;
-import java.util.Map;
 
 public class ModelAssetInformation {
 

@@ -1,6 +1,6 @@
 package ARApi.Scaffold.Database.Entities;
 
-import ARApi.Scaffold.Shared.AssetType;
+import ARApi.Scaffold.Shared.Enums.AssetType;
 
 import javax.persistence.*;
 import java.util.List;

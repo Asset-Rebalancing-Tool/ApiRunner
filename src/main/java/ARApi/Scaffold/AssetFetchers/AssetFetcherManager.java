@@ -9,11 +9,12 @@ import java.util.Set;
 
 @Service
 public class AssetFetcherManager {
-    private Set<IAssetFetcher> WorkingFetchers;
+
+    private final Set<IAssetFetcher> WorkingFetchers;
 
     @Autowired
     public AssetFetcherManager(List<IAssetFetcher> assetFetchers) {
-        WorkingFetchers = new HashSet<IAssetFetcher>(assetFetchers);
+        WorkingFetchers = new HashSet<>(assetFetchers);
     }
 
     public <T> T ExecuteWithFetcher (FetcherExecute<T> execute){
@@ -31,6 +32,7 @@ public class AssetFetcherManager {
     }
 
     private IAssetFetcher GetFetcher(){
+        // TODO: split the load somehow
         if(WorkingFetchers.isEmpty()){
             return null;
         }

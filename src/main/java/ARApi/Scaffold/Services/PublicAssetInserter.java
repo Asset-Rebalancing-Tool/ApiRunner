@@ -20,7 +20,7 @@ public class PublicAssetInserter extends AbstractInserter<PublicAsset> {
     }
 
     @Override
-    protected List<PublicAsset> Insert(List<PublicAsset> entitiesToInsert, Session autoCCOpenendSession) {
+    protected List<PublicAsset> TryFetchOrInsert(List<PublicAsset> entitiesToInsert, Session autoCCOpenendSession) {
         List<PublicAsset> baseEntityReturn = new ArrayList<>();
 
         for (var entityToInsert : entitiesToInsert){

@@ -1,6 +1,6 @@
 package ARApi.Scaffold.Endpoints;
 
-import ARApi.Scaffold.Shared.AssetType;
+import ARApi.Scaffold.Shared.Enums.AssetType;
 
 public class ModelOwnedPublicAsset {
 

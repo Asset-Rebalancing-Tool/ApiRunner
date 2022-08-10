@@ -9,6 +9,10 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
+/**
+ * Provides {@link AbstractInserter} implementations, uniquely constrained by their query
+ * (for the initial entities the inserter is managing)
+ */
 @Service
 public class QueryInserterService {
 
@@ -34,6 +38,14 @@ public class QueryInserterService {
         return createAction.Create(sessionFactory, GetQueryLock(query), query);
     }
 
+    /**
+     * Thread safe method to get unique inserter for the specific query.
+     * @param createAction an action to create the requested inserter implementation
+     * @param queryString the base query the inserter will manage entities based on
+     * @param <E> entity extending database class
+     * @param <T> {@link AbstractInserter} implementation
+     * @return the custom inserter implementation
+     */
     public synchronized <E extends BaseEntity, T extends AbstractInserter<E>> T GetInserter(InstanceCreateAction<E, T> createAction, String queryString) {
 
         // first request on query, create Inserter for it

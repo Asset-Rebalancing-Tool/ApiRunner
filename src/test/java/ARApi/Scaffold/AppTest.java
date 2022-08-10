@@ -3,12 +3,14 @@
  */
 package ARApi.Scaffold;
 
+import ARApi.Scaffold.AssetFetchers.DbAssetFetcher;
 import ARApi.Scaffold.Database.Entities.AssetPriceRecord;
 import ARApi.Scaffold.Database.Entities.PublicAsset;
 import ARApi.Scaffold.Endpoints.AssetApi;
 import ARApi.Scaffold.Endpoints.ModelAsset;
 import ARApi.Scaffold.Endpoints.SearchAssetRequest;
 import ARApi.Scaffold.WebDriver.IWebDriverService;
+import dev.failsafe.internal.util.Assert;
 import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,6 +39,9 @@ class AppTest {
     @Autowired
     IWebDriverService webDriverService;
 
+    @Autowired
+    DbAssetFetcher assetFetcher;
+
     @Test void SaveAsset(){
         var session = dbSessionProvider.openSession();
         var trans = session.beginTransaction();
@@ -50,6 +55,9 @@ class AppTest {
         session.close();
     }
 
+    @Test void TestFetcher(){
+        assetFetcher.GetTargetHost();
+    }
 
 
 
