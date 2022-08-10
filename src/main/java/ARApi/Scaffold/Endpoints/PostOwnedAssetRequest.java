@@ -1,6 +1,6 @@
 package ARApi.Scaffold.Endpoints;
 
-public class PostOwnedShareRequest {
+public class PostOwnedAssetRequest {
 
     public String assetUuid;
 
