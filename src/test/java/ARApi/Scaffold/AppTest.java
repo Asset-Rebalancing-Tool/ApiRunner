@@ -6,6 +6,7 @@ package ARApi.Scaffold;
 import ARApi.Scaffold.Database.Entities.AssetPriceRecord;
 import ARApi.Scaffold.Database.Entities.PublicAsset;
 import ARApi.Scaffold.Endpoints.AssetApi;
+import ARApi.Scaffold.Endpoints.ModelAsset;
 import ARApi.Scaffold.Endpoints.SearchAssetRequest;
 import ARApi.Scaffold.WebDriver.IWebDriverService;
 import org.hibernate.SessionFactory;
@@ -17,6 +18,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
@@ -48,9 +50,8 @@ class AppTest {
         session.close();
     }
 
-    @Test void FetchSearch() {
-        var assets = stockApi.SearchAssets(new SearchAssetRequest("amaz"));
-        assertFalse(assets.isEmpty());
-    }
+
+
+
 
 }
