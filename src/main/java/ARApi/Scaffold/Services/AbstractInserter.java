@@ -12,14 +12,15 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public abstract class AbstractInserter<E extends BaseEntity> {
 
+
     final Set<E> insertedEntities = ConcurrentHashMap.newKeySet();
 
     final SessionFactory sessionFactory;
 
-    private final ReentrantLock lock;
+    private final ReentrantLock querylock;
 
     public AbstractInserter(Class<E> type, String query, SessionFactory provider, ReentrantLock lock){
-        this.lock = lock;
+        this.querylock = lock;
         this.sessionFactory = provider;
         var freshSession = provider.openSession();
         freshSession.beginTransaction();
@@ -30,7 +31,7 @@ public abstract class AbstractInserter<E extends BaseEntity> {
 
     public AbstractInserter(Class<E> type, SessionFactory provider, ReentrantLock lock){
         this.sessionFactory = provider;
-        this.lock = lock;
+        this.querylock = lock;
         var freshSession = provider.openSession();
         freshSession.beginTransaction();
         CriteriaBuilder builder = freshSession.getCriteriaBuilder();
@@ -46,7 +47,7 @@ public abstract class AbstractInserter<E extends BaseEntity> {
     }
 
     public List<E> InsertLocked(List<E> entitiesToInsert){
-        lock.lock();
+        querylock.lock();
         try{
             var session = sessionFactory.openSession();
             session.beginTransaction();
@@ -55,7 +56,7 @@ public abstract class AbstractInserter<E extends BaseEntity> {
             session.close();
             return result;
         }finally {
-            lock.unlock();
+            querylock.unlock();
         }
     }
 
