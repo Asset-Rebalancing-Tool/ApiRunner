@@ -1,8 +1,8 @@
 package ARApi.Scaffold;
 
 import ARApi.Scaffold.Database.Entities.PublicAsset;
-import ARApi.Scaffold.Services.Inserter;
-import ARApi.Scaffold.Services.InserterProvider;
+import ARApi.Scaffold.Services.QueryInserterService;
+import ARApi.Scaffold.Services.PublicAssetInserter;
 import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,7 +23,7 @@ public class AssetTest {
     SessionFactory sessionFactory;
 
     @Autowired
-    InserterProvider inserterProvider;
+    QueryInserterService inserterProvider;
 
     @Test void TestOverwrites(){
         var containsMap = new HashMap<PublicAsset, PublicAsset>();
@@ -49,7 +49,7 @@ public class AssetTest {
 
         var isinQueue = new ArrayDeque<>(Arrays.asList("tes", "!3123123", "eafasd", "aedsdasd"));
 
-        var inserter = new Inserter<>(PublicAsset.class, sessionFactory, inserterProvider.GetLock(PublicAsset.class));
+        var inserter = new PublicAssetInserter(sessionFactory, inserterProvider.GetLock("RandomId"));
 
         List<List<PublicAsset>> listofListsToInsert = new ArrayList<>();
 
@@ -66,7 +66,8 @@ public class AssetTest {
 
         }
 
-        var futures = listofListsToInsert.stream().map(list -> exe.submit(() -> inserter.Insert(list))).toList();
+        var futures = listofListsToInsert.stream().map(list -> exe.submit(() -> inserter.InsertLocked(list))).toList();
+
 
         for(var future : futures){
             var insertedAssets = future.get();
