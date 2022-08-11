@@ -114,9 +114,10 @@ public class AssetApi {
             highScoreAssets.add(new HighScoreAsset(asset, highestScore));
         }
 
+        var scoreComp = Comparator.<HighScoreAsset>comparingInt(o -> o.highestFuzzyScore);
         // filter out too low scoring assets
         highScoreAssets = highScoreAssets.stream().filter(ha -> ha.highestFuzzyScore > MIN_FUZZY_SCORE)
-                .sorted(Comparator.comparingInt(o -> o.highestFuzzyScore)).toList();
+                .sorted(scoreComp.reversed()).toList();
 
         SaveHighScoreAssetHits(highScoreAssets);
 
