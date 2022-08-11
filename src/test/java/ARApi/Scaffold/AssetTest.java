@@ -1,8 +1,7 @@
 package ARApi.Scaffold;
 
 import ARApi.Scaffold.Database.Entities.PublicAsset;
-import ARApi.Scaffold.Services.QueryInserterService;
-import ARApi.Scaffold.Services.PublicAssetInserter;
+import ARApi.Scaffold.Services.AssetInserterService;
 import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,7 +22,7 @@ public class AssetTest {
     SessionFactory sessionFactory;
 
     @Autowired
-    QueryInserterService inserterProvider;
+    AssetInserterService inserterProvider;
 
     @Test void TestOverwrites(){
         var containsMap = new HashMap<PublicAsset, PublicAsset>();
@@ -42,40 +41,5 @@ public class AssetTest {
 
         containsMap.put(asset3isin1234, asset3isin1234);
         Assert.isTrue(containsMap.containsKey(asset4isin1234), "assets with same isin and both not null should match");
-    }
-
-    @Test void TestInserter() throws ExecutionException, InterruptedException {
-        var exe = Executors.newFixedThreadPool(10);
-
-        var isinQueue = new ArrayDeque<>(Arrays.asList("tes", "!3123123", "eafasd", "aedsdasd"));
-
-        var inserter = new PublicAssetInserter(sessionFactory, inserterProvider.GetQueryLock("RandomId"));
-
-        List<List<PublicAsset>> listofListsToInsert = new ArrayList<>();
-
-        for(int i_total_lists = 0; i_total_lists < 100; i_total_lists++){
-            var list = new ArrayList<PublicAsset>();
-            for(int i_list = 0; i_list < 100; i_list++){
-                var isin = isinQueue.removeFirst();
-                var asset = new PublicAsset();
-                asset.isin = isin;
-                list.add(asset);
-                isinQueue.addLast(isin);
-            }
-            listofListsToInsert.add(list);
-
-        }
-
-        var futures = listofListsToInsert.stream().map(list -> exe.submit(() -> inserter.InsertLocked(list))).toList();
-
-
-        for(var future : futures){
-            var insertedAssets = future.get();
-            Assert.isTrue(insertedAssets.stream().noneMatch(publicAsset -> publicAsset.uuid == null),
-                    "all inserted assets need to return uuid");
-        }
-
-        Assert.isTrue(listofListsToInsert.stream().anyMatch(list -> list.stream().anyMatch(asset -> asset.uuid == null)),
-                "some duplicates have to have no uuid");
     }
 }

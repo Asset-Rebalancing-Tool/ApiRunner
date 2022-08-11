@@ -7,7 +7,7 @@
     <bean class="ARApi.Scaffold.AssetFetchers.DbAssetFetcher"/>
     <bean class="ARApi.Scaffold.AssetFetchers.AssetFetcherManager"/>
     <bean class="ARApi.Scaffold.WebDriver.LocalChromeProvider"/>
-    <bean class="ARApi.Scaffold.Services.QueryInserterService"/>
+    <bean class="ARApi.Scaffold.Services.AssetInserterService"/>
     <bean class="ARApi.Scaffold.Services.StringProcessingService"/>
     <bean class="ARApi.Scaffold.Services.LocaleProvider"/>
 
@@ -29,7 +29,7 @@
         <property name="hibernateProperties">
             <props>
                 <prop key="hibernate.hbm2ddl.auto">
-                    create
+                    update
                 </prop>
                 <prop key="hibernate.dialect">
                     org.hibernate.dialect.MySQL8Dialect

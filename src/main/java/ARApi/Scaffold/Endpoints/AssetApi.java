@@ -6,8 +6,7 @@ import ARApi.Scaffold.Database.Entities.PublicAsset;
 
 
 import ARApi.Scaffold.Services.StringProcessingService;
-import ARApi.Scaffold.Services.QueryInserterService;
-import ARApi.Scaffold.Services.PublicAssetInserter;
+import ARApi.Scaffold.Services.AssetInserterService;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -32,18 +31,18 @@ public class AssetApi {
 
     private AssetFetcherManager assetFetcherManager;
 
-    private QueryInserterService queryInserterService;
+    private AssetInserterService assetInserterService;
 
     private StringProcessingService fuzzyScore;
 
     private SessionFactory sessionFactory;
 
     @Autowired
-    public AssetApi(SessionFactory sessionFactory, AssetFetcherManager assetFetcherManager, QueryInserterService queryInserterService, StringProcessingService fuzzyScore) {
+    public AssetApi(SessionFactory sessionFactory, AssetFetcherManager assetFetcherManager, AssetInserterService assetInserterService, StringProcessingService fuzzyScore) {
         this.assetFetcherManager = assetFetcherManager;
         this.sessionFactory = sessionFactory;
         this.fuzzyScore = fuzzyScore;
-        this.queryInserterService = queryInserterService;
+        this.assetInserterService = assetInserterService;
     }
 
     @PostMapping("/grouping")
@@ -91,18 +90,14 @@ public class AssetApi {
             return new ModelResponse<>("SearchString has to be longer than " + (MIN_SEARCH_STRING_LENGHT -1), HttpStatus.BAD_REQUEST);
         }
 
-        var inserter = queryInserterService.GetInserter(
-                (sessionFactory, lock, query) -> new PublicAssetInserter(query, sessionFactory, lock),
-                "Select pa from PublicAsset pa " +
-                        "left join fetch pa.AssetPriceRecords apr " +
-                        "left join fetch pa.AssetInformation ai"
-                 );
-
         PublicAsset fullMatch = null;
         List<HighScoreAsset> highScoreAssets = new ArrayList<>();
 
         // check database for perfect / good enough matches
-        var dbAssets = inserter.GetLoadedEntities();
+        var dbAssets = sessionFactory.getCurrentSession().createQuery("Select pa from PublicAsset pa " +
+                "left join fetch pa.AssetPriceRecords apr " +
+                "left join fetch pa.AssetInformation ai", PublicAsset.class).stream().distinct().toList();
+
         for (var asset : dbAssets) {
             // full match check
             var exactIsinMatch = asset.isin == null ? false : fuzzyScore.Same(asset.isin, searchAssetRequest.SearchString);
@@ -140,7 +135,7 @@ public class AssetApi {
         var fetchedAssets = assetFetcherManager.ExecuteWithFetcher(fetcher -> fetcher.FetchViaSearchString(fuzzyScore.Process(searchAssetRequest.SearchString)));
 
         // insert fetched assets safely
-        var newAssets = inserter.InsertLocked(fetchedAssets);
+        var newAssets = assetInserterService.Insert(fetchedAssets);
 
         // map to model and return
         return new ModelResponse<>(newAssets.stream().map(ModelAsset::new).toList(), HttpStatus.OK);

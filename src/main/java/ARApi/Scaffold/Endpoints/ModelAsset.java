@@ -5,6 +5,7 @@ import ARApi.Scaffold.Database.Entities.PublicAsset;
 import ARApi.Scaffold.Shared.Enums.AssetType;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -24,9 +25,9 @@ public class ModelAsset {
       assetInformations = dbAsset.AssetInformation.stream().map(ModelAssetInformation::new).filter(mai -> mai.stringValue != null).toList();
    }
 
-   public List<ModelAssetPriceRecord> priceRecords;
+   public List<ModelAssetPriceRecord> priceRecords = new ArrayList<>();
 
-   public List<ModelAssetInformation> assetInformations;
+   public List<ModelAssetInformation> assetInformations = new ArrayList<>();
 
    public String uuid;
 
