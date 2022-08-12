@@ -1,0 +1,428 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1660312958696-1
+      author: tobi (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_assetgrouping
+                  name: uuid
+                  type: BINARY(16)
+              - column:
+                  name: user_uuid
+                  type: BINARY(16)
+              - column:
+                  name: ts_created
+                  type: DATETIME
+              - column:
+                  constraints:
+                    nullable: false
+                  name: target_percentage
+                  type: DOUBLE
+              - column:
+                  name: group_name
+                  type: VARCHAR(255)
+            tableName: asset_grouping
+  - changeSet:
+      id: 1660312958696-2
+      author: tobi (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                  name: asset_grouping_uuid
+                  type: BINARY(16)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: owned_private_assets_uuid
+                  type: BINARY(16)
+            tableName: asset_grouping_owned_private_assets
+  - changeSet:
+      id: 1660312958696-3
+      author: tobi (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                  name: asset_grouping_uuid
+                  type: BINARY(16)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: owned_public_assets_uuid
+                  type: BINARY(16)
+            tableName: asset_grouping_owned_public_assets
+  - changeSet:
+      id: 1660312958696-4
+      author: tobi (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_ownedprivateasset
+                  name: uuid
+                  type: BINARY(16)
+              - column:
+                  name: user_uuid
+                  type: BINARY(16)
+              - column:
+                  name: ts_created
+                  type: DATETIME
+              - column:
+                  name: title
+                  type: VARCHAR(255)
+              - column:
+                  name: asset_type
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: owned_quantity
+                  type: DOUBLE
+              - column:
+                  constraints:
+                    nullable: false
+                  name: target_percentage
+                  type: DOUBLE
+            tableName: owned_private_asset
+  - changeSet:
+      id: 1660312958696-5
+      author: tobi (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_ownedpublicasset
+                  name: uuid
+                  type: BINARY(16)
+              - column:
+                  name: ts_created
+                  type: DATETIME
+              - column:
+                  name: user_uuid
+                  type: BINARY(16)
+              - column:
+                  name: asset_uuid
+                  type: BINARY(16)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: target_percentage
+                  type: DOUBLE
+            tableName: owned_public_asset
+  - changeSet:
+      id: 1660312958696-6
+      author: tobi (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_privateassetpricerecord
+                  name: uuid
+                  type: BINARY(16)
+              - column:
+                  name: ts_created
+                  type: DATETIME
+              - column:
+                  name: private_asset_uuid
+                  type: BINARY(16)
+            tableName: private_asset_price_record
+  - changeSet:
+      id: 1660312958696-7
+      author: tobi (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_publicasset
+                  name: uuid
+                  type: BINARY(16)
+              - column:
+                  name: ts_created
+                  type: DATETIME
+              - column:
+                  constraints:
+                    nullable: false
+                  name: asset_name
+                  type: VARCHAR(255)
+              - column:
+                  name: asset_type
+                  type: VARCHAR(255)
+              - column:
+                  name: isin
+                  type: VARCHAR(255)
+              - column:
+                  name: symbol
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: search_hits_total
+                  type: BIGINT
+            tableName: public_asset
+  - changeSet:
+      id: 1660312958696-8
+      author: tobi (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_publicassetinformation
+                  name: uuid
+                  type: BINARY(16)
+              - column:
+                  name: ts_created
+                  type: DATETIME
+              - column:
+                  name: asset_uuid
+                  type: BINARY(16)
+              - column:
+                  name: asset_information_type
+                  type: VARCHAR(255)
+              - column:
+                  name: byte_value_array
+                  type: BLOB
+              - column:
+                  name: language
+                  type: VARCHAR(255)
+            tableName: public_asset_information
+  - changeSet:
+      id: 1660312958696-9
+      author: tobi (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_publicassetpricerecord
+                  name: uuid
+                  type: BINARY(16)
+              - column:
+                  name: ts_created
+                  type: DATETIME
+              - column:
+                  name: asset_uuid
+                  type: BINARY(16)
+              - column:
+                  name: currency
+                  type: VARCHAR(255)
+              - column:
+                  name: ts_fetched
+                  type: DATETIME
+              - column:
+                  name: ts_price
+                  type: DATETIME
+              - column:
+                  constraints:
+                    nullable: false
+                  name: price
+                  type: DOUBLE
+              - column:
+                  name: price_type
+                  type: VARCHAR(255)
+            tableName: public_asset_price_record
+  - changeSet:
+      id: 1660312958696-10
+      author: tobi (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_user
+                  name: uuid
+                  type: BINARY(16)
+              - column:
+                  name: ts_created
+                  type: DATETIME
+              - column:
+                  name: email
+                  type: VARCHAR(255)
+            tableName: user
+  - changeSet:
+      id: 1660312958696-11
+      author: tobi (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addUniqueConstraint:
+            columnNames: owned_private_assets_uuid
+            constraintName: uc_asset_grouping_owned_private_assets_ownedprivateassets_uuid
+            tableName: asset_grouping_owned_private_assets
+  - changeSet:
+      id: 1660312958696-12
+      author: tobi (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addUniqueConstraint:
+            columnNames: owned_public_assets_uuid
+            constraintName: uc_asset_grouping_owned_public_assets_ownedpublicassets_uuid
+            tableName: asset_grouping_owned_public_assets
+  - changeSet:
+      id: 1660312958696-13
+      author: tobi (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addUniqueConstraint:
+            columnNames: isin
+            constraintName: uc_publicasset_isin
+            tableName: public_asset
+  - changeSet:
+      id: 1660312958696-14
+      author: tobi (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: user_uuid
+            baseTableName: asset_grouping
+            constraintName: FK_ASSETGROUPING_ON_USER_UUID
+            referencedColumnNames: uuid
+            referencedTableName: user
+  - changeSet:
+      id: 1660312958696-15
+      author: tobi (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: user_uuid
+            baseTableName: owned_private_asset
+            constraintName: FK_OWNEDPRIVATEASSET_ON_USER_UUID
+            referencedColumnNames: uuid
+            referencedTableName: user
+  - changeSet:
+      id: 1660312958696-16
+      author: tobi (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: asset_uuid
+            baseTableName: owned_public_asset
+            constraintName: FK_OWNEDPUBLICASSET_ON_ASSET_UUID
+            referencedColumnNames: uuid
+            referencedTableName: public_asset
+  - changeSet:
+      id: 1660312958696-17
+      author: tobi (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: user_uuid
+            baseTableName: owned_public_asset
+            constraintName: FK_OWNEDPUBLICASSET_ON_USER_UUID
+            referencedColumnNames: uuid
+            referencedTableName: user
+  - changeSet:
+      id: 1660312958696-18
+      author: tobi (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: private_asset_uuid
+            baseTableName: private_asset_price_record
+            constraintName: FK_PRIVATEASSETPRICERECORD_ON_PRIVATE_ASSET_UUID
+            referencedColumnNames: uuid
+            referencedTableName: owned_private_asset
+  - changeSet:
+      id: 1660312958696-19
+      author: tobi (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: asset_uuid
+            baseTableName: public_asset_information
+            constraintName: FK_PUBLICASSETINFORMATION_ON_ASSET_UUID
+            referencedColumnNames: uuid
+            referencedTableName: public_asset
+  - changeSet:
+      id: 1660312958696-20
+      author: tobi (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: asset_uuid
+            baseTableName: public_asset_price_record
+            constraintName: FK_PUBLICASSETPRICERECORD_ON_ASSET_UUID
+            referencedColumnNames: uuid
+            referencedTableName: public_asset
+  - changeSet:
+      id: 1660312958696-21
+      author: tobi (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: asset_grouping_uuid
+            baseTableName: asset_grouping_owned_private_assets
+            constraintName: fk_assgroownpriass_on_asset_grouping
+            referencedColumnNames: uuid
+            referencedTableName: asset_grouping
+  - changeSet:
+      id: 1660312958696-22
+      author: tobi (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: owned_private_assets_uuid
+            baseTableName: asset_grouping_owned_private_assets
+            constraintName: fk_assgroownpriass_on_owned_private_asset
+            referencedColumnNames: uuid
+            referencedTableName: owned_private_asset
+  - changeSet:
+      id: 1660312958696-23
+      author: tobi (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: asset_grouping_uuid
+            baseTableName: asset_grouping_owned_public_assets
+            constraintName: fk_assgroownpubass_on_asset_grouping
+            referencedColumnNames: uuid
+            referencedTableName: asset_grouping
+  - changeSet:
+      id: 1660312958696-24
+      author: tobi (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: owned_public_assets_uuid
+            baseTableName: asset_grouping_owned_public_assets
+            constraintName: fk_assgroownpubass_on_owned_public_asset
+            referencedColumnNames: uuid
+            referencedTableName: owned_public_asset
+

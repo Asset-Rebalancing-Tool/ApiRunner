@@ -26,16 +26,7 @@
                   ref="dataSource"/>
         <property name="packagesToScan"
                   value="ARApi.Scaffold.Database.Entities"/>
-        <property name="hibernateProperties">
-            <props>
-                <prop key="hibernate.hbm2ddl.auto">
-                    update
-                </prop>
-                <prop key="hibernate.dialect">
-                    org.hibernate.dialect.MySQL8Dialect
-                </prop>
-            </props>
-        </property>
+
     </bean>
     <bean id="txManager"
           class="org.springframework.orm.hibernate5.HibernateTransactionManager">
