@@ -1,6 +1,6 @@
 package ARApi.Scaffold.Endpoints;
 
-import ARApi.Scaffold.Database.Entities.AssetPriceRecord;
+import ARApi.Scaffold.Database.Entities.PublicAssetPriceRecord;
 import ARApi.Scaffold.Shared.Enums.Currency;
 import ARApi.Scaffold.Shared.Enums.PriceType;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 public class ModelAssetPriceRecord {
 
-    public ModelAssetPriceRecord(AssetPriceRecord assetPriceRecord) {
+    public ModelAssetPriceRecord(PublicAssetPriceRecord assetPriceRecord) {
         currency = assetPriceRecord.currency;
         tsPrice = assetPriceRecord.ts_price;
         price = assetPriceRecord.price;

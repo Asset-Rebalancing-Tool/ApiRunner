@@ -10,6 +10,7 @@ import java.util.Set;
 @Entity
 public class PublicAsset extends BaseEntity {
 
+    @Column(nullable = false)
     public String assetName;
 
     @Enumerated(EnumType.STRING)
@@ -22,7 +23,7 @@ public class PublicAsset extends BaseEntity {
 
     // property of DbAssetPriceRecord => tells hibernate that this property is used for mapping
     @OneToMany(mappedBy= "Asset")
-    public Set<AssetPriceRecord> AssetPriceRecords = new HashSet<>();
+    public Set<PublicAssetPriceRecord> AssetPriceRecords = new HashSet<>();
 
     @OneToMany(mappedBy= "Asset")
     public Set<PublicAssetInformation> AssetInformation= new HashSet<>();

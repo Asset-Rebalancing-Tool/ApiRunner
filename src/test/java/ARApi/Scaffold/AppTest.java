@@ -4,13 +4,10 @@
 package ARApi.Scaffold;
 
 import ARApi.Scaffold.AssetFetchers.DbAssetFetcher;
-import ARApi.Scaffold.Database.Entities.AssetPriceRecord;
+import ARApi.Scaffold.Database.Entities.PublicAssetPriceRecord;
 import ARApi.Scaffold.Database.Entities.PublicAsset;
 import ARApi.Scaffold.Endpoints.AssetApi;
-import ARApi.Scaffold.Endpoints.ModelAsset;
-import ARApi.Scaffold.Endpoints.SearchAssetRequest;
 import ARApi.Scaffold.WebDriver.IWebDriverService;
-import dev.failsafe.internal.util.Assert;
 import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,12 +16,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
-
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.concurrent.Executors;
 
 @ContextConfiguration("/test.xml")
 @ExtendWith(SpringExtension.class)
@@ -46,7 +39,7 @@ class AppTest {
         var session = dbSessionProvider.openSession();
         var trans = session.beginTransaction();
         var dbAsset = new PublicAsset();
-        var dbAssetRecord = new AssetPriceRecord();
+        var dbAssetRecord = new PublicAssetPriceRecord();
         dbAssetRecord.Asset = dbAsset;
         dbAsset.AssetPriceRecords = Set.of(dbAssetRecord);
         session.persist(dbAssetRecord);
@@ -57,6 +50,14 @@ class AppTest {
 
     @Test void TestFetcher(){
         assetFetcher.GetTargetHost();
+    }
+
+    @Test void BulkInsert(){
+        var executor = Executors.newFixedThreadPool(4);
+
+        // initial insert of isin
+
+
     }
 
 

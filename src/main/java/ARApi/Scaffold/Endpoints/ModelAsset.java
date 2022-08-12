@@ -1,6 +1,6 @@
 package ARApi.Scaffold.Endpoints;
 
-import ARApi.Scaffold.Database.Entities.AssetPriceRecord;
+import ARApi.Scaffold.Database.Entities.PublicAssetPriceRecord;
 import ARApi.Scaffold.Database.Entities.PublicAsset;
 import ARApi.Scaffold.Shared.Enums.AssetType;
 
@@ -19,7 +19,7 @@ public class ModelAsset {
       isin = dbAsset.isin;
       symbol = dbAsset.symbol;
 
-      var recordComp = Comparator.comparing(AssetPriceRecord::GetTimeOfPrice).reversed();
+      var recordComp = Comparator.comparing(PublicAssetPriceRecord::GetTimeOfPrice).reversed();
       priceRecords = dbAsset.AssetPriceRecords.stream().sorted(recordComp).map(ModelAssetPriceRecord::new).toList();
 
       assetInformations = dbAsset.AssetInformation.stream().map(ModelAssetInformation::new).filter(mai -> mai.stringValue != null).toList();

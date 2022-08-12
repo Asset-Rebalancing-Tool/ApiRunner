@@ -28,7 +28,6 @@ public class PublicAssetInformation extends BaseEntity {
     }
 
     public PublicAssetInformation(){
-
     }
 
     @ManyToOne

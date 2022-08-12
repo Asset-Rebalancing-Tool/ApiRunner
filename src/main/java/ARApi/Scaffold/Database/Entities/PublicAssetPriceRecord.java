@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.Comparator;
 
 @Entity
-public class AssetPriceRecord extends BaseEntity{
+public class PublicAssetPriceRecord extends BaseEntity{
 
     @ManyToOne
     // set the column name where we store the uuid of the asset
@@ -31,8 +31,7 @@ public class AssetPriceRecord extends BaseEntity{
         return ts_price;
     }
 
-
-    public static Comparator<AssetPriceRecord> GetComp(){
-        return Comparator.comparing(AssetPriceRecord::GetTimeOfPrice).reversed();
+    public static Comparator<PublicAssetPriceRecord> GetComp(){
+        return Comparator.comparing(PublicAssetPriceRecord::GetTimeOfPrice).reversed();
     }
 }
