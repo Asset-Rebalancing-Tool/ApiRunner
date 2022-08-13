@@ -4,8 +4,8 @@
 package ARApi.Scaffold;
 
 import ARApi.Scaffold.AssetFetchers.DbAssetFetcher;
-import ARApi.Scaffold.Database.Entities.PublicAssetPriceRecord;
-import ARApi.Scaffold.Database.Entities.PublicAsset;
+import ARApi.Scaffold.Database.Entities.PublicAsset.PublicAsset;
+import ARApi.Scaffold.Database.Entities.PublicAsset.PublicAssetPriceRecord;
 import ARApi.Scaffold.Endpoints.AssetApi;
 import ARApi.Scaffold.WebDriver.IWebDriverService;
 import org.hibernate.SessionFactory;

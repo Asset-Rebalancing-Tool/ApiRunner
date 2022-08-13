@@ -2,9 +2,14 @@ package ARApi.Scaffold.Endpoints;
 
 
 import ARApi.Scaffold.AssetFetchers.AssetFetcherManager;
-import ARApi.Scaffold.Database.Entities.PublicAsset;
+import ARApi.Scaffold.Database.Entities.PublicAsset.PublicAsset;
 
 
+import ARApi.Scaffold.Endpoints.Model.ModelPublicAsset;
+import ARApi.Scaffold.Endpoints.Model.ModelResponse;
+import ARApi.Scaffold.Endpoints.Requests.PostOwnedAssetGroupingRequest;
+import ARApi.Scaffold.Endpoints.Requests.PostOwnedPublicAssetRequest;
+import ARApi.Scaffold.Endpoints.Requests.SearchAssetRequest;
 import ARApi.Scaffold.Services.StringProcessingService;
 import ARApi.Scaffold.Services.AssetInserterService;
 import org.hibernate.SessionFactory;
@@ -46,17 +51,18 @@ public class AssetApi {
     }
 
     @PostMapping("/grouping")
-    public ResponseEntity<HttpStatus> PostAssetGrouping(@RequestBody PostAssetGroupingRequest assetGroupingRequest) {
+    public ResponseEntity<HttpStatus> PostAssetGrouping(@RequestBody PostOwnedAssetGroupingRequest assetGroupingRequest) {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/asset/owned/public")
-    public ResponseEntity<HttpStatus> PostOwnedPublicAssets(@RequestBody PostOwnedAssetRequest postOwnedAssetRequest) {
+
+    public ResponseEntity<HttpStatus> PostOwnedPublicAssets(@RequestBody PostOwnedPublicAssetRequest postOwnedAssetRequest) {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/asset/owned/private")
-    public ResponseEntity<HttpStatus> PostOwnedPrivateAssets(@RequestBody PostOwnedAssetRequest postOwnedAssetRequest) {
+    public ResponseEntity<HttpStatus> PostOwnedPrivateAssets(@RequestBody PostOwnedPublicAssetRequest postOwnedAssetRequest) {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -77,14 +83,14 @@ public class AssetApi {
     private int GetHighestFuzzyScore(PublicAsset asset, String SearchString){
         // find the highest fuzzy score based on other fields
         var symbolScore = asset.symbol == null ? 0 : fuzzyScore.fuzzyScore(asset.symbol, SearchString);
-        var assetNameScore = asset.assetName == null ? 0 : fuzzyScore.fuzzyScore(asset.assetName, SearchString);
+        var assetNameScore = asset.asset_name == null ? 0 : fuzzyScore.fuzzyScore(asset.asset_name, SearchString);
         var isinScore = asset.isin == null ? 0 : fuzzyScore.fuzzyScore(asset.isin, SearchString);
 
         return Collections.max(Arrays.asList(symbolScore, assetNameScore, isinScore));
     }
 
     @PostMapping("/asset/search")
-    public ModelResponse<List<ModelAsset>> SearchAssets(@RequestBody SearchAssetRequest searchAssetRequest) {
+    public ModelResponse<List<ModelPublicAsset>> SearchAssets(@RequestBody SearchAssetRequest searchAssetRequest) {
 
         if(searchAssetRequest.SearchString.length() < MIN_SEARCH_STRING_LENGHT){
             return new ModelResponse<>("SearchString has to be longer than " + (MIN_SEARCH_STRING_LENGHT -1), HttpStatus.BAD_REQUEST);
@@ -123,11 +129,11 @@ public class AssetApi {
 
         // check if db results are satisfactory enough ro return
         if (fullMatch != null || highScoreAssets.size() >= MIN_FUZZY_MATCHES) {
-            var modelAssetList = new ArrayList<ModelAsset>();
+            var modelAssetList = new ArrayList<ModelPublicAsset>();
             if (fullMatch != null) {
-                modelAssetList.add(0, new ModelAsset(fullMatch));
+                modelAssetList.add(0, new ModelPublicAsset(fullMatch));
             }
-            highScoreAssets.forEach(hA -> modelAssetList.add(new ModelAsset(hA.publicAsset)));
+            highScoreAssets.forEach(hA -> modelAssetList.add(new ModelPublicAsset(hA.publicAsset)));
 
             return new ModelResponse<>(modelAssetList, HttpStatus.OK);
         }
@@ -139,6 +145,6 @@ public class AssetApi {
         var newAssets = assetInserterService.Insert(fetchedAssets);
 
         // map to model and return
-        return new ModelResponse<>(newAssets.stream().map(ModelAsset::new).toList(), HttpStatus.OK);
+        return new ModelResponse<>(newAssets.stream().map(ModelPublicAsset::new).toList(), HttpStatus.OK);
     }
 }

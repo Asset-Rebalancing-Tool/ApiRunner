@@ -1,6 +1,6 @@
 package ARApi.Scaffold.AssetFetchers;
 
-import ARApi.Scaffold.Database.Entities.PublicAsset;
+import ARApi.Scaffold.Database.Entities.PublicAsset.PublicAsset;
 
 import java.util.List;
 

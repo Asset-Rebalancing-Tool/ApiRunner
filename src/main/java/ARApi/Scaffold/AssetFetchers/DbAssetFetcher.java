@@ -1,6 +1,6 @@
 package ARApi.Scaffold.AssetFetchers;
 
-import ARApi.Scaffold.Database.Entities.PublicAsset;
+import ARApi.Scaffold.Database.Entities.PublicAsset.PublicAsset;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;

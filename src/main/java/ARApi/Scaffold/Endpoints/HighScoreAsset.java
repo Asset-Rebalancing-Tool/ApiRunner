@@ -1,6 +1,6 @@
 package ARApi.Scaffold.Endpoints;
 
-import ARApi.Scaffold.Database.Entities.PublicAsset;
+import ARApi.Scaffold.Database.Entities.PublicAsset.PublicAsset;
 
 /**
  * Result container after using {@link ARApi.Scaffold.Services.StringProcessingService} to calculate scores for different fields.

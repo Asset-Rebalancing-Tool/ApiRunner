@@ -1,6 +1,6 @@
 package ARApi.Scaffold;
 
-import ARApi.Scaffold.Database.Entities.PublicAsset;
+import ARApi.Scaffold.Database.Entities.PublicAsset.PublicAsset;
 import ARApi.Scaffold.Services.AssetInserterService;
 import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.Test;
@@ -11,8 +11,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.Assert;
 
 import java.util.*;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
 
 @ContextConfiguration("/test.xml")
 @ExtendWith(SpringExtension.class)
