@@ -1,21 +1,21 @@
-package ARApi.Scaffold.Endpoints;
+package ARApi.Scaffold.Endpoints.Model;
 
-import ARApi.Scaffold.Database.Entities.PublicAssetPriceRecord;
-import ARApi.Scaffold.Database.Entities.PublicAsset;
+import ARApi.Scaffold.Database.Entities.PublicAsset.PublicAssetPriceRecord;
+import ARApi.Scaffold.Database.Entities.PublicAsset.PublicAsset;
 import ARApi.Scaffold.Shared.Enums.AssetType;
+import ARApi.Scaffold.Shared.Enums.Currency;
+import ARApi.Scaffold.Shared.Enums.UnitType;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 
-public class ModelAsset {
+public class ModelPublicAsset {
 
-   public ModelAsset(PublicAsset dbAsset){
+   public ModelPublicAsset(PublicAsset dbAsset){
       uuid = dbAsset.uuid.toString();
-      assetName = dbAsset.assetName;
-      assetType = dbAsset.assetType;
+      assetName = dbAsset.asset_name;
+      assetType = dbAsset.asset_type;
       isin = dbAsset.isin;
       symbol = dbAsset.symbol;
 
@@ -26,6 +26,8 @@ public class ModelAsset {
    }
 
    public List<ModelAssetPriceRecord> priceRecords = new ArrayList<>();
+
+   public Map<Currency, List<ModelAssetPriceRecord>> currencyPriceRecordMap = new HashMap<>();
 
    public List<ModelAssetInformation> assetInformations = new ArrayList<>();
 
@@ -40,5 +42,9 @@ public class ModelAsset {
 
    @Nullable
    public String symbol;
+
+   public Currency currency;
+
+   public UnitType priceType;
 
 }

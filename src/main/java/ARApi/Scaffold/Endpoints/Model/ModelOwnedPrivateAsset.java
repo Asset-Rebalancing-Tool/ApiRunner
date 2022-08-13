@@ -1,7 +1,6 @@
-package ARApi.Scaffold.Endpoints;
+package ARApi.Scaffold.Endpoints.Model;
 
-import ARApi.Scaffold.Database.Entities.PublicAssetPriceRecord;
-import ARApi.Scaffold.Database.Entities.OwnedPrivateAsset;
+import ARApi.Scaffold.Database.Entities.PrivateAsset.OwnedPrivateAsset;
 import ARApi.Scaffold.Shared.Enums.AssetType;
 import ARApi.Scaffold.Shared.Enums.Currency;
 
