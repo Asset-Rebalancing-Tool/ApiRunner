@@ -1,10 +1,13 @@
 package ARApi.Scaffold.Database.Entities;
 
+import ARApi.Scaffold.Database.Entities.PrivateAsset.OwnedPrivateAsset;
+import ARApi.Scaffold.Database.Entities.PublicAsset.OwnedPublicAsset;
+
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
-public class AssetGrouping extends BaseUserEntity{
+public class OwnedAssetGrouping extends BaseUserEntity{
 
     @OneToMany
     public List<OwnedPublicAsset> OwnedPublicAssets;

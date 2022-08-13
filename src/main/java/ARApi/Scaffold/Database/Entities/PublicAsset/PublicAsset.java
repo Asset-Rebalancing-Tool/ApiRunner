@@ -1,5 +1,6 @@
-package ARApi.Scaffold.Database.Entities;
+package ARApi.Scaffold.Database.Entities.PublicAsset;
 
+import ARApi.Scaffold.Database.Entities.BaseEntity;
 import ARApi.Scaffold.Shared.Enums.AssetType;
 
 
@@ -11,10 +12,10 @@ import java.util.Set;
 public class PublicAsset extends BaseEntity {
 
     @Column(nullable = false)
-    public String assetName;
+    public String asset_name;
 
     @Enumerated(EnumType.STRING)
-    public AssetType assetType;
+    public AssetType asset_type;
 
     @Column(unique = true)
     public String isin;

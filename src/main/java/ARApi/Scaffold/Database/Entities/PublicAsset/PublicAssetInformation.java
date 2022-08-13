@@ -1,5 +1,6 @@
-package ARApi.Scaffold.Database.Entities;
+package ARApi.Scaffold.Database.Entities.PublicAsset;
 
+import ARApi.Scaffold.Database.Entities.BaseEntity;
 import ARApi.Scaffold.Shared.Enums.AssetInformationType;
 import ARApi.Scaffold.Shared.Enums.Language;
 import org.springframework.util.SerializationUtils;

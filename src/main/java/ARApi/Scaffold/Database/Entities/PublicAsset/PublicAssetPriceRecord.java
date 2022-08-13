@@ -1,22 +1,19 @@
-package ARApi.Scaffold.Database.Entities;
+package ARApi.Scaffold.Database.Entities.PublicAsset;
 
+import ARApi.Scaffold.Database.Entities.BaseEntity;
 import ARApi.Scaffold.Shared.Enums.Currency;
-import ARApi.Scaffold.Shared.Enums.PriceType;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 
 @Entity
-public class PublicAssetPriceRecord extends BaseEntity{
+public class PublicAssetPriceRecord extends BaseEntity {
 
     @ManyToOne
     // set the column name where we store the uuid of the asset
     @JoinColumn(name = "asset_uuid")
     public PublicAsset Asset;
-
-    @Enumerated(EnumType.STRING)
-    public Currency currency;
 
     public LocalDateTime ts_fetched = LocalDateTime.now();
 
@@ -25,7 +22,7 @@ public class PublicAssetPriceRecord extends BaseEntity{
     public double price;
 
     @Enumerated(EnumType.STRING)
-    public PriceType price_type;
+    public Currency currency;
 
     public LocalDateTime GetTimeOfPrice(){
         return ts_price;

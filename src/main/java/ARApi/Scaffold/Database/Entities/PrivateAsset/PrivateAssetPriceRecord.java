@@ -1,9 +1,10 @@
-package ARApi.Scaffold.Database.Entities;
+package ARApi.Scaffold.Database.Entities.PrivateAsset;
+
+import ARApi.Scaffold.Database.Entities.BaseEntity;
 
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 
 @Entity
 public class PrivateAssetPriceRecord extends BaseEntity {

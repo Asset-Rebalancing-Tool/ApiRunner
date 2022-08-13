@@ -1,6 +1,6 @@
-package ARApi.Scaffold.Endpoints;
+package ARApi.Scaffold.Endpoints.Requests;
 
-public class PostAssetGroupingRequest {
+public class PostOwnedAssetGroupingRequest {
 
     public String[] publicAssetUuids;
 

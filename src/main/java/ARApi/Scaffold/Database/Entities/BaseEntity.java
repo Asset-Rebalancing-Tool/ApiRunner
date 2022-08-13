@@ -18,5 +18,4 @@ public abstract class BaseEntity {
     public UUID uuid;
 
     public LocalDateTime ts_created = LocalDateTime.now();
-
 }
