@@ -18,6 +18,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.Executors;
 
 @ContextConfiguration("/test.xml")
@@ -43,6 +44,8 @@ class AppTest {
         var session = dbSessionProvider.openSession();
         var trans = session.beginTransaction();
         var dbAsset = new PublicAsset();
+        dbAsset.isin = UUID.randomUUID().toString();
+        dbAsset.asset_name = UUID.randomUUID().toString();
         var dbAssetRecord = new PublicAssetPriceRecord();
         dbAssetRecord.Asset = dbAsset;
         dbAsset.AssetPriceRecords = Set.of(dbAssetRecord);
@@ -57,7 +60,7 @@ class AppTest {
     }
 
     @Test void BulkInsert(){
-        var p = publicAssetRepository.findAll();
+        var p = publicAssetRepository.GetFullAssets();
 
 
     }

@@ -1,7 +1,6 @@
 package ARApi.Scaffold;
 
 import ARApi.Scaffold.Database.Entities.PublicAsset.PublicAsset;
-import ARApi.Scaffold.Services.AssetInserterService;
 import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,8 +18,6 @@ public class AssetTest {
     @Autowired
     SessionFactory sessionFactory;
 
-    @Autowired
-    AssetInserterService inserterProvider;
 
     @Test void TestOverwrites(){
         var containsMap = new HashMap<PublicAsset, PublicAsset>();

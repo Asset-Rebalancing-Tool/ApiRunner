@@ -5,13 +5,14 @@ import ARApi.Scaffold.AssetFetchers.AssetFetcherManager;
 import ARApi.Scaffold.Database.Entities.PublicAsset.PublicAsset;
 
 
+import ARApi.Scaffold.Database.Entities.PublicAssetRepository;
+import ARApi.Scaffold.Database.Entities.RepoInsertOnDuplicateReturn;
 import ARApi.Scaffold.Endpoints.Model.ModelPublicAsset;
 import ARApi.Scaffold.Endpoints.Model.ModelResponse;
 import ARApi.Scaffold.Endpoints.Requests.PostOwnedAssetGroupingRequest;
 import ARApi.Scaffold.Endpoints.Requests.PostOwnedPublicAssetRequest;
 import ARApi.Scaffold.Endpoints.Requests.SearchAssetRequest;
 import ARApi.Scaffold.Services.StringProcessingService;
-import ARApi.Scaffold.Services.AssetInserterService;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -36,18 +37,15 @@ public class AssetApi {
 
     private AssetFetcherManager assetFetcherManager;
 
-    private AssetInserterService assetInserterService;
-
     private StringProcessingService fuzzyScore;
 
-    private SessionFactory sessionFactory;
+    private PublicAssetRepository publicAssetRepository;
 
     @Autowired
-    public AssetApi(SessionFactory sessionFactory, AssetFetcherManager assetFetcherManager, AssetInserterService assetInserterService, StringProcessingService fuzzyScore) {
+    public AssetApi( AssetFetcherManager assetFetcherManager, StringProcessingService fuzzyScore, PublicAssetRepository publicAssetRepository) {
         this.assetFetcherManager = assetFetcherManager;
-        this.sessionFactory = sessionFactory;
         this.fuzzyScore = fuzzyScore;
-        this.assetInserterService = assetInserterService;
+        this.publicAssetRepository = publicAssetRepository;
     }
 
     @PostMapping("/grouping")
@@ -56,7 +54,6 @@ public class AssetApi {
     }
 
     @PostMapping("/asset/owned/public")
-
     public ResponseEntity<HttpStatus> PostOwnedPublicAssets(@RequestBody PostOwnedPublicAssetRequest postOwnedAssetRequest) {
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -64,20 +61,6 @@ public class AssetApi {
     @PostMapping("/asset/owned/private")
     public ResponseEntity<HttpStatus> PostOwnedPrivateAssets(@RequestBody PostOwnedPublicAssetRequest postOwnedAssetRequest) {
         return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    private void SaveHighScoreAssetHits(List<HighScoreAsset> highScoreAssets){
-        // increment search hits for all that have been good enough
-        var session = sessionFactory.openSession();
-        session.beginTransaction();
-        for(var highScoreAsset : highScoreAssets){
-            var updated = session.createQuery("Update PublicAsset p " +
-                            "set p.searchHitsTotal = p.searchHitsTotal + 1 " +
-                            "where p.uuid = :uuid")
-                    .setParameter("uuid", highScoreAsset.publicAsset.uuid).executeUpdate();
-        }
-        session.getTransaction().commit();
-        session.close();
     }
 
     private int GetHighestFuzzyScore(PublicAsset asset, String SearchString){
@@ -100,9 +83,7 @@ public class AssetApi {
         List<HighScoreAsset> highScoreAssets = new ArrayList<>();
 
         // check database for perfect / good enough matches
-        var dbAssets = sessionFactory.getCurrentSession().createQuery("Select pa from PublicAsset pa " +
-                "left join fetch pa.AssetPriceRecords apr " +
-                "left join fetch pa.AssetInformation ai", PublicAsset.class).stream().distinct().toList();
+        var dbAssets = publicAssetRepository.GetFullAssets();
 
         for (var asset : dbAssets) {
             // full match check
@@ -125,7 +106,7 @@ public class AssetApi {
         highScoreAssets = highScoreAssets.stream().filter(ha -> ha.highestFuzzyScore > MIN_FUZZY_SCORE)
                 .sorted(scoreComp.reversed()).toList();
 
-        SaveHighScoreAssetHits(highScoreAssets);
+        highScoreAssets.forEach(ha -> publicAssetRepository.IncreaseSearchHitCount(ha.publicAsset.uuid));
 
         // check if db results are satisfactory enough ro return
         if (fullMatch != null || highScoreAssets.size() >= MIN_FUZZY_MATCHES) {
@@ -142,7 +123,8 @@ public class AssetApi {
         var fetchedAssets = assetFetcherManager.ExecuteWithFetcher(fetcher -> fetcher.FetchViaSearchString(fuzzyScore.Process(searchAssetRequest.SearchString)));
 
         // insert fetched assets safely
-        var newAssets = assetInserterService.Insert(fetchedAssets);
+        var newAssets = RepoInsertOnDuplicateReturn.InsertAll(publicAssetRepository, fetchedAssets,
+                failedInsert -> publicAssetRepository.findByIsin(failedInsert.isin));
 
         // map to model and return
         return new ModelResponse<>(newAssets.stream().map(ModelPublicAsset::new).toList(), HttpStatus.OK);
