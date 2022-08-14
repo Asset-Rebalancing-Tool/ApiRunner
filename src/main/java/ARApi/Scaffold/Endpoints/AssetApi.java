@@ -48,21 +48,6 @@ public class AssetApi {
         this.publicAssetRepository = publicAssetRepository;
     }
 
-    @PostMapping("/grouping")
-    public ResponseEntity<HttpStatus> PostAssetGrouping(@RequestBody PostOwnedAssetGroupingRequest assetGroupingRequest) {
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @PostMapping("/asset/owned/public")
-    public ResponseEntity<HttpStatus> PostOwnedPublicAssets(@RequestBody PostOwnedPublicAssetRequest postOwnedAssetRequest) {
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @PostMapping("/asset/owned/private")
-    public ResponseEntity<HttpStatus> PostOwnedPrivateAssets(@RequestBody PostOwnedPublicAssetRequest postOwnedAssetRequest) {
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
     private int GetHighestFuzzyScore(PublicAsset asset, String SearchString){
         // find the highest fuzzy score based on other fields
         var symbolScore = asset.symbol == null ? 0 : fuzzyScore.fuzzyScore(asset.symbol, SearchString);
