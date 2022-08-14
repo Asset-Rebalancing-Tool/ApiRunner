@@ -28,8 +28,4 @@ public class DbAssetFetcher implements IPublicAssetFetcher {
         return null;
     }
 
-    @Override
-    public String GetTargetHost() {
-        return ds.getUrl();
-    }
 }
