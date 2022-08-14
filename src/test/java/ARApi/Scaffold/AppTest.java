@@ -6,6 +6,7 @@ package ARApi.Scaffold;
 import ARApi.Scaffold.AssetFetchers.DbAssetFetcher;
 import ARApi.Scaffold.Database.Entities.PublicAsset.PublicAsset;
 import ARApi.Scaffold.Database.Entities.PublicAsset.PublicAssetPriceRecord;
+import ARApi.Scaffold.Database.Entities.PublicAssetRepository;
 import ARApi.Scaffold.Endpoints.AssetApi;
 import ARApi.Scaffold.WebDriver.IWebDriverService;
 import org.hibernate.SessionFactory;
@@ -35,6 +36,9 @@ class AppTest {
     @Autowired
     DbAssetFetcher assetFetcher;
 
+    @Autowired
+    PublicAssetRepository publicAssetRepository;
+
     @Test void SaveAsset(){
         var session = dbSessionProvider.openSession();
         var trans = session.beginTransaction();
@@ -53,9 +57,7 @@ class AppTest {
     }
 
     @Test void BulkInsert(){
-        var executor = Executors.newFixedThreadPool(4);
-
-        // initial insert of isin
+        var p = publicAssetRepository.findAll();
 
 
     }

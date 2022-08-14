@@ -8,4 +8,8 @@
       </database-info>
     </database-infos>
   </component>
+  <component name="JpaPluginProjectSettings">
+    <option name="entityNameTemplate" value="${className}" />
+    <option name="scaffoldingLanguage" />
+  </component>
 </project>
