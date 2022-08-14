@@ -7,6 +7,9 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 
+/**
+ * Price record of a publicly sold and registered asset.
+ */
 @Entity
 public class PublicAssetPriceRecord extends BaseEntity {
 

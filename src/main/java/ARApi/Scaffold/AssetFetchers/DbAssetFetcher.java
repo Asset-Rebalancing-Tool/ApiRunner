@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Fetches assets only from a specific database
  */
-public class DbAssetFetcher implements IAssetFetcher{
+public class DbAssetFetcher implements IPublicAssetFetcher {
 
     @Autowired
     SessionFactory sessionFactory;

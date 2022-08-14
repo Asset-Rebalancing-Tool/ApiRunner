@@ -8,6 +8,9 @@ import org.springframework.util.SerializationUtils;
 import javax.persistence.*;
 import java.io.Serializable;
 
+/**
+ * Meta information of a publicly sold and registered asset.
+ */
 @Entity
 public class PublicAssetInformation extends BaseEntity {
 

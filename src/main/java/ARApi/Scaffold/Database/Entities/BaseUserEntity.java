@@ -1,9 +1,6 @@
 package ARApi.Scaffold.Database.Entities;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -11,5 +8,6 @@ import java.util.UUID;
 public abstract class BaseUserEntity extends BaseEntity {
 
     @OneToOne
+    @JoinColumn(name="user_uuid")
     public User user;
 }

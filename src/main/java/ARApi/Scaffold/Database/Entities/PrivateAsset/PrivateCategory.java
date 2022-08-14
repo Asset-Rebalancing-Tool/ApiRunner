@@ -4,6 +4,9 @@ import ARApi.Scaffold.Database.Entities.BaseUserEntity;
 
 import javax.persistence.Entity;
 
+/**
+ * Private custom categorisation a user created
+ */
 @Entity
 public class PrivateCategory extends BaseUserEntity {
 

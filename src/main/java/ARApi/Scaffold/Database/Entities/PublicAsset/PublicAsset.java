@@ -8,6 +8,9 @@ import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * A publicly sold and registered asset.
+ */
 @Entity
 public class PublicAsset extends BaseEntity {
 
@@ -23,6 +26,7 @@ public class PublicAsset extends BaseEntity {
     public String symbol;
 
     // property of DbAssetPriceRecord => tells hibernate that this property is used for mapping
+    // cascade is used when saving and deleting
     @OneToMany(mappedBy= "Asset", cascade = CascadeType.ALL)
     public Set<PublicAssetPriceRecord> AssetPriceRecords = new HashSet<>();
 

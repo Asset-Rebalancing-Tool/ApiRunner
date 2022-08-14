@@ -1,4 +1,4 @@
-package ARApi.Scaffold.Database.Entities;
+package ARApi.Scaffold.Database.Entities.PublicAsset;
 
 import ARApi.Scaffold.Database.Entities.PublicAsset.PublicAsset;
 import liquibase.pro.packaged.Q;
@@ -14,16 +14,9 @@ import java.util.Collection;
 import java.util.UUID;
 
 @Repository
-
 public interface PublicAssetRepository extends JpaRepository<PublicAsset, UUID> {
 
-    @Query("Select pa from PublicAsset pa " +
-            "left join fetch pa.AssetPriceRecords apr " +
-            "left join fetch pa.AssetInformation ai " +
-            "where pa.isin is not null ")
-    Collection<PublicAsset> GetFullIsinAssets();
-
-    @Query("Select pa from PublicAsset pa " +
+    @Query("Select distinct pa from PublicAsset pa " +
             "left join fetch pa.AssetPriceRecords apr " +
             "left join fetch pa.AssetInformation ai")
     Collection<PublicAsset> GetFullAssets();

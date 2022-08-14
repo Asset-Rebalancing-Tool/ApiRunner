@@ -5,20 +5,16 @@ import ARApi.Scaffold.AssetFetchers.AssetFetcherManager;
 import ARApi.Scaffold.Database.Entities.PublicAsset.PublicAsset;
 
 
-import ARApi.Scaffold.Database.Entities.PublicAssetRepository;
-import ARApi.Scaffold.Database.Entities.RepoInsertOnDuplicateReturn;
+import ARApi.Scaffold.Database.Entities.PublicAsset.PublicAssetRepository;
+import ARApi.Scaffold.Database.Entities.DuplicateAwareInserter;
 import ARApi.Scaffold.Endpoints.Model.ModelPublicAsset;
 import ARApi.Scaffold.Endpoints.Model.ModelResponse;
-import ARApi.Scaffold.Endpoints.Requests.PostOwnedAssetGroupingRequest;
-import ARApi.Scaffold.Endpoints.Requests.PostOwnedPublicAssetRequest;
 import ARApi.Scaffold.Endpoints.Requests.SearchAssetRequest;
 import ARApi.Scaffold.Services.StringProcessingService;
-import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
@@ -108,7 +104,7 @@ public class AssetApi {
         var fetchedAssets = assetFetcherManager.ExecuteWithFetcher(fetcher -> fetcher.FetchViaSearchString(fuzzyScore.Process(searchAssetRequest.SearchString)));
 
         // insert fetched assets safely
-        var newAssets = RepoInsertOnDuplicateReturn.InsertAll(publicAssetRepository, fetchedAssets,
+        var newAssets = DuplicateAwareInserter.InsertAll(publicAssetRepository, fetchedAssets,
                 failedInsert -> publicAssetRepository.findByIsin(failedInsert.isin));
 
         // map to model and return

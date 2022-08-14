@@ -5,27 +5,37 @@ import java.util.Arrays;
 import java.util.List;
 
 public enum UnitType {
-    Piece, Ounce, Grams, Kilos, Litres, Unknown;
+    Piece, Ounce, Grams, Kilos, Liters, Milliliters, Unknown;
 
+    // TODO: define properly
     public UnitType GetUnitTypeIfKnown(AssetType assetType){
-        switch (assetType){
-            case Etf, Fond, Stock, Crypto -> {
-                return Piece;
-            }
-            default -> {
-                return Unknown;
-            }
+        var availableTypes = GetAvailableUnitTypes(assetType);
+        if(availableTypes.size() == 1){
+            return availableTypes.get(0);
         }
+        return Unknown;
     }
 
+    /**
+     * Some unit types can be converted to other unit types
+     * @param unitType
+     * @return
+     */
     public UnitType[] GetConvertibleUnitTypes(UnitType unitType){
         UnitType[][] convertibleTypeGroups = new UnitType[][]{
-                new UnitType[]{Ounce, Grams, Kilos}
+                new UnitType[]{Ounce, Grams, Kilos},
+                new UnitType[]{Liters, Milliliters}
         };
 
         return Arrays.stream(convertibleTypeGroups).filter(ut -> Arrays.asList(ut).contains(unitType)).findFirst().orElse(new UnitType[]{});
     }
 
+    /**
+     * Different {@link AssetType} have different {@link UnitType}s available to
+     * them based on their nature.
+     * @param assetType
+     * @return
+     */
     public List<UnitType> GetAvailableUnitTypes(AssetType assetType){
         switch (assetType){
             case Etf, Fond, Stock, Crypto -> {
@@ -35,7 +45,7 @@ public enum UnitType {
                 return List.of(Grams, Ounce);
             }
             case Commodity -> {
-                return List.of(Piece, Ounce, Grams, Kilos, Litres);
+                return List.of(Piece, Kilos, Ounce, Grams, Liters, Milliliters);
             }
             case Other -> {
                 return List.of(UnitType.values());

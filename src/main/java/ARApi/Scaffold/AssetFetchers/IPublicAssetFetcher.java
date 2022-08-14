@@ -5,18 +5,12 @@ import ARApi.Scaffold.Database.Entities.PublicAsset.PublicAsset;
 import java.util.List;
 
 /**
- * Different sources for acquiring assets
+ * Extend this interface to make a source of public assets available
+ * to the system (apis and jobs)
  */
-public interface IAssetFetcher {
+public interface IPublicAssetFetcher {
 
     List<PublicAsset> FetchViaSearchString(String searchString);
 
     PublicAsset FetchViaIsin(String isin);
-
-    /**
-     * for example api.yahoo.finance
-     * @return the host we get our assets from
-     */
-    String GetTargetHost();
-
 }

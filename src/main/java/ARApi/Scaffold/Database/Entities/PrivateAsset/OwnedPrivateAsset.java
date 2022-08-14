@@ -9,8 +9,8 @@ import javax.persistence.*;
 import java.util.List;
 
 /**
- * Private assets are unique per account, meaning we can store the general
- * ownership information alongside the asset itself.
+ * A custom asset that the user created and that is only visible to him.
+ * Could be something like a book collection, old clocks, cars etc.
  */
 @Entity
 public class OwnedPrivateAsset extends BaseUserEntity {

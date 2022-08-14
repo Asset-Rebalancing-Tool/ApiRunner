@@ -27,7 +27,6 @@ public class ModelAssetInformation {
             case Region, Sector, Industry -> stringValue = IsString(publicAssetInformation.byte_value_array);
             case NumberEmployees -> IsLong(publicAssetInformation.byte_value_array);
         }
-
     }
     public AssetInformationType assetInformationType;
 

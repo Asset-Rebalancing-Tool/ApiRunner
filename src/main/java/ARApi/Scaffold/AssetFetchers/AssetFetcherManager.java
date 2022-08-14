@@ -10,16 +10,16 @@ import java.util.Set;
 @Service
 public class AssetFetcherManager {
 
-    private final Set<IAssetFetcher> WorkingFetchers;
+    private final Set<IPublicAssetFetcher> WorkingFetchers;
 
     @Autowired
-    public AssetFetcherManager(List<IAssetFetcher> assetFetchers) {
+    public AssetFetcherManager(List<IPublicAssetFetcher> assetFetchers) {
         WorkingFetchers = new HashSet<>(assetFetchers);
     }
 
     public <T> T ExecuteWithFetcher (FetcherExecute<T> execute){
         while(!WorkingFetchers.isEmpty()){
-            IAssetFetcher fetcher = GetFetcher();
+            IPublicAssetFetcher fetcher = GetFetcher();
             try{
                 return execute.Execute(fetcher);
             }catch (Exception e){
@@ -31,7 +31,7 @@ public class AssetFetcherManager {
         return null;
     }
 
-    private IAssetFetcher GetFetcher(){
+    private IPublicAssetFetcher GetFetcher(){
         // TODO: split the load somehow
         if(WorkingFetchers.isEmpty()){
             return null;
