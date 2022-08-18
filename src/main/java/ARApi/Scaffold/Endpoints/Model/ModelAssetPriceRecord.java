@@ -12,8 +12,6 @@ public class ModelAssetPriceRecord {
         price = assetPriceRecord.price;
     }
 
-
-
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     public LocalDateTime tsPrice;
 
