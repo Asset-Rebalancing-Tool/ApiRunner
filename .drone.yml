@@ -11,6 +11,5 @@ steps:
         from_secret: th_nexus_user
       MAVENPASSWORD:
         from_secret: th_nexus_password
-      JAVA_HOME: /opt/java/openjdk
     commands:
-      - gradle publish
+      - gradle -v
