@@ -12,4 +12,4 @@ steps:
       MAVENPASSWORD:
         from_secret: th_nexus_password
     commands:
-      - gradle -v
+      - gradle assemble
