@@ -6,7 +6,8 @@ steps:
   - name: build
     image: gradle:jdk17
     commands:
-      - "gradle -v"
+      - "echo $JAVA_HOME"
+      - "ls /opt"
     environment:
       MAVENUSER:
         from_secret: th_nexus_user
