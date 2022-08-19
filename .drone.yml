@@ -1,15 +1,14 @@
 ---
 kind: pipeline
-type: docker
 name: default
 
 steps:
   - name: build
-    image: gradle:jdk11
+    image: gradle:jdk17
+    commands:
+      - "gradle -v"
     environment:
       MAVENUSER:
         from_secret: th_nexus_user
       MAVENPASSWORD:
         from_secret: th_nexus_password
-    commands:
-      - "gradle -v"
