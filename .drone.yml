@@ -12,3 +12,7 @@ steps:
         from_secret: th_nexus_user
       MAVENPASSWORD:
         from_secret: th_nexus_password
+
+trigger:
+  branch:
+    - master
