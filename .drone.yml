@@ -5,11 +5,11 @@ name: default
 
 steps:
   - name: build
-    image: gradle:jdk10
+    image: gradle:jdk11
     environment:
       MAVENUSER:
         from_secret: th_nexus_user
       MAVENPASSWORD:
         from_secret: th_nexus_password
     commands:
-      - gradle assemble
+      - "gradle -v"
