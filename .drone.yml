@@ -5,7 +5,7 @@ name: default
 
 steps:
   - name: build
-    image: gradle:jdk17
+    image: gradle
     environment:
       MAVENUSER:
         from_secret: th_nexus_user
