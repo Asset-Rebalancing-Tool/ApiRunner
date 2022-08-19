@@ -44,8 +44,8 @@ publishing {
 		maven {
 			url 'https://nexus.tobias-huebner.tech/repository/maven-snapshots/'
 			credentials{
-				username = "$mavenUser"
-				password = "$mavenPassword"
+				username = System.getenv("MAVENUSER")
+				password = System.getenv("MAVENPASSWORD")
 			}
 		}
 	}
