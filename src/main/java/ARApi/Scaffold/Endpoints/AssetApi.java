@@ -1,7 +1,7 @@
 package ARApi.Scaffold.Endpoints;
 
 
-import ARApi.Scaffold.AssetFetchers.AssetFetcherManager;
+import ARApi.Scaffold.AssetFetchers.IPublicAssetFetcher;
 import ARApi.Scaffold.Database.Entities.PublicAsset.PublicAsset;
 
 
@@ -31,17 +31,18 @@ public class AssetApi {
 
     private final int MIN_FUZZY_MATCHES = 3;
 
-    private AssetFetcherManager assetFetcherManager;
-
     private StringProcessingService fuzzyScore;
 
     private PublicAssetRepository publicAssetRepository;
 
+    private IPublicAssetFetcher publicAssetFetcher;
+
     @Autowired
-    public AssetApi( AssetFetcherManager assetFetcherManager, StringProcessingService fuzzyScore, PublicAssetRepository publicAssetRepository) {
-        this.assetFetcherManager = assetFetcherManager;
+    public AssetApi(StringProcessingService fuzzyScore, PublicAssetRepository publicAssetRepository, IPublicAssetFetcher publicAssetFetcher) {
+
         this.fuzzyScore = fuzzyScore;
         this.publicAssetRepository = publicAssetRepository;
+        this.publicAssetFetcher = publicAssetFetcher;
     }
 
     private int GetHighestFuzzyScore(PublicAsset asset, String SearchString){
@@ -101,7 +102,7 @@ public class AssetApi {
         }
 
         // run fetchers to get information of asset
-        var fetchedAssets = assetFetcherManager.ExecuteWithFetcher(fetcher -> fetcher.FetchViaSearchString(fuzzyScore.Process(searchAssetRequest.SearchString)));
+        var fetchedAssets = publicAssetFetcher.FetchViaSearchString(fuzzyScore.Process(searchAssetRequest.SearchString));
 
         // insert fetched assets safely
         var newAssets = DuplicateAwareInserter.InsertAll(publicAssetRepository, fetchedAssets,
