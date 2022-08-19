@@ -10,6 +10,8 @@ steps:
       - "ls /opt/java/openjdk"
       - "pwd"
       - "ls"
+      - "gradle clean"
+      - "gradle publish"
     environment:
       MAVENUSER:
         from_secret: th_nexus_user
