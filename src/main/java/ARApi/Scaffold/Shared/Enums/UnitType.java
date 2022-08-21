@@ -21,7 +21,7 @@ public enum UnitType {
      * @param unitType
      * @return
      */
-    public UnitType[] GetConvertibleUnitTypes(UnitType unitType){
+    public static UnitType[] GetConvertibleUnitTypes(UnitType unitType){
         UnitType[][] convertibleTypeGroups = new UnitType[][]{
                 new UnitType[]{Ounce, Grams, Kilos},
                 new UnitType[]{Liters, Milliliters}
@@ -36,7 +36,7 @@ public enum UnitType {
      * @param assetType
      * @return
      */
-    public List<UnitType> GetAvailableUnitTypes(AssetType assetType){
+    public static List<UnitType> GetAvailableUnitTypes(AssetType assetType){
         switch (assetType){
             case Etf, Fond, Stock, Crypto -> {
                 return List.of(Piece);

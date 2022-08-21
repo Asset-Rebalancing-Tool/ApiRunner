@@ -3,7 +3,6 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jpa="http://www.springframework.org/schema/data/jpa"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/data/jpa https://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
 
-
     <bean class="ARApi.Scaffold.AssetFetchers.DbAssetFetcher"/>
     <bean class="ARApi.Scaffold.AssetFetchers.AssetFetcherManager"/>
     <bean class="ARApi.Scaffold.WebDriver.LocalChromeProvider"/>
@@ -11,6 +10,7 @@
     <bean class="ARApi.Scaffold.Services.LocaleProvider"/>
 
     <bean class="ARApi.Scaffold.Endpoints.AssetApi"/>
+    <bean class="ARApi.Scaffold.Endpoints.UserApi"/>
 
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver" />

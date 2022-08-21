@@ -1,4 +1,4 @@
-package ARApi.Scaffold.Database.Entities;
+package ARApi.Scaffold.Database.Repos;
 
 import ARApi.Scaffold.Database.Entities.PublicAsset.PublicAssetPriceRecord;
 import org.springframework.data.jpa.repository.JpaRepository;

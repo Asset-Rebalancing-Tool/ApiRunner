@@ -5,7 +5,7 @@ import ARApi.Scaffold.AssetFetchers.IPublicAssetFetcher;
 import ARApi.Scaffold.Database.Entities.PublicAsset.PublicAsset;
 
 
-import ARApi.Scaffold.Database.Entities.PublicAsset.PublicAssetRepository;
+import ARApi.Scaffold.Database.Repos.PublicAssetRepository;
 import ARApi.Scaffold.Database.Entities.DuplicateAwareInserter;
 import ARApi.Scaffold.Endpoints.Model.ModelPublicAsset;
 import ARApi.Scaffold.Endpoints.Model.ModelResponse;

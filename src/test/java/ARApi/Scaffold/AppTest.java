@@ -6,7 +6,7 @@ package ARApi.Scaffold;
 import ARApi.Scaffold.AssetFetchers.DbAssetFetcher;
 import ARApi.Scaffold.Database.Entities.PublicAsset.PublicAsset;
 import ARApi.Scaffold.Database.Entities.PublicAsset.PublicAssetPriceRecord;
-import ARApi.Scaffold.Database.Entities.PublicAsset.PublicAssetRepository;
+import ARApi.Scaffold.Database.Repos.PublicAssetRepository;
 import ARApi.Scaffold.Endpoints.AssetApi;
 import ARApi.Scaffold.WebDriver.IWebDriverService;
 import org.hibernate.SessionFactory;
@@ -52,10 +52,6 @@ class AppTest {
         session.persist(dbAsset);
         trans.commit();
         session.close();
-    }
-
-    @Test void TestFetcher(){
-        assetFetcher.GetTargetHost();
     }
 
     @Test void BulkInsert(){

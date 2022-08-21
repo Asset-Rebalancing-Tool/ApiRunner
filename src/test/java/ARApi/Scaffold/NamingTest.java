@@ -1,7 +1,7 @@
 package ARApi.Scaffold;
 
 
-import ARApi.Scaffold.Database.Entities.PublicAsset.PublicAssetRepository;
+import ARApi.Scaffold.Database.Repos.PublicAssetRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;

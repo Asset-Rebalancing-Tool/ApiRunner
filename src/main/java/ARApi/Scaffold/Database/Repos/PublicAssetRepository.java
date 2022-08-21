@@ -1,4 +1,4 @@
-package ARApi.Scaffold.Database.Entities.PublicAsset;
+package ARApi.Scaffold.Database.Repos;
 
 import ARApi.Scaffold.Database.Entities.PublicAsset.PublicAsset;
 import liquibase.pro.packaged.Q;

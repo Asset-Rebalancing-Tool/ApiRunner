@@ -25,4 +25,6 @@ public class OwnedPublicAsset extends BaseUserEntity {
 
     public String custom_name;
 
+    public boolean display_custom_name;
+
 }
