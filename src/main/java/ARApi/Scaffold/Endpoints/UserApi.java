@@ -2,6 +2,7 @@ package ARApi.Scaffold.Endpoints;
 
 
 import ARApi.Scaffold.Database.Entities.PrivateAsset.PrivateCategory;
+import ARApi.Scaffold.Database.Entities.PublicAsset.PublicOwnedAsset;
 import ARApi.Scaffold.Database.Entities.User;
 import ARApi.Scaffold.Database.Repos.PrivateCategoryRepository;
 import ARApi.Scaffold.Database.Repos.PublicOwnedAssetRepository;
@@ -16,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.UUID;
@@ -50,9 +52,10 @@ public class UserApi {
     }
 
     @PostMapping("/category")
-    public ModelResponse<ModelPrivateCategory> PostPrivateCategory(@RequestBody PrivateCategoryRequest privateCategoryRequest){
+    @ResponseStatus(HttpStatus.CREATED)
+    public ModelPrivateCategory PostPrivateCategory(@RequestBody PrivateCategoryRequest privateCategoryRequest){
         if(privateCategoryRequest.categoryName == null || privateCategoryRequest.categoryName.isBlank()){
-            return new ModelResponse<>("categoryName is null or blank", HttpStatus.BAD_REQUEST);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "categoryName is null or blank");
         }
 
         var privateCategory = new PrivateCategory();
@@ -61,62 +64,72 @@ public class UserApi {
 
         privateCategoryRepository.saveAndFlush(privateCategory);
 
-        return new ModelResponse<>(new ModelPrivateCategory(privateCategory), HttpStatus.CREATED);
+        return new ModelPrivateCategory(privateCategory);
     }
 
     @GetMapping("/category")
-    public ModelResponse<List<ModelPrivateCategory>> GetPrivateCategories(){
+    public List<ModelPrivateCategory> GetPrivateCategories(){
 
         var categories = privateCategoryRepository.findByUserUuid(user.uuid);
 
-        return new ModelResponse<>(categories.stream().map(ModelPrivateCategory::new).toList(), HttpStatus.OK);
+        return categories.stream().map(ModelPrivateCategory::new).toList();
     }
 
     @DeleteMapping("/category/{uuidStr}")
-    public ResponseEntity<HttpStatus> DeletePrivateCategory(@PathVariable String uuidStr){
+    public HttpStatus DeletePrivateCategory(@PathVariable String uuidStr){
         var uuid = UUID.fromString(uuidStr);
         if(!privateCategoryRepository.existsById(uuid)){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return HttpStatus.NOT_FOUND;
         }
 
         privateCategoryRepository.deleteById(uuid);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return HttpStatus.OK;
     }
 
     @PostMapping("/owned_asset/public")
-    public ModelResponse<ModelOwnedPublicAsset> PostOwnedPublicAsset(@RequestBody PostOwnedPublicAssetRequest postOwnedPublicAssetRequest) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public ModelOwnedPublicAsset PostOwnedPublicAsset(@RequestBody PostOwnedPublicAssetRequest postOwnedPublicAssetRequest) {
+        var uuid = UUID.fromString(postOwnedPublicAssetRequest.publicAssetUuid);
+        if(publicOwnedAssetRepository.existsByPublicAssetUuid(uuid, user.uuid)){
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Public owned asset already exists for user");
+        }
 
-        return new ModelResponse<>(HttpStatus.OK);
+        var publicOwnedAsset = new PublicOwnedAsset();
+
+        return new ModelOwnedPublicAsset();
     }
     @GetMapping("/owned_asset/public")
-    public ModelResponse<ModelOwnedPublicAsset[]> GetOwnedPublicAssets() {
-        return new ModelResponse<>(HttpStatus.OK);
+    public ModelOwnedPublicAsset[] GetOwnedPublicAssets() {
+        return new ModelOwnedPublicAsset[]{};
     }
 
     @PostMapping("/owned_asset/private")
-    public ModelResponse<ModelOwnedPrivateAsset> PostPrivateAsset(@RequestBody PostOwnedPrivateAssetRequest postOwnedPrivateAssetRequest) {
-        return new ModelResponse<>(HttpStatus.OK);
+    @ResponseStatus(HttpStatus.CREATED)
+    public ModelOwnedPrivateAsset PostPrivateAsset(@RequestBody PostOwnedPrivateAssetRequest postOwnedPrivateAssetRequest) {
+
+        return new ModelOwnedPrivateAsset();
     }
 
     @GetMapping("/owned_asset/private")
-    public ModelResponse<ModelOwnedPrivateAsset[]> GetPrivateAssets() {
-        return new ModelResponse<>(HttpStatus.OK);
+    public ModelOwnedPrivateAsset[] GetPrivateAssets() {
+        return new ModelOwnedPrivateAsset[]{};
     }
 
     @PostMapping("/owned_asset_grouping")
-    public ModelResponse<ModelOwnedAssetGrouping> PostOwnedAssetGrouping(@RequestBody PostOwnedAssetGroupingRequest postOwnedAssetGroupingRequest){
+    @ResponseStatus(HttpStatus.CREATED)
+    public ModelOwnedAssetGrouping PostOwnedAssetGrouping(@RequestBody PostOwnedAssetGroupingRequest postOwnedAssetGroupingRequest){
         // TODO: check if all assets, private aswell public have the same currency otherwise reject because calc wont work
         // only one currency is allowed
-        return new ModelResponse<>(HttpStatus.OK);
+        return new ModelOwnedAssetGrouping();
     }
 
     @GetMapping("/owned_asset_group")
-    public ModelResponse<ModelOwnedAssetGrouping[]> GetOwnedAssetGroupings(){
-        return new ModelResponse<>(HttpStatus.OK);
+    public ModelOwnedAssetGrouping[] GetOwnedAssetGroupings(){
+        return new ModelOwnedAssetGrouping[]{};
     }
 
     @DeleteMapping("/owned_asset_group/{uuid}")
-    public ResponseEntity<HttpStatus> DeleteOwnedAssetGrouping(@PathVariable String uuid){
-        return new ResponseEntity<>(HttpStatus.OK);
+    public HttpStatus DeleteOwnedAssetGrouping(@PathVariable String uuid){
+        return HttpStatus.OK;
     }
 }

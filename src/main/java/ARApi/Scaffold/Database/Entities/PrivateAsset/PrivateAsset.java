@@ -6,14 +6,13 @@ import ARApi.Scaffold.Shared.Enums.Currency;
 import ARApi.Scaffold.Shared.Enums.UnitType;
 
 import javax.persistence.*;
-import java.util.List;
 
 /**
  * A custom asset that the user created and that is only visible to him.
  * Could be something like a book collection, old clocks, cars etc.
  */
 @Entity
-public class OwnedPrivateAsset extends BaseUserEntity {
+public class PrivateAsset extends BaseUserEntity {
 
     public String title;
 

@@ -1,7 +1,8 @@
 package ARApi.Scaffold;
 
+
 import ARApi.Scaffold.Database.Entities.PublicAsset.PublicAsset;
-import org.hibernate.SessionFactory;
+import ARApi.Scaffold.Database.Repos.PublicAssetRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,15 +10,24 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.Assert;
 
-import java.util.*;
+import java.util.HashMap;
 
 @ContextConfiguration("/test.xml")
 @ExtendWith(SpringExtension.class)
-public class AssetTest {
+public class PublicAssetTest {
 
     @Autowired
-    SessionFactory sessionFactory;
+    PublicAssetRepository publicAssetRepository;
 
+    @Test
+    void TestSearchHitIncrement(){
+        var as = publicAssetRepository.findAll().stream().findFirst().get();
+        publicAssetRepository.IncreaseSearchHitCount(as.uuid);
+
+        var updated = publicAssetRepository.findById(as.uuid).get();
+
+        Assert.isTrue(updated.searchHitsTotal > as.searchHitsTotal, "not larger");
+    }
 
     @Test void TestOverwrites(){
         var containsMap = new HashMap<PublicAsset, PublicAsset>();
@@ -29,7 +39,6 @@ public class AssetTest {
         asset3isin1234.isin = "1234";
         var asset4isin1234 = new PublicAsset();
         asset4isin1234.isin = "1234";
-
 
         containsMap.put(asset1isinNull, asset1isinNull);
         Assert.isTrue(!containsMap.containsKey(asset2isinNull), "assets with both isin null should not match each other");

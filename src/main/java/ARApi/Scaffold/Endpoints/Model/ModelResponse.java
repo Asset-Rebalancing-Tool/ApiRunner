@@ -5,10 +5,10 @@ import org.springframework.boot.Banner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-public class ModelResponse<T> extends ResponseEntity<Object> {
+public class ModelResponse<T extends BaseModel> extends ResponseEntity<T> {
 
     public final HttpStatus httpStatus;
-    public final Object presentResponse;
+    public final BaseModel presentResponse;
 
     public ModelResponse(T presentResponse, HttpStatus httpStatus) {
         super(presentResponse, httpStatus);
@@ -21,8 +21,8 @@ public class ModelResponse<T> extends ResponseEntity<Object> {
     }
 
     public ModelResponse(String errorMesssageResponse, HttpStatus httpStatus) {
-        super(errorMesssageResponse, httpStatus);
+        super((T) new BaseModel(errorMesssageResponse), httpStatus);
         this.httpStatus = httpStatus;
-        presentResponse = null;
+        presentResponse = new BaseModel(errorMesssageResponse);
     }
 }

@@ -15,8 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
 
@@ -55,10 +57,11 @@ public class AssetApi {
     }
 
     @PostMapping("/asset/search")
-    public ModelResponse<List<ModelPublicAsset>> SearchAssets(@RequestBody SearchAssetRequest searchAssetRequest) {
+    public List<ModelPublicAsset> SearchAssets(@RequestBody SearchAssetRequest searchAssetRequest) {
 
         if(searchAssetRequest.SearchString.length() < MIN_SEARCH_STRING_LENGHT){
-            return new ModelResponse<>("SearchString has to be longer than " + (MIN_SEARCH_STRING_LENGHT -1), HttpStatus.BAD_REQUEST);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "SearchString has to be longer than " + (MIN_SEARCH_STRING_LENGHT -1));
         }
 
         PublicAsset fullMatch = null;
@@ -98,7 +101,7 @@ public class AssetApi {
             }
             highScoreAssets.forEach(hA -> modelAssetList.add(new ModelPublicAsset(hA.publicAsset)));
 
-            return new ModelResponse<>(modelAssetList, HttpStatus.OK);
+            return modelAssetList;
         }
 
         // run fetchers to get information of asset
@@ -109,6 +112,6 @@ public class AssetApi {
                 failedInsert -> publicAssetRepository.findByIsin(failedInsert.isin));
 
         // map to model and return
-        return new ModelResponse<>(newAssets.stream().map(ModelPublicAsset::new).toList(), HttpStatus.OK);
+        return newAssets.stream().map(ModelPublicAsset::new).toList();
     }
 }

@@ -425,6 +425,6 @@ databaseChangeLog:
             constraintName: fk_assgroownpubass_on_owned_public_asset
             referencedColumnNames: uuid
             referencedTableName: owned_public_asset
-  - include:
-      file: classpath:/db/changelog/2022/08/13-01-changelog.yaml
+  - includeAll:
+      path: db/changelog/2022/08
 

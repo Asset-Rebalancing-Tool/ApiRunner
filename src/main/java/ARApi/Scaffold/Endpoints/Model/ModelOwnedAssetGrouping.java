@@ -11,6 +11,9 @@ public class ModelOwnedAssetGrouping {
         groupName = assetGrouping.group_name;
     }
 
+    public ModelOwnedAssetGrouping() {
+    }
+
     public List<ModelOwnedPublicAsset> ownedPrivateAsset;
 
     public List<ModelOwnedPublicAsset> ownedPublicAsset;

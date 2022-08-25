@@ -1,9 +1,6 @@
 package ARApi.Scaffold.Database.Entities.PublicAsset;
 
-import ARApi.Scaffold.Database.Entities.BaseEntity;
 import ARApi.Scaffold.Database.Entities.BaseUserEntity;
-import ARApi.Scaffold.Database.Entities.PublicAsset.PublicAsset;
-import ARApi.Scaffold.Database.Entities.User;
 
 import javax.persistence.*;
 
@@ -11,7 +8,7 @@ import javax.persistence.*;
  * Record of a user having X amount of a registered public asset
  */
 @Entity
-public class OwnedPublicAsset extends BaseUserEntity {
+public class PublicOwnedAsset extends BaseUserEntity {
 
     @OneToOne
     @JoinColumn(name="asset_uuid")
