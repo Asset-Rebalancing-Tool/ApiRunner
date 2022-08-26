@@ -10,7 +10,7 @@
     <bean class="ARApi.Scaffold.Services.LocaleProvider"/>
 
     <bean class="ARApi.Scaffold.Endpoints.AssetApi"/>
-    <bean class="ARApi.Scaffold.Endpoints.OwnershipApi"/>
+    <bean class="ARApi.Scaffold.Endpoints.HoldingApi"/>
 
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver" />

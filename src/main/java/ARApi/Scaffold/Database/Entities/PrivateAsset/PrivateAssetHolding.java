@@ -12,7 +12,7 @@ import javax.persistence.*;
  * Could be something like a book collection, old clocks, cars etc.
  */
 @Entity
-public class PrivateOwnedAsset extends BaseUserEntity {
+public class PrivateAssetHolding extends BaseUserEntity {
 
     public String title;
 

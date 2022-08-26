@@ -1,13 +1,12 @@
 package ARApi.Scaffold.Endpoints.Requests;
 
-import ARApi.Scaffold.Database.Entities.PublicAsset.PublicOwnedAsset;
-import ARApi.Scaffold.Database.Repos.PrivateOwnedAssetRepository;
+import ARApi.Scaffold.Database.Entities.PublicAsset.PublicAssetHolding;
+import ARApi.Scaffold.Database.Repos.PrivateAssetHoldingRepository;
 import ARApi.Scaffold.Database.Repos.PublicAssetRepository;
-import ARApi.Scaffold.Database.Repos.PublicOwnedAssetRepository;
+import ARApi.Scaffold.Database.Repos.PublicAssetHoldingRepository;
 import ARApi.Scaffold.Endpoints.Validators.AssetValidator;
 import ARApi.Scaffold.Shared.Enums.Currency;
 import ARApi.Scaffold.Shared.Enums.UnitType;
-import liquibase.pro.packaged.P;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -15,7 +14,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public class PostOwnedPublicAssetRequest {
+public class PostPublicAssetHoldingRequest {
 
     public String publicAssetUuid;
 
@@ -33,7 +32,7 @@ public class PostOwnedPublicAssetRequest {
 
     public Currency currency;
 
-    public PublicOwnedAsset toPublicOwnedAsset(UUID userUuid, PublicOwnedAssetRepository publicOwnedAssetRepository, PublicAssetRepository publicAssetRepository, PrivateOwnedAssetRepository privateOwnedAssetRepository){
+    public PublicAssetHolding toPublicAssetHolding(UUID userUuid, PublicAssetHoldingRepository publicOwnedAssetRepository, PublicAssetRepository publicAssetRepository, PrivateAssetHoldingRepository privateOwnedAssetRepository){
 
         var publicAsset = publicAssetRepository.findById(UUID.fromString(publicAssetUuid)).orElseThrow();
 
@@ -43,7 +42,7 @@ public class PostOwnedPublicAssetRequest {
 
         AssetValidator.ThrowExceptionOnCurrencyMismatch(currency, userUuid, publicOwnedAssetRepository, privateOwnedAssetRepository);
 
-        var publicOwnedAsset = new PublicOwnedAsset();
+        var publicOwnedAsset = new PublicAssetHolding();
         publicOwnedAsset.user_uuid = userUuid;
 
         publicOwnedAsset.public_asset = publicAsset;

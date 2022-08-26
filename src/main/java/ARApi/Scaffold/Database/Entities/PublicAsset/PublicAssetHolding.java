@@ -10,7 +10,7 @@ import java.util.UUID;
  * Record of a user having X amount of a registered public asset
  */
 @Entity
-public class PublicOwnedAsset extends BaseUserEntity {
+public class PublicAssetHolding extends BaseUserEntity {
 
     @OneToOne
     @JoinColumn(name="asset_uuid")
