@@ -20,7 +20,7 @@ public interface PublicAssetHoldingRepository extends JpaRepository<PublicAssetH
     @Query("select opa from PublicAssetHolding opa where opa.public_asset.uuid = :asset_uuid and opa.user.uuid = :user_uuid")
     PublicAssetHolding tryGet(@Param("asset_uuid") UUID assetUuid, @Param("user_uuid") UUID userUuid);
 
-    @Query("select opa from PublicAssetHolding opa where opa.user_uuid = :user_uuid")
+    @Query("select opa from PublicAssetHolding opa where opa.user.uuid = :user_uuid")
     List<PublicAssetHolding> GetAssetsOfUser(@Param("user_uuid") UUID uuid);
 
     @Query("select poa from PublicAssetHolding poa where poa.uuid in :uuids")

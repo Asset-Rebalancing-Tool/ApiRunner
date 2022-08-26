@@ -2,6 +2,7 @@ package ARApi.Scaffold.Database.Entities.PublicAsset;
 
 import ARApi.Scaffold.Database.Entities.BaseUserEntity;
 import ARApi.Scaffold.Shared.Enums.Currency;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import javax.persistence.*;
 import java.util.UUID;
@@ -16,8 +17,6 @@ public class PublicAssetHolding extends BaseUserEntity {
     @JoinColumn(name="asset_uuid")
     public PublicAsset public_asset;
 
-    public UUID asset_uuid;
-
     public double target_percentage;
 
     public double owned_quantity;
@@ -29,5 +28,9 @@ public class PublicAssetHolding extends BaseUserEntity {
     public boolean broker_connected = false;
 
     public Currency currency;
+
+    public void setPublicAsset(UUID asset_uuid, JpaRepository<PublicAsset, UUID> repository){
+        public_asset = repository.getReferenceById(asset_uuid);
+    }
 
 }

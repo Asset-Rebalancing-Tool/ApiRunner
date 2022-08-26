@@ -3,6 +3,7 @@ package ARApi.Scaffold.Endpoints.Requests;
 import ARApi.Scaffold.Database.Entities.PrivateAsset.PrivateAssetHolding;
 import ARApi.Scaffold.Database.Repos.PrivateAssetHoldingRepository;
 import ARApi.Scaffold.Database.Repos.PublicAssetHoldingRepository;
+import ARApi.Scaffold.Database.Repos.UserRepository;
 import ARApi.Scaffold.Endpoints.Validators.AssetValidator;
 import ARApi.Scaffold.Shared.Enums.AssetType;
 import ARApi.Scaffold.Shared.Enums.Currency;
@@ -29,7 +30,7 @@ public class PostPrivateAssetHoldingRequest {
 
     public String title;
 
-    public PrivateAssetHolding toPrivateAssetHolding(UUID userUuid, PrivateAssetHoldingRepository privateOwnedAssetRepository, PublicAssetHoldingRepository publicOwnedAssetRepository){
+    public PrivateAssetHolding toPrivateAssetHolding(UUID userUuid, UserRepository userRepository, PrivateAssetHoldingRepository privateOwnedAssetRepository, PublicAssetHoldingRepository publicOwnedAssetRepository){
         PrivateAssetHolding privateAssetHolding = new PrivateAssetHolding();
         privateAssetHolding.asset_type = assetType;
         privateAssetHolding.title = title;
@@ -38,7 +39,7 @@ public class PostPrivateAssetHoldingRequest {
         privateAssetHolding.owned_quantity = ownedQuantity;
         privateAssetHolding.price = currentPrice;
         privateAssetHolding.currency = currency;
-        privateAssetHolding.user_uuid = userUuid;
+        privateAssetHolding.SetUser(userUuid, userRepository);
 
         AssetValidator.ThrowExceptionOnCurrencyMismatch(currency, userUuid, publicOwnedAssetRepository, privateOwnedAssetRepository);
 

@@ -65,7 +65,7 @@ public class HoldingApi {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "categoryName is null or blank");
         }
 
-        var privateCategory = privateCategoryRepository.save(privateCategoryRequest.toPrivateCategory(user.uuid));
+        var privateCategory = privateCategoryRepository.save(privateCategoryRequest.toPrivateCategory(user.uuid, userRepository));
 
         return new ModelPrivateCategory(privateCategory);
     }
@@ -99,6 +99,7 @@ public class HoldingApi {
 
         var publicAssetHolding = publicAssetHoldingRepository.save(
                 postPublicAssetHoldingRequest.toPublicAssetHolding(user.uuid,
+                        userRepository,
                         publicAssetHoldingRepository,
                         publicAssetRepository,
                         privateAssetHoldingRepository)
@@ -115,7 +116,7 @@ public class HoldingApi {
     @PostMapping("/asset_holding/private")
     @ResponseStatus(HttpStatus.CREATED)
     public ModelPrivateAssetHolding PostPrivateAssetHolding(@RequestBody PostPrivateAssetHoldingRequest postPrivateAssetHoldingRequest) {
-        var privateAssetHolding = privateAssetHoldingRepository.save(postPrivateAssetHoldingRequest.toPrivateAssetHolding(user.uuid, privateAssetHoldingRepository, publicAssetHoldingRepository));
+        var privateAssetHolding = privateAssetHoldingRepository.save(postPrivateAssetHoldingRequest.toPrivateAssetHolding(user.uuid, userRepository, privateAssetHoldingRepository, publicAssetHoldingRepository));
         return new ModelPrivateAssetHolding(privateAssetHolding);
     }
 
@@ -127,7 +128,7 @@ public class HoldingApi {
     @PostMapping("/asset_holding/grouping")
     @ResponseStatus(HttpStatus.CREATED)
     public ModelAssetHoldingGrouping PostAssetHoldingGrouping(@RequestBody PostAssetHoldingGroupingRequest postAssetHoldingGroupingRequest) {
-        var assetGrouping = assetHoldingGroupingRepository.save(postAssetHoldingGroupingRequest.toAssetHoldingGrouping(user.uuid, publicAssetHoldingRepository, privateAssetHoldingRepository));
+        var assetGrouping = assetHoldingGroupingRepository.save(postAssetHoldingGroupingRequest.toAssetHoldingGrouping(user.uuid, userRepository, publicAssetHoldingRepository, privateAssetHoldingRepository));
         return new ModelAssetHoldingGrouping(assetGrouping);
     }
 

@@ -3,6 +3,7 @@ package ARApi.Scaffold.Database.Entities;
 import com.sun.istack.NotNull;
 import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.annotation.PersistenceCreator;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -16,6 +17,7 @@ public abstract class BaseUserEntity extends BaseEntity {
     @NotNull
     public User user;
 
-    @NotNull
-    public UUID user_uuid;
+    public void SetUser(UUID user_uuid, JpaRepository<User, UUID> repository){
+        user = repository.getReferenceById(user_uuid);
+    }
 }

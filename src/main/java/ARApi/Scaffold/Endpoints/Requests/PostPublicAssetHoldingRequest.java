@@ -4,9 +4,11 @@ import ARApi.Scaffold.Database.Entities.PublicAsset.PublicAssetHolding;
 import ARApi.Scaffold.Database.Repos.PrivateAssetHoldingRepository;
 import ARApi.Scaffold.Database.Repos.PublicAssetRepository;
 import ARApi.Scaffold.Database.Repos.PublicAssetHoldingRepository;
+import ARApi.Scaffold.Database.Repos.UserRepository;
 import ARApi.Scaffold.Endpoints.Validators.AssetValidator;
 import ARApi.Scaffold.Shared.Enums.Currency;
 import ARApi.Scaffold.Shared.Enums.UnitType;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -32,7 +34,7 @@ public class PostPublicAssetHoldingRequest {
 
     public Currency currency;
 
-    public PublicAssetHolding toPublicAssetHolding(UUID userUuid, PublicAssetHoldingRepository publicOwnedAssetRepository, PublicAssetRepository publicAssetRepository, PrivateAssetHoldingRepository privateOwnedAssetRepository){
+    public PublicAssetHolding toPublicAssetHolding(UUID userUuid, UserRepository userRepository, PublicAssetHoldingRepository publicOwnedAssetRepository, PublicAssetRepository publicAssetRepository, PrivateAssetHoldingRepository privateOwnedAssetRepository){
 
         var publicAsset = publicAssetRepository.findById(UUID.fromString(publicAssetUuid)).orElseThrow();
 
@@ -43,7 +45,7 @@ public class PostPublicAssetHoldingRequest {
         AssetValidator.ThrowExceptionOnCurrencyMismatch(currency, userUuid, publicOwnedAssetRepository, privateOwnedAssetRepository);
 
         var publicOwnedAsset = new PublicAssetHolding();
-        publicOwnedAsset.user_uuid = userUuid;
+        publicOwnedAsset.SetUser(userUuid, userRepository);
 
         publicOwnedAsset.public_asset = publicAsset;
         publicOwnedAsset.target_percentage = targetPercentage;

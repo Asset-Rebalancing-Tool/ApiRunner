@@ -12,7 +12,7 @@ import java.util.UUID;
 @Repository
 public interface PrivateAssetHoldingRepository extends JpaRepository<PrivateAssetHolding, UUID> {
 
-    @Query("select poa from PrivateAssetHolding poa where poa.user_uuid = :user_uuid")
+    @Query("select poa from PrivateAssetHolding poa where poa.user.uuid = :user_uuid")
     List<PrivateAssetHolding> GetAssetsOfUser(@Param("user_uuid") UUID user_uuid);
 
     @Query("select poa from PrivateAssetHolding poa where poa.uuid in :uuids")

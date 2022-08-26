@@ -12,6 +12,6 @@ import java.util.UUID;
 @Repository
 public interface AssetHoldingGroupingRepository extends JpaRepository<AssetHoldingGrouping, UUID> {
 
-    @Query("select oag from AssetHoldingGrouping oag where oag.user_uuid = :user_uuid")
+    @Query("select oag from AssetHoldingGrouping oag where oag.user.uuid = :user_uuid")
     List<AssetHoldingGrouping> GetByUserUuid(@Param("user_uuid") UUID userUuid);
 }

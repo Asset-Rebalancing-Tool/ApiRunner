@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: 1660312958696-1
+      id: 1661548546866-1
       author: tobi (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -10,7 +10,7 @@ databaseChangeLog:
                   constraints:
                     nullable: false
                     primaryKey: true
-                    primaryKeyName: pk_assetgrouping
+                    primaryKeyName: pk_assetholdinggrouping
                   name: uuid
                   type: BINARY(16)
               - column:
@@ -27,45 +27,9 @@ databaseChangeLog:
               - column:
                   name: group_name
                   type: VARCHAR(255)
-            tableName: asset_grouping
+            tableName: asset_holding_grouping
   - changeSet:
-      id: 1660312958696-2
-      author: tobi (generated)
-      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
-      changes:
-        - createTable:
-            columns:
-              - column:
-                  constraints:
-                    nullable: false
-                  name: asset_grouping_uuid
-                  type: BINARY(16)
-              - column:
-                  constraints:
-                    nullable: false
-                  name: owned_private_assets_uuid
-                  type: BINARY(16)
-            tableName: asset_grouping_owned_private_assets
-  - changeSet:
-      id: 1660312958696-3
-      author: tobi (generated)
-      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
-      changes:
-        - createTable:
-            columns:
-              - column:
-                  constraints:
-                    nullable: false
-                  name: asset_grouping_uuid
-                  type: BINARY(16)
-              - column:
-                  constraints:
-                    nullable: false
-                  name: owned_public_assets_uuid
-                  type: BINARY(16)
-            tableName: asset_grouping_owned_public_assets
-  - changeSet:
-      id: 1660312958696-4
+      id: 1661548546866-2
       author: tobi (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -75,7 +39,51 @@ databaseChangeLog:
                   constraints:
                     nullable: false
                     primaryKey: true
-                    primaryKeyName: pk_ownedprivateasset
+                    primaryKeyName: pk_grouping_private_asset_holdings
+                  name: fk_grouping
+                  type: BINARY(16)
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_grouping_private_asset_holdings
+                  name: fk_private_asset_holding
+                  type: BINARY(16)
+            tableName: grouping_private_asset_holdings
+  - changeSet:
+      id: 1661548546866-3
+      author: tobi (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_grouping_public_asset_holdings
+                  name: fk_grouping
+                  type: BINARY(16)
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_grouping_public_asset_holdings
+                  name: fk_public_asset_holding
+                  type: BINARY(16)
+            tableName: grouping_public_asset_holdings
+  - changeSet:
+      id: 1661548546866-4
+      author: tobi (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_privateassetholding
                   name: uuid
                   type: BINARY(16)
               - column:
@@ -91,6 +99,17 @@ databaseChangeLog:
                   name: asset_type
                   type: VARCHAR(255)
               - column:
+                  name: unit_type
+                  type: VARCHAR(255)
+              - column:
+                  name: currency
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: price
+                  type: DOUBLE
+              - column:
                   constraints:
                     nullable: false
                   name: owned_quantity
@@ -100,9 +119,9 @@ databaseChangeLog:
                     nullable: false
                   name: target_percentage
                   type: DOUBLE
-            tableName: owned_private_asset
+            tableName: private_asset_holding
   - changeSet:
-      id: 1660312958696-5
+      id: 1661548546866-5
       author: tobi (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -112,47 +131,21 @@ databaseChangeLog:
                   constraints:
                     nullable: false
                     primaryKey: true
-                    primaryKeyName: pk_ownedpublicasset
+                    primaryKeyName: pk_privatecategory
                   name: uuid
                   type: BINARY(16)
-              - column:
-                  name: ts_created
-                  type: DATETIME
               - column:
                   name: user_uuid
                   type: BINARY(16)
               - column:
-                  name: asset_uuid
-                  type: BINARY(16)
-              - column:
-                  constraints:
-                    nullable: false
-                  name: target_percentage
-                  type: DOUBLE
-            tableName: owned_public_asset
-  - changeSet:
-      id: 1660312958696-6
-      author: tobi (generated)
-      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
-      changes:
-        - createTable:
-            columns:
-              - column:
-                  constraints:
-                    nullable: false
-                    primaryKey: true
-                    primaryKeyName: pk_privateassetpricerecord
-                  name: uuid
-                  type: BINARY(16)
-              - column:
                   name: ts_created
                   type: DATETIME
               - column:
-                  name: private_asset_uuid
-                  type: BINARY(16)
-            tableName: private_asset_price_record
+                  name: category_name
+                  type: VARCHAR(255)
+            tableName: private_category
   - changeSet:
-      id: 1660312958696-7
+      id: 1661548546866-6
       author: tobi (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -169,8 +162,6 @@ databaseChangeLog:
                   name: ts_created
                   type: DATETIME
               - column:
-                  constraints:
-                    nullable: false
                   name: asset_name
                   type: VARCHAR(255)
               - column:
@@ -189,7 +180,57 @@ databaseChangeLog:
                   type: BIGINT
             tableName: public_asset
   - changeSet:
-      id: 1660312958696-8
+      id: 1661548546866-7
+      author: tobi (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_publicassetholding
+                  name: uuid
+                  type: BINARY(16)
+              - column:
+                  name: user_uuid
+                  type: BINARY(16)
+              - column:
+                  name: ts_created
+                  type: DATETIME
+              - column:
+                  name: asset_uuid
+                  type: BINARY(16)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: target_percentage
+                  type: DOUBLE
+              - column:
+                  constraints:
+                    nullable: false
+                  name: owned_quantity
+                  type: DOUBLE
+              - column:
+                  name: custom_name
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: display_custom_name
+                  type: BOOLEAN
+              - column:
+                  constraints:
+                    nullable: false
+                  name: broker_connected
+                  type: BOOLEAN
+              - column:
+                  name: currency
+                  type: INT
+            tableName: public_asset_holding
+  - changeSet:
+      id: 1661548546866-8
       author: tobi (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -219,7 +260,7 @@ databaseChangeLog:
                   type: VARCHAR(255)
             tableName: public_asset_information
   - changeSet:
-      id: 1660312958696-9
+      id: 1661548546866-9
       author: tobi (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -239,9 +280,6 @@ databaseChangeLog:
                   name: asset_uuid
                   type: BINARY(16)
               - column:
-                  name: currency
-                  type: VARCHAR(255)
-              - column:
                   name: ts_fetched
                   type: DATETIME
               - column:
@@ -253,11 +291,11 @@ databaseChangeLog:
                   name: price
                   type: DOUBLE
               - column:
-                  name: price_type
+                  name: currency
                   type: VARCHAR(255)
             tableName: public_asset_price_record
   - changeSet:
-      id: 1660312958696-10
+      id: 1661548546866-10
       author: tobi (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -278,25 +316,7 @@ databaseChangeLog:
                   type: VARCHAR(255)
             tableName: user
   - changeSet:
-      id: 1660312958696-11
-      author: tobi (generated)
-      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
-      changes:
-        - addUniqueConstraint:
-            columnNames: owned_private_assets_uuid
-            constraintName: uc_asset_grouping_owned_private_assets_ownedprivateassets_uuid
-            tableName: asset_grouping_owned_private_assets
-  - changeSet:
-      id: 1660312958696-12
-      author: tobi (generated)
-      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
-      changes:
-        - addUniqueConstraint:
-            columnNames: owned_public_assets_uuid
-            constraintName: uc_asset_grouping_owned_public_assets_ownedpublicassets_uuid
-            tableName: asset_grouping_owned_public_assets
-  - changeSet:
-      id: 1660312958696-13
+      id: 1661548546866-11
       author: tobi (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -305,62 +325,62 @@ databaseChangeLog:
             constraintName: uc_publicasset_isin
             tableName: public_asset
   - changeSet:
-      id: 1660312958696-14
+      id: 1661548546866-12
       author: tobi (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addForeignKeyConstraint:
             baseColumnNames: user_uuid
-            baseTableName: asset_grouping
-            constraintName: FK_ASSETGROUPING_ON_USER_UUID
+            baseTableName: asset_holding_grouping
+            constraintName: FK_ASSETHOLDINGGROUPING_ON_USER_UUID
             referencedColumnNames: uuid
             referencedTableName: user
   - changeSet:
-      id: 1660312958696-15
+      id: 1661548546866-13
       author: tobi (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addForeignKeyConstraint:
             baseColumnNames: user_uuid
-            baseTableName: owned_private_asset
-            constraintName: FK_OWNEDPRIVATEASSET_ON_USER_UUID
+            baseTableName: private_asset_holding
+            constraintName: FK_PRIVATEASSETHOLDING_ON_USER_UUID
             referencedColumnNames: uuid
             referencedTableName: user
   - changeSet:
-      id: 1660312958696-16
+      id: 1661548546866-14
+      author: tobi (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: user_uuid
+            baseTableName: private_category
+            constraintName: FK_PRIVATECATEGORY_ON_USER_UUID
+            referencedColumnNames: uuid
+            referencedTableName: user
+  - changeSet:
+      id: 1661548546866-15
       author: tobi (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addForeignKeyConstraint:
             baseColumnNames: asset_uuid
-            baseTableName: owned_public_asset
-            constraintName: FK_OWNEDPUBLICASSET_ON_ASSET_UUID
+            baseTableName: public_asset_holding
+            constraintName: FK_PUBLICASSETHOLDING_ON_ASSET_UUID
             referencedColumnNames: uuid
             referencedTableName: public_asset
   - changeSet:
-      id: 1660312958696-17
+      id: 1661548546866-16
       author: tobi (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addForeignKeyConstraint:
             baseColumnNames: user_uuid
-            baseTableName: owned_public_asset
-            constraintName: FK_OWNEDPUBLICASSET_ON_USER_UUID
+            baseTableName: public_asset_holding
+            constraintName: FK_PUBLICASSETHOLDING_ON_USER_UUID
             referencedColumnNames: uuid
             referencedTableName: user
   - changeSet:
-      id: 1660312958696-18
-      author: tobi (generated)
-      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
-      changes:
-        - addForeignKeyConstraint:
-            baseColumnNames: private_asset_uuid
-            baseTableName: private_asset_price_record
-            constraintName: FK_PRIVATEASSETPRICERECORD_ON_PRIVATE_ASSET_UUID
-            referencedColumnNames: uuid
-            referencedTableName: owned_private_asset
-  - changeSet:
-      id: 1660312958696-19
+      id: 1661548546866-17
       author: tobi (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -371,7 +391,7 @@ databaseChangeLog:
             referencedColumnNames: uuid
             referencedTableName: public_asset
   - changeSet:
-      id: 1660312958696-20
+      id: 1661548546866-18
       author: tobi (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -382,49 +402,47 @@ databaseChangeLog:
             referencedColumnNames: uuid
             referencedTableName: public_asset
   - changeSet:
-      id: 1660312958696-21
+      id: 1661548546866-19
       author: tobi (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addForeignKeyConstraint:
-            baseColumnNames: asset_grouping_uuid
-            baseTableName: asset_grouping_owned_private_assets
-            constraintName: fk_assgroownpriass_on_asset_grouping
+            baseColumnNames: fk_grouping
+            baseTableName: grouping_private_asset_holdings
+            constraintName: fk_gropriasshol_on_asset_holding_grouping
             referencedColumnNames: uuid
-            referencedTableName: asset_grouping
+            referencedTableName: asset_holding_grouping
   - changeSet:
-      id: 1660312958696-22
+      id: 1661548546866-20
       author: tobi (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addForeignKeyConstraint:
-            baseColumnNames: owned_private_assets_uuid
-            baseTableName: asset_grouping_owned_private_assets
-            constraintName: fk_assgroownpriass_on_owned_private_asset
+            baseColumnNames: fk_private_asset_holding
+            baseTableName: grouping_private_asset_holdings
+            constraintName: fk_gropriasshol_on_private_asset_holding
             referencedColumnNames: uuid
-            referencedTableName: owned_private_asset
+            referencedTableName: private_asset_holding
   - changeSet:
-      id: 1660312958696-23
+      id: 1661548546866-21
       author: tobi (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addForeignKeyConstraint:
-            baseColumnNames: asset_grouping_uuid
-            baseTableName: asset_grouping_owned_public_assets
-            constraintName: fk_assgroownpubass_on_asset_grouping
+            baseColumnNames: fk_grouping
+            baseTableName: grouping_public_asset_holdings
+            constraintName: fk_gropubasshol_on_asset_holding_grouping
             referencedColumnNames: uuid
-            referencedTableName: asset_grouping
+            referencedTableName: asset_holding_grouping
   - changeSet:
-      id: 1660312958696-24
+      id: 1661548546866-22
       author: tobi (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addForeignKeyConstraint:
-            baseColumnNames: owned_public_assets_uuid
-            baseTableName: asset_grouping_owned_public_assets
-            constraintName: fk_assgroownpubass_on_owned_public_asset
+            baseColumnNames: fk_public_asset_holding
+            baseTableName: grouping_public_asset_holdings
+            constraintName: fk_gropubasshol_on_public_asset_holding
             referencedColumnNames: uuid
-            referencedTableName: owned_public_asset
-  - includeAll:
-      path: db/changelog/2022/08
+            referencedTableName: public_asset_holding
 
