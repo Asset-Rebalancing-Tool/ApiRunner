@@ -2,11 +2,14 @@ package ARApi.Scaffold.Database.Entities.PublicAsset;
 
 import ARApi.Scaffold.Database.Entities.BaseEntity;
 import ARApi.Scaffold.Shared.Enums.AssetType;
+import ARApi.Scaffold.Shared.Enums.Currency;
+import com.sun.istack.NotNull;
 
 
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * A publicly sold and registered asset.
@@ -14,7 +17,7 @@ import java.util.Set;
 @Entity
 public class PublicAsset extends BaseEntity {
 
-    @Column(nullable = false)
+    @NotNull
     public String asset_name;
 
     @Enumerated(EnumType.STRING)
@@ -34,4 +37,8 @@ public class PublicAsset extends BaseEntity {
     public Set<PublicAssetInformation> AssetInformation = new HashSet<>();
 
     public long searchHitsTotal = 1;
+
+    public Set<Currency> getAvailableCurrencies(){
+        return AssetPriceRecords.stream().map(apr -> apr.currency).collect(Collectors.toSet());
+    }
 }

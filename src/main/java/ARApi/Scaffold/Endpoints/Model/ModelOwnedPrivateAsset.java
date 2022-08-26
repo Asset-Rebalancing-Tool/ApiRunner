@@ -1,8 +1,8 @@
 package ARApi.Scaffold.Endpoints.Model;
 
-import ARApi.Scaffold.Database.Entities.PrivateAsset.PrivateAsset;
+import ARApi.Scaffold.Database.Entities.PrivateAsset.PrivateOwnedAsset;
 import ARApi.Scaffold.Shared.Enums.AssetType;
-import ARApi.Scaffold.Shared.Enums.Currency;
+import ARApi.Scaffold.Shared.Enums.UnitType;
 
 public class ModelOwnedPrivateAsset {
 
@@ -10,13 +10,20 @@ public class ModelOwnedPrivateAsset {
 
     public AssetType assetType;
 
-    public ModelOwnedPrivateAsset(PrivateAsset privateAsset, Currency targetCurrency){
+    public UnitType unitType;
+
+    public double price;
+
+    public double ownedQuantity;
+
+    public double targetPercentage;
+
+    public ModelOwnedPrivateAsset(PrivateOwnedAsset privateAsset){
         title = privateAsset.title;
         assetType = privateAsset.asset_type;
+        unitType = privateAsset.unit_type;
+        price = privateAsset.price;
+        ownedQuantity = privateAsset.owned_quantity;
+        targetPercentage = privateAsset.target_percentage;
     }
-
-    public ModelOwnedPrivateAsset(){
-
-    }
-
 }

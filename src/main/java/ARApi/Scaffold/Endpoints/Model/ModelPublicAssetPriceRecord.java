@@ -1,15 +1,17 @@
 package ARApi.Scaffold.Endpoints.Model;
 
 import ARApi.Scaffold.Database.Entities.PublicAsset.PublicAssetPriceRecord;
+import ARApi.Scaffold.Shared.Enums.Currency;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.time.LocalDateTime;
 
-public class ModelAssetPriceRecord {
+public class ModelPublicAssetPriceRecord {
 
-    public ModelAssetPriceRecord(PublicAssetPriceRecord assetPriceRecord) {
+    public ModelPublicAssetPriceRecord(PublicAssetPriceRecord assetPriceRecord) {
         tsPrice = assetPriceRecord.ts_price;
         price = assetPriceRecord.price;
+        currency = assetPriceRecord.currency;
     }
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -17,5 +19,5 @@ public class ModelAssetPriceRecord {
 
     public double price;
 
-
+    public Currency currency;
 }

@@ -8,7 +8,6 @@ import ARApi.Scaffold.Shared.Enums.UnitType;
 
 import javax.annotation.Nullable;
 import java.util.*;
-import java.util.stream.Collectors;
 
 
 public class ModelPublicAsset {
@@ -24,20 +23,19 @@ public class ModelPublicAsset {
 
       // create map
       dbAsset.AssetPriceRecords.stream().sorted(recordComp).forEach(pr -> {
-         var modelPr = new ModelAssetPriceRecord(pr);
+         var modelPr = new ModelPublicAssetPriceRecord(pr);
          if(!currencyPriceRecordMap.containsKey(pr.currency)){
             currencyPriceRecordMap.put(pr.currency, new ArrayList<>());
          }
          currencyPriceRecordMap.get(pr.currency).add(modelPr);
 
       });
-      assetInformations = dbAsset.AssetInformation.stream().map(ModelAssetInformation::new).filter(mai -> mai.stringValue != null).toList();
+      assetInformations = dbAsset.AssetInformation.stream().map(ModelPublicAssetInformation::new).filter(mai -> mai.stringValue != null).toList();
    }
 
+   public Map<Currency, List<ModelPublicAssetPriceRecord>> currencyPriceRecordMap = new HashMap<>();
 
-   public Map<Currency, List<ModelAssetPriceRecord>> currencyPriceRecordMap = new HashMap<>();
-
-   public List<ModelAssetInformation> assetInformations;
+   public List<ModelPublicAssetInformation> assetInformations;
 
    public String uuid;
 
@@ -50,7 +48,4 @@ public class ModelPublicAsset {
 
    @Nullable
    public String symbol;
-
-   public UnitType priceType;
-
 }
