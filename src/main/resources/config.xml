@@ -1,26 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/data/jpa https://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
 
     <bean class="ARApi.Scaffold.AssetFetchers.DbAssetFetcher"/>
-    <bean class="ARApi.Scaffold.AssetFetchers.AssetFetcherManager"/>
-    <bean class="ARApi.Scaffold.WebDriver.LocalChromeProvider"/>
-    <bean class="ARApi.Scaffold.Services.StringProcessingService"/>
-    <bean class="ARApi.Scaffold.Services.LocaleProvider"/>
-
-    <jpa:repositories base-package="ARApi.Scaffold.Database.Repos"/>
-
-    <bean class="ARApi.Scaffold.Endpoints.AssetApi"/>
-    <bean class="ARApi.Scaffold.Database.Repos.HighScorePublicAssetRepository"/>
-    <bean class="ARApi.Scaffold.Endpoints.HoldingApi"/>
 
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver" />
         <property name="username" value="root" />
         <property name="password" value="root" />
-        <property name="url" value="jdbc:mysql://localhost:3306/asset_rebalancer" />
+        <property name="url" value="jdbc:mysql://#{ systemEnvironment['MYSQL_HOST'] }:3306/asset_rebalancer" />
     </bean>
+
+    <bean class="springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration" />
 
     <bean id="entityManagerFactory"
           class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
@@ -45,6 +38,6 @@
         <property name="entityManagerFactory" ref="entityManagerFactory" />
     </bean>
 
-
+    <jpa:repositories base-package="ARApi.Scaffold.Database.Repos"/>
 
 </beans>

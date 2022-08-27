@@ -10,6 +10,8 @@ import ARApi.Scaffold.Endpoints.Requests.PostPublicAssetHoldingRequest;
 import ARApi.Scaffold.Endpoints.Requests.PrivateCategoryRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -23,10 +25,9 @@ import java.util.stream.Collectors;
 @RestController
 @Component
 @RequestMapping("holding_api")
+
 public class HoldingApi {
-
-    private final User user;
-
+    
     private final PrivateCategoryRepository privateCategoryRepository;
 
     private final UserRepository userRepository;
@@ -47,33 +48,29 @@ public class HoldingApi {
         this.publicAssetHoldingRepository = publicAssetHoldingRepository;
         this.privateAssetHoldingRepository = privateAssetHoldingRepository;
         this.publicAssetRepository = publicAssetRepository;
-
-        // create temp user if not exists
-        var users = userRepository.findAll();
-        if (users.isEmpty()) {
-            var user = new User();
-            users.add(user);
-            userRepository.saveAndFlush(user);
-        }
-        user = users.get(0);
+    }  
+    
+    public UUID getUserUuid(){
+        var auth = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return auth.uuid;
     }
 
     @PostMapping("/category")
     @ResponseStatus(HttpStatus.CREATED)
-    public ModelPrivateCategory PostPrivateCategory(@RequestBody PrivateCategoryRequest privateCategoryRequest) {
+    public ResponseEntity<ModelPrivateCategory> PostPrivateCategory(@RequestBody PrivateCategoryRequest privateCategoryRequest) {
         if (privateCategoryRequest.categoryName == null || privateCategoryRequest.categoryName.isBlank()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "categoryName is null or blank");
         }
 
-        var privateCategory = privateCategoryRepository.save(privateCategoryRequest.toPrivateCategory(user.uuid, userRepository));
+        var privateCategory = privateCategoryRepository.save(privateCategoryRequest.toPrivateCategory(getUserUuid(), userRepository));
 
-        return new ModelPrivateCategory(privateCategory);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ModelPrivateCategory(privateCategory));
     }
 
     @GetMapping("/category")
     public List<ModelPrivateCategory> GetPrivateCategories() {
 
-        var categories = privateCategoryRepository.findByUserUuid(user.uuid);
+        var categories = privateCategoryRepository.findByUserUuid(getUserUuid());
 
         return categories.stream().map(ModelPrivateCategory::new).toList();
     }
@@ -93,12 +90,12 @@ public class HoldingApi {
     @ResponseStatus(HttpStatus.CREATED)
     public ModelPublicAssetHolding PostPublicAssetHolding(@RequestBody PostPublicAssetHoldingRequest postPublicAssetHoldingRequest) {
         var uuid = UUID.fromString(postPublicAssetHoldingRequest.publicAssetUuid);
-        if (publicAssetHoldingRepository.existsByPublicAssetUuid(uuid, user.uuid)) {
+        if (publicAssetHoldingRepository.existsByPublicAssetUuid(uuid, getUserUuid())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Public asset holding already exists for user");
         }
 
         var publicAssetHolding = publicAssetHoldingRepository.save(
-                postPublicAssetHoldingRequest.toPublicAssetHolding(user.uuid,
+                postPublicAssetHoldingRequest.toPublicAssetHolding(getUserUuid(),
                         userRepository,
                         publicAssetHoldingRepository,
                         publicAssetRepository,
@@ -110,31 +107,31 @@ public class HoldingApi {
 
     @GetMapping("/asset_holding/public")
     public Set<ModelPublicAssetHolding> GetPublicAssetHoldings() {
-        return publicAssetHoldingRepository.GetAssetsOfUser(user.uuid).stream().map(ModelPublicAssetHolding::new).collect(Collectors.toSet());
+        return publicAssetHoldingRepository.GetAssetsOfUser(getUserUuid()).stream().map(ModelPublicAssetHolding::new).collect(Collectors.toSet());
     }
 
     @PostMapping("/asset_holding/private")
     @ResponseStatus(HttpStatus.CREATED)
     public ModelPrivateAssetHolding PostPrivateAssetHolding(@RequestBody PostPrivateAssetHoldingRequest postPrivateAssetHoldingRequest) {
-        var privateAssetHolding = privateAssetHoldingRepository.save(postPrivateAssetHoldingRequest.toPrivateAssetHolding(user.uuid, userRepository, privateAssetHoldingRepository, publicAssetHoldingRepository));
+        var privateAssetHolding = privateAssetHoldingRepository.save(postPrivateAssetHoldingRequest.toPrivateAssetHolding(getUserUuid(), userRepository, privateAssetHoldingRepository, publicAssetHoldingRepository));
         return new ModelPrivateAssetHolding(privateAssetHolding);
     }
 
     @GetMapping("/asset_holding/private")
     public Set<ModelPrivateAssetHolding> GetPrivateAssetsHoldings() {
-        return privateAssetHoldingRepository.GetAssetsOfUser(user.uuid).stream().map(ModelPrivateAssetHolding::new).collect(Collectors.toSet());
+        return privateAssetHoldingRepository.GetAssetsOfUser(getUserUuid()).stream().map(ModelPrivateAssetHolding::new).collect(Collectors.toSet());
     }
 
     @PostMapping("/asset_holding/grouping")
     @ResponseStatus(HttpStatus.CREATED)
     public ModelAssetHoldingGrouping PostAssetHoldingGrouping(@RequestBody PostAssetHoldingGroupingRequest postAssetHoldingGroupingRequest) {
-        var assetGrouping = assetHoldingGroupingRepository.save(postAssetHoldingGroupingRequest.toAssetHoldingGrouping(user.uuid, userRepository, publicAssetHoldingRepository, privateAssetHoldingRepository));
+        var assetGrouping = assetHoldingGroupingRepository.save(postAssetHoldingGroupingRequest.toAssetHoldingGrouping(getUserUuid(), userRepository, publicAssetHoldingRepository, privateAssetHoldingRepository));
         return new ModelAssetHoldingGrouping(assetGrouping);
     }
 
     @GetMapping("/asset_holding/grouping")
     public Set<ModelAssetHoldingGrouping> GetAssetHoldingGroupings() {
-        return assetHoldingGroupingRepository.GetByUserUuid(user.uuid).stream().map(ModelAssetHoldingGrouping::new).collect(Collectors.toSet());
+        return assetHoldingGroupingRepository.GetByUserUuid(getUserUuid()).stream().map(ModelAssetHoldingGrouping::new).collect(Collectors.toSet());
     }
 
     @DeleteMapping("/asset_holding/grouping/{groupingUuid}")

@@ -16,7 +16,11 @@ repositories {
 dependencies {
 
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 	implementation 'org.springframework:spring-context:5.3.22'
+	implementation 'io.springfox:springfox-boot-starter:3.0.0'
+	implementation 'com.auth0:java-jwt:4.0.0'
 
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework:spring-orm:5.3.22'
@@ -26,11 +30,13 @@ dependencies {
 
 	implementation 'io.springfox:springfox-boot-starter:3.0.0'
 	implementation 'org.seleniumhq.selenium:selenium-java:4.3.0'
-
+	implementation 'com.fasterxml.jackson.core:jackson-core:2.13.3'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
-tasks.named('test') {
+test {
+	environment "MYSQL_HOST", "localhost"
+	environment "JWT_SECRET", "devSecret"
 	useJUnitPlatform()
 }
 
@@ -49,4 +55,9 @@ publishing {
 			}
 		}
 	}
+}
+
+bootRun {
+	environment "MYSQL_HOST", "localhost"
+	environment "JWT_SECRET", "devSecret"
 }

@@ -1,6 +1,7 @@
 package ARApi.Scaffold.Database.Repos;
 
 import ARApi.Scaffold.Database.Entities.PublicAsset.PublicAsset;
+import ARApi.Scaffold.Endpoints.HighScoreAsset;
 import liquibase.pro.packaged.Q;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,8 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
-import java.util.Collection;
-import java.util.UUID;
+import java.util.*;
 
 @Repository
 public interface PublicAssetRepository extends JpaRepository<PublicAsset, UUID> {
@@ -30,4 +30,5 @@ public interface PublicAssetRepository extends JpaRepository<PublicAsset, UUID> 
             "set p.searchHitsTotal = p.searchHitsTotal + 1 " +
             "where p.uuid = :uuid")
     void IncreaseSearchHitCount(@Param("uuid") UUID uuid);
+
 }

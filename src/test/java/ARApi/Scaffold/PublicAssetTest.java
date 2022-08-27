@@ -21,29 +21,13 @@ public class PublicAssetTest {
 
     @Test
     void TestSearchHitIncrement(){
+        publicAssetRepository.save(new PublicAsset());
+
         var as = publicAssetRepository.findAll().stream().findFirst().get();
         publicAssetRepository.IncreaseSearchHitCount(as.uuid);
 
         var updated = publicAssetRepository.findById(as.uuid).get();
 
         Assert.isTrue(updated.searchHitsTotal > as.searchHitsTotal, "not larger");
-    }
-
-    @Test void TestOverwrites(){
-        var containsMap = new HashMap<PublicAsset, PublicAsset>();
-
-        var asset1isinNull = new PublicAsset();
-        var asset2isinNull = new PublicAsset();
-
-        var asset3isin1234 = new PublicAsset();
-        asset3isin1234.isin = "1234";
-        var asset4isin1234 = new PublicAsset();
-        asset4isin1234.isin = "1234";
-
-        containsMap.put(asset1isinNull, asset1isinNull);
-        Assert.isTrue(!containsMap.containsKey(asset2isinNull), "assets with both isin null should not match each other");
-
-        containsMap.put(asset3isin1234, asset3isin1234);
-        Assert.isTrue(containsMap.containsKey(asset4isin1234), "assets with same isin and both not null should match");
     }
 }

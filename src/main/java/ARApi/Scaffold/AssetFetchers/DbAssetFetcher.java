@@ -1,10 +1,10 @@
 package ARApi.Scaffold.AssetFetchers;
 
 import ARApi.Scaffold.Database.Entities.PublicAsset.PublicAsset;
-import org.hibernate.SessionFactory;
+import ARApi.Scaffold.Database.Repos.HighScorePublicAssetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,19 +13,22 @@ import java.util.List;
 public class DbAssetFetcher implements IPublicAssetFetcher {
 
     @Autowired
-    SessionFactory sessionFactory;
-
-    @Autowired
-    DriverManagerDataSource ds;
+    HighScorePublicAssetRepository highScorePublicAssetRepository;
 
     @Override
     public List<PublicAsset> FetchViaSearchString(String searchString) {
-        return null;
+        var result = highScorePublicAssetRepository.GetMatchingResult(searchString);
+        var assets = new ArrayList<>(result.b.stream().map(ha -> ha.publicAsset).toList());
+        if(result.a != null){
+            assets.add(0, result.a);
+        }
+
+        return assets;
     }
 
     @Override
     public PublicAsset FetchViaIsin(String isin) {
-        return null;
+        return highScorePublicAssetRepository.publicAssetRepository.findByIsin(isin);
     }
 
 }
