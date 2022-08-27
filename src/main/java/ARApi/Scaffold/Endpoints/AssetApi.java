@@ -54,7 +54,7 @@ public class AssetApi {
 
 
     @PostMapping("/asset/search")
-    public List<ModelPublicAsset> SearchAssets(Authentication principal, @RequestBody SearchAssetRequest searchAssetRequest) {
+    public List<ModelPublicAsset> SearchAssets(@RequestBody SearchAssetRequest searchAssetRequest) {
 
         if(searchAssetRequest.SearchString.length() < MIN_SEARCH_STRING_LENGHT){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,

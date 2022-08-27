@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'ARApi'
-version = '0.4-SNAPSHOT'
+version = '0.4.1-SNAPSHOT'
 sourceCompatibility = '17'
 
 repositories {
@@ -34,12 +34,6 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
-test {
-	environment "MYSQL_HOST", "localhost"
-	environment "JWT_SECRET", "devSecret"
-	useJUnitPlatform()
-}
-
 publishing {
 	publications {
 		maven(MavenPublication) {
@@ -60,4 +54,10 @@ publishing {
 bootRun {
 	environment "MYSQL_HOST", "localhost"
 	environment "JWT_SECRET", "devSecret"
+}
+
+test {
+	environment "MYSQL_HOST", "localhost"
+	environment "JWT_SECRET", "devSecret"
+	useJUnitPlatform()
 }
