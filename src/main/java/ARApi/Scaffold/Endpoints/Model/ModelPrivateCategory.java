@@ -8,10 +8,13 @@ public class ModelPrivateCategory {
 
     public String categoryName;
 
-    public UUID categoryUuid;
+    public String categoryUuid;
 
     public ModelPrivateCategory(PrivateCategory privateCategory){
         this.categoryName = privateCategory.category_name;
-        this.categoryUuid = privateCategory.uuid;
+        this.categoryUuid = privateCategory.uuid.toString();
+    }
+    public ModelPrivateCategory(){
+
     }
 }

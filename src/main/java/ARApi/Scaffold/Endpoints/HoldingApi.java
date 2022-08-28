@@ -68,11 +68,12 @@ public class HoldingApi {
     }
 
     @GetMapping("/category")
-    public List<ModelPrivateCategory> GetPrivateCategories() {
+    public ModelPrivateCategory[] GetPrivateCategories() {
 
         var categories = privateCategoryRepository.findByUserUuid(getUserUuid());
+        var arr = categories.stream().map(ModelPrivateCategory::new).toArray(ModelPrivateCategory[]::new);
 
-        return categories.stream().map(ModelPrivateCategory::new).toList();
+        return arr;
     }
 
     @DeleteMapping("/category/{uuidStr}")

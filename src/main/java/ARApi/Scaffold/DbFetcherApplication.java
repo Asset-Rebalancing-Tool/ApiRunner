@@ -12,7 +12,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @SpringBootApplication
 // comment this in if you want to use it locally
-//@ImportResource({"classpath:config.xml"})
+@ImportResource({"classpath:config.xml"})
 
 @ComponentScan(basePackages = {"ARApi"})
 public class DbFetcherApplication {
