@@ -16,9 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 // TODO: rename everything to possession...
 @RestController
@@ -123,7 +121,7 @@ public class HoldingApi {
     }
 
     @GetMapping("/asset_holding/private")
-    public ModelPrivateAssetHolding[] GetPrivateAssetsHoldings() {
+    public ModelPrivateAssetHolding[] GetPrivateAssetHoldings() {
         return privateAssetHoldingRepository.GetAssetsOfUser(getUserUuid()).stream().map(ModelPrivateAssetHolding::new).toArray(ModelPrivateAssetHolding[]::new);
     }
 

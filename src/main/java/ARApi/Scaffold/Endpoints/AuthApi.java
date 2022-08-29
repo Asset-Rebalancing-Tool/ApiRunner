@@ -60,14 +60,15 @@ public class AuthApi {
     }
 
     @GetMapping("/renew")
-    public ResponseEntity<String> renew(){
+    public ResponseEntity<String> TryRenewJwt(){
         // requires authenticated request
         var auth = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        // TODO: ratelimit in code / nginx conf?
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(GetJwtForUserPricipal(auth));
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody AuthRequest authRequest){
+    public String Login(@RequestBody AuthRequest authRequest){
         var auth = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         authRequest.email,

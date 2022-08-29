@@ -67,7 +67,6 @@ public class AuthApiTest {
                 .body(BodyInserters.fromValue(authRequest)).exchange().expectStatus().isOk().expectBody(String.class)
                 .returnResult().getResponseBody();
 
-
         SearchAssetRequest searchAssetRequest = new SearchAssetRequest();
         searchAssetRequest.SearchString = "spdr";
 

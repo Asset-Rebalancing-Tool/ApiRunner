@@ -169,15 +169,13 @@ public class HoldingApiTest {
         request.categoryName = "testcat";
 
         // post
-        webTestClient.post().uri("/holding_api/category")
-                .header("Authorization", token)
+        AddAuth(webTestClient.post().uri("/holding_api/category"))
                 .body(BodyInserters.fromValue(request))
                 .exchange()
                 .expectStatus().isCreated();
 
         // get
-        var result = webTestClient.get().uri("/holding_api/category")
-                .header("Authorization", token)
+        var result = AddAuth(webTestClient.get().uri("/holding_api/category"))
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody(ModelPrivateCategory[].class).returnResult().getResponseBody();
@@ -185,8 +183,7 @@ public class HoldingApiTest {
         Assert.notEmpty(result, "Categories empty even tho one just got posted");
 
         // delete
-        webTestClient.delete().uri("/holding_api/category/" + result[0].categoryUuid)
-                .header("Authorization", token)
+        AddAuth(webTestClient.delete().uri("/holding_api/category/" + result[0].categoryUuid))
                 .exchange()
                 .expectStatus().isOk();
     }
