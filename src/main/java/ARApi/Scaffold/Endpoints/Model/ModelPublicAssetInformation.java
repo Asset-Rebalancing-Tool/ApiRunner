@@ -14,6 +14,10 @@ public class ModelPublicAssetInformation {
         stringValue = assetInformationType.GetString(publicAssetInformation.byte_value_array);
     }
 
+    public ModelPublicAssetInformation(){
+
+    }
+
     public AssetInformationType assetInformationType;
 
     public String stringValue;

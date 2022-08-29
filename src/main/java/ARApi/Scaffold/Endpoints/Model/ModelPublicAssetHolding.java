@@ -6,6 +6,8 @@ public class ModelPublicAssetHolding {
 
     public ModelPublicAsset publicAsset;
 
+    public String holdingUuid;
+
     public String customName;
 
     public boolean displayCustomName;
@@ -23,5 +25,10 @@ public class ModelPublicAssetHolding {
         targetPercentage = publicAssetHolding.target_percentage;
         brokerConnected = publicAssetHolding.broker_connected;
         ownedQuantity = publicAssetHolding.owned_quantity;
+        holdingUuid = publicAssetHolding.uuid.toString();
+    }
+
+    public ModelPublicAssetHolding(){
+
     }
 }

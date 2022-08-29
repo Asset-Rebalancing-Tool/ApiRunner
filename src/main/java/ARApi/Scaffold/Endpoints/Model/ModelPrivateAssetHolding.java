@@ -18,12 +18,18 @@ public class ModelPrivateAssetHolding {
 
     public double targetPercentage;
 
-    public ModelPrivateAssetHolding(PrivateAssetHolding privateAsset){
-        title = privateAsset.title;
-        assetType = privateAsset.asset_type;
-        unitType = privateAsset.unit_type;
-        price = privateAsset.price;
-        ownedQuantity = privateAsset.owned_quantity;
-        targetPercentage = privateAsset.target_percentage;
+    public String holdingUuid;
+
+    public ModelPrivateAssetHolding(PrivateAssetHolding privateHolding){
+        title = privateHolding.title;
+        assetType = privateHolding.asset_type;
+        unitType = privateHolding.unit_type;
+        price = privateHolding.price;
+        ownedQuantity = privateHolding.owned_quantity;
+        targetPercentage = privateHolding.target_percentage;
+        holdingUuid = privateHolding.uuid.toString();
+    }
+    public ModelPrivateAssetHolding(){
+
     }
 }

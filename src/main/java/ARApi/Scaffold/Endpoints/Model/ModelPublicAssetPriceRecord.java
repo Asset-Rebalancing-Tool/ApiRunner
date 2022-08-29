@@ -14,6 +14,10 @@ public class ModelPublicAssetPriceRecord {
         currency = assetPriceRecord.currency;
     }
 
+    public ModelPublicAssetPriceRecord(){
+
+    }
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     public LocalDateTime tsPrice;
 

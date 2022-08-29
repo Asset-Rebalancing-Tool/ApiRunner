@@ -12,6 +12,10 @@ import java.util.*;
 
 public class ModelPublicAsset {
 
+   public ModelPublicAsset(){
+
+   }
+
    public ModelPublicAsset(PublicAsset dbAsset){
       uuid = dbAsset.uuid.toString();
       assetName = dbAsset.asset_name;
