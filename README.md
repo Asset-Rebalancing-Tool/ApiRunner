@@ -1,6 +1,36 @@
 # Working with the Env
 
-Needs to have `mavenUser` and `mavenPassword` as env vars, in order to use `gradle publish`.
+* `MYSQL_HOST` - Host of the db
+* `MAVEN_USER` - th nexus maven user
+* `MAVEN_PASSWORD` - th nexus maven password
+* `JWT_SECRET` - the secret key to issue jwt`s with
+
+# Frontend development
+
+Api at http://localhost:8080/swagger-ui/index.html
+
+# Commands
+
+Executing the build locally
+
+```
+export MAVEN_USER=
+export MAVEN_PASSWORD=
+docker compose build
+```
+=> to build the latest version
+
+```
+export MYSQL_HOST=
+export JWT_SECRET=
+docker compose up -d
+```
+=> to start the database and api
+
+```
+docker compose down -v
+```
+=> remove running services BEFORE you want to redeploy
 
 # Running tests in Jetbrains
 

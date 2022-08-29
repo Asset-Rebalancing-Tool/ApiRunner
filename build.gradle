@@ -44,18 +44,24 @@ publishing {
 		maven {
 			url 'https://nexus.tobias-huebner.tech/repository/maven-snapshots/'
 			credentials{
-				username = System.getenv("MAVENUSER")
-				password = System.getenv("MAVENPASSWORD")
+				username = System.getenv("MAVEN_USER")
+				password = System.getenv("MAVEN_PASSWORD")
 			}
 		}
 	}
 }
+// to have a solid not changing entry jar
+bootJar {
+	archiveFileName = "Runner.jar"
+}
 
+// set / edit variables for dev start here
 bootRun {
-	environment "MYSQL_HOST", "localhost"
+	environment "MYSQL_HOST", "192.168.1.52"
 	environment "JWT_SECRET", "devSecret"
 }
 
+// env vars for test
 test {
 	environment "MYSQL_HOST", "192.168.1.52"
 	environment "JWT_SECRET", "devSecret"

@@ -8,9 +8,9 @@ steps:
     commands:
       - gradle publish
     environment:
-      MAVENUSER:
+      MAVEN_USER:
         from_secret: th_nexus_user
-      MAVENPASSWORD:
+      MAVEN_PASSWORD:
         from_secret: th_nexus_password
 
 trigger:
