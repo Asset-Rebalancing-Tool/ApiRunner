@@ -2,10 +2,6 @@
 
 Needs to have `mavenUser` and `mavenPassword` as env vars, in order to use `gradle publish`.
 
-# Scaling
-
-The system assumes one api per database
-
 # Running tests in Jetbrains
 
 Gradle is awful buggy at the time so you can't use the start buttons in the test, 
