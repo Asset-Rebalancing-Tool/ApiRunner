@@ -13,21 +13,21 @@ Api at http://localhost:8080/swagger-ui/index.html
 
 Executing the build locally
 
-```
+```shell
 export MAVEN_USER=
 export MAVEN_PASSWORD=
 docker compose build
 ```
 => to build the latest version
 
-```
+```shell
 export MYSQL_HOST=
 export JWT_SECRET=
 docker compose up -d
 ```
 => to start the database and api
 
-```
+```shell
 docker compose down -v
 ```
 => remove running services BEFORE you want to redeploy
