@@ -78,7 +78,7 @@ public class AuthApiTest {
 
 
         // get refresh token with later expiry date
-        Thread.sleep(50);
+        Thread.sleep(1000);
         var renewedToken = webTestClient.get().uri("/auth_api/renew").header("Authorization","Bearer " + tokenOnLogin).exchange()
                 .expectStatus().isAccepted().expectBody(String.class).returnResult().getResponseBody();
 
