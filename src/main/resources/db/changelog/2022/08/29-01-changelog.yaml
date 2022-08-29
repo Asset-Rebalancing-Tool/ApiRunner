@@ -1,0 +1,96 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1661737468754-1
+      author: tobi (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_assetholdinggroup
+                  name: uuid
+                  type: BINARY(16)
+              - column:
+                  name: user_uuid
+                  type: BINARY(16)
+              - column:
+                  name: ts_created
+                  type: DATETIME
+              - column:
+                  constraints:
+                    nullable: false
+                  name: target_percentage
+                  type: DOUBLE
+              - column:
+                  name: group_name
+                  type: VARCHAR(255)
+            tableName: asset_holding_group
+  - changeSet:
+      id: 1661737468754-2
+      author: tobi (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: user_uuid
+            baseTableName: asset_holding_group
+            constraintName: FK_ASSETHOLDINGGROUP_ON_USER_UUID
+            referencedColumnNames: uuid
+            referencedTableName: user
+  - changeSet:
+      id: 1661737468754-3
+      author: tobi (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: fk_grouping
+            baseTableName: grouping_private_asset_holdings
+            constraintName: fk_gropriasshol_on_asset_holding_group
+            referencedColumnNames: uuid
+            referencedTableName: asset_holding_group
+  - changeSet:
+      id: 1661737468754-4
+      author: tobi (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: fk_grouping
+            baseTableName: grouping_public_asset_holdings
+            constraintName: fk_gropubasshol_on_asset_holding_group
+            referencedColumnNames: uuid
+            referencedTableName: asset_holding_group
+  - changeSet:
+      id: 1661737468754-5
+      author: tobi (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - dropForeignKeyConstraint:
+            baseTableName: asset_holding_grouping
+            constraintName: FK_ASSETHOLDINGGROUPING_ON_USER_UUID
+  - changeSet:
+      id: 1661737468754-6
+      author: tobi (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - dropForeignKeyConstraint:
+            baseTableName: grouping_private_asset_holdings
+            constraintName: fk_gropriasshol_on_asset_holding_grouping
+  - changeSet:
+      id: 1661737468754-7
+      author: tobi (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - dropForeignKeyConstraint:
+            baseTableName: grouping_public_asset_holdings
+            constraintName: fk_gropubasshol_on_asset_holding_grouping
+  - changeSet:
+      id: 1661737468754-8
+      author: tobi (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - dropTable:
+            cascadeConstraints: true
+            tableName: asset_holding_grouping
+

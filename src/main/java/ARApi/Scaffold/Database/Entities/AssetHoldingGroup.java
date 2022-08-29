@@ -7,7 +7,7 @@ import javax.persistence.*;
 import java.util.Set;
 
 @Entity
-public class AssetHoldingGrouping extends BaseUserEntity{
+public class AssetHoldingGroup extends BaseUserEntity{
 
     @ManyToMany
     @JoinTable(
@@ -28,4 +28,11 @@ public class AssetHoldingGrouping extends BaseUserEntity{
     public double target_percentage;
 
     public String group_name;
+
+    public boolean InternalPercentagesMatch(){
+        double percentageCounter = 0;
+        percentageCounter+=PublicAssetHoldings.stream().mapToDouble(value -> value.target_percentage).sum();
+        percentageCounter+=PrivateAssetHoldings.stream().mapToDouble(value -> value.target_percentage).sum();
+        return percentageCounter == 100d;
+    }
 }
