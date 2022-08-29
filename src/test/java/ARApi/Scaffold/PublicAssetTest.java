@@ -21,9 +21,10 @@ public class PublicAssetTest {
 
     @Test
     void TestSearchHitIncrement(){
-        publicAssetRepository.save(new PublicAsset());
+        var assets = publicAssetRepository.findAll();
+        Assert.notEmpty(assets, "there should be assets in db");
 
-        var as = publicAssetRepository.findAll().stream().findFirst().get();
+        var as = assets.stream().findFirst().get();
         publicAssetRepository.IncreaseSearchHitCount(as.uuid);
 
         var updated = publicAssetRepository.findById(as.uuid).get();
