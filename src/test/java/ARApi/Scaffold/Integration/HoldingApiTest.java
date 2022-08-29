@@ -42,12 +42,6 @@ public class HoldingApiTest {
     private WebTestClient webTestClient;
 
     @Autowired
-    private PublicAssetHoldingRepository publicAssetHoldingRepository;
-
-    @Autowired
-    private PrivateAssetHoldingRepository privateAssetHoldingRepository;
-
-    @Autowired
     private PublicAssetRepository publicAssetRepository;
 
     private static String token = null;
@@ -55,8 +49,6 @@ public class HoldingApiTest {
     @BeforeEach
     public void RegisterAndGetToken(){
         if(token != null) return;
-
-
 
         var authRequest = new AuthRequest();
         authRequest.email = RandomStringUtils.randomAlphanumeric(10) + "@test.com";
