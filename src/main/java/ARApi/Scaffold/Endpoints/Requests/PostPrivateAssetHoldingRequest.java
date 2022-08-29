@@ -4,7 +4,7 @@ import ARApi.Scaffold.Database.Entities.PrivateAsset.PrivateAssetHolding;
 import ARApi.Scaffold.Database.Repos.PrivateAssetHoldingRepository;
 import ARApi.Scaffold.Database.Repos.PublicAssetHoldingRepository;
 import ARApi.Scaffold.Database.Repos.UserRepository;
-import ARApi.Scaffold.Endpoints.Validators.AssetValidator;
+import ARApi.Scaffold.Endpoints.Validators.HoldingValidator;
 import ARApi.Scaffold.Shared.Enums.AssetType;
 import ARApi.Scaffold.Shared.Enums.Currency;
 import ARApi.Scaffold.Shared.Enums.UnitType;
@@ -41,7 +41,7 @@ public class PostPrivateAssetHoldingRequest {
         privateAssetHolding.currency = currency;
         privateAssetHolding.SetUser(userUuid, userRepository);
 
-        AssetValidator.ThrowExceptionOnCurrencyMismatch(currency, userUuid, publicOwnedAssetRepository, privateOwnedAssetRepository);
+        HoldingValidator.ThrowExceptionOnCurrencyMismatch(currency, userUuid, publicOwnedAssetRepository, privateOwnedAssetRepository);
 
         return privateAssetHolding;
     }

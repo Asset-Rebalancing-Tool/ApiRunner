@@ -9,17 +9,17 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.UUID;
 
-public class AssetValidator {
+public class HoldingValidator {
 
     public static void ThrowExceptionOnCurrencyMismatch(Currency currency, UUID userUuid, PublicAssetHoldingRepository publicAssetHoldingsRepo, PrivateAssetHoldingRepository privateAssetHoldingRepository){
         // validate that there is no currency conflict with other owned assets
         var publicAssetHoldings = publicAssetHoldingsRepo.GetAssetsOfUser(userUuid);
         if (!publicAssetHoldings.isEmpty() && publicAssetHoldings.get(0).currency != currency){
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "public owned assets with different currency exist");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "CURRENCY_MISSMATCH");
         }
         var privateAssetHoldings = privateAssetHoldingRepository.GetAssetsOfUser(userUuid);
         if (!privateAssetHoldings.isEmpty() && privateAssetHoldings.get(0).currency != currency){
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "private owned assets with different currency exist");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "CURRENCY_MISSMATCH");
         }
     }
 }

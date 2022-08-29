@@ -5,10 +5,9 @@ import ARApi.Scaffold.Database.Repos.PrivateAssetHoldingRepository;
 import ARApi.Scaffold.Database.Repos.PublicAssetRepository;
 import ARApi.Scaffold.Database.Repos.PublicAssetHoldingRepository;
 import ARApi.Scaffold.Database.Repos.UserRepository;
-import ARApi.Scaffold.Endpoints.Validators.AssetValidator;
+import ARApi.Scaffold.Endpoints.Validators.HoldingValidator;
 import ARApi.Scaffold.Shared.Enums.Currency;
 import ARApi.Scaffold.Shared.Enums.UnitType;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -42,7 +41,7 @@ public class PostPublicAssetHoldingRequest {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Provided currency not available for asset. Available are: " + publicAsset.getAvailableCurrencies().stream().map(Currency::toString).collect(Collectors.joining(", ")));
         }
 
-        AssetValidator.ThrowExceptionOnCurrencyMismatch(currency, userUuid, publicOwnedAssetRepository, privateOwnedAssetRepository);
+        HoldingValidator.ThrowExceptionOnCurrencyMismatch(currency, userUuid, publicOwnedAssetRepository, privateOwnedAssetRepository);
 
         var publicOwnedAsset = new PublicAssetHolding();
         publicOwnedAsset.SetUser(userUuid, userRepository);
