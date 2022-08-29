@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'ARApi'
-version = '0.4.1-SNAPSHOT'
+version = '0.4.2-SNAPSHOT'
 sourceCompatibility = '17'
 
 repositories {
@@ -57,7 +57,7 @@ bootRun {
 }
 
 test {
-	environment "MYSQL_HOST", "localhost"
+	environment "MYSQL_HOST", "192.168.1.52"
 	environment "JWT_SECRET", "devSecret"
 	useJUnitPlatform()
 }

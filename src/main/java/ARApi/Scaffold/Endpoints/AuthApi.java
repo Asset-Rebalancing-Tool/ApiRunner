@@ -13,10 +13,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 @RestController
 @Component
@@ -40,7 +44,7 @@ public class AuthApi {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<HttpStatus> Register(@RequestBody AuthRequest request){
+    public ResponseEntity<String> Register(@RequestBody AuthRequest request){
 
         if(userRepository.findByEmail(request.email).isPresent()){
             throw new ResponseStatusException(HttpStatus.CONFLICT, "email already exists");
@@ -50,9 +54,16 @@ public class AuthApi {
         user.email = request.email;
         user.password_hash = passwordEncoder.encode(request.password);
 
-        userRepository.save(user);
+        user = userRepository.save(user);
 
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(GetJwtForUserPricipal(user));
+    }
+
+    @GetMapping("/renew")
+    public ResponseEntity<String> renew(){
+        // requires authenticated request
+        var auth = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(GetJwtForUserPricipal(auth));
     }
 
     @PostMapping("/login")
@@ -65,6 +76,10 @@ public class AuthApi {
         );
 
         var user = (User) auth.getPrincipal();
+        return GetJwtForUserPricipal(user);
+    }
+
+    private String GetJwtForUserPricipal(User user){
         var dbUser = userRepository.findByEmail(user.getUsername()).orElseGet(ARApi.Scaffold.Database.Entities.User::new);
 
         var secret  = environment.getProperty(Constants.ENV_VAR_JWT_SECRET);;
@@ -75,6 +90,7 @@ public class AuthApi {
                 .withIssuer("auth0")
                 .withSubject(dbUser.email)
                 .withClaim("uuid", dbUser.uuid.toString())
+                .withExpiresAt(Instant.now().plus(30, ChronoUnit.MINUTES))
                 .sign(algorithm);
     }
 }

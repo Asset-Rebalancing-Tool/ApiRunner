@@ -4,7 +4,7 @@ package ARApi.Scaffold.Endpoints;
 import ARApi.Scaffold.Database.Entities.User;
 import ARApi.Scaffold.Database.Repos.*;
 import ARApi.Scaffold.Endpoints.Model.*;
-import ARApi.Scaffold.Endpoints.Requests.PostAssetHoldingGroupingRequest;
+import ARApi.Scaffold.Endpoints.Requests.PostAssetHoldingGroupRequest;
 import ARApi.Scaffold.Endpoints.Requests.PostPrivateAssetHoldingRequest;
 import ARApi.Scaffold.Endpoints.Requests.PostPublicAssetHoldingRequest;
 import ARApi.Scaffold.Endpoints.Requests.PrivateCategoryRequest;
@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -32,7 +31,7 @@ public class HoldingApi {
 
     private final UserRepository userRepository;
 
-    private final AssetHoldingGroupingRepository assetHoldingGroupingRepository;
+    private final AssetHoldingGroupRepository assetHoldingGroupRepository;
 
     private final PublicAssetHoldingRepository publicAssetHoldingRepository;
 
@@ -41,10 +40,10 @@ public class HoldingApi {
     private final PublicAssetRepository publicAssetRepository;
 
     @Autowired
-    public HoldingApi(PrivateCategoryRepository privateCategoryRepository, UserRepository userRepository, AssetHoldingGroupingRepository assetHoldingGroupingRepository, PublicAssetHoldingRepository publicAssetHoldingRepository, PrivateAssetHoldingRepository privateAssetHoldingRepository, PublicAssetRepository publicAssetRepository) {
+    public HoldingApi(PrivateCategoryRepository privateCategoryRepository, UserRepository userRepository, AssetHoldingGroupRepository assetHoldingGroupRepository, PublicAssetHoldingRepository publicAssetHoldingRepository, PrivateAssetHoldingRepository privateAssetHoldingRepository, PublicAssetRepository publicAssetRepository) {
         this.privateCategoryRepository = privateCategoryRepository;
         this.userRepository = userRepository;
-        this.assetHoldingGroupingRepository = assetHoldingGroupingRepository;
+        this.assetHoldingGroupRepository = assetHoldingGroupRepository;
         this.publicAssetHoldingRepository = publicAssetHoldingRepository;
         this.privateAssetHoldingRepository = privateAssetHoldingRepository;
         this.publicAssetRepository = publicAssetRepository;
@@ -62,7 +61,7 @@ public class HoldingApi {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "categoryName is null or blank");
         }
 
-        var privateCategory = privateCategoryRepository.save(privateCategoryRequest.toPrivateCategory(getUserUuid(), userRepository));
+        var privateCategory = privateCategoryRepository.saveAndFlush(privateCategoryRequest.toPrivateCategory(getUserUuid(), userRepository));
 
         return ResponseEntity.status(HttpStatus.CREATED).body(new ModelPrivateCategory(privateCategory));
     }
@@ -88,11 +87,10 @@ public class HoldingApi {
     }
 
     @PostMapping("/asset_holding/public")
-    @ResponseStatus(HttpStatus.CREATED)
-    public ModelPublicAssetHolding PostPublicAssetHolding(@RequestBody PostPublicAssetHoldingRequest postPublicAssetHoldingRequest) {
+    public ResponseEntity<ModelPublicAssetHolding> PostPublicAssetHolding(@RequestBody PostPublicAssetHoldingRequest postPublicAssetHoldingRequest) {
         var uuid = UUID.fromString(postPublicAssetHoldingRequest.publicAssetUuid);
         if (publicAssetHoldingRepository.existsByPublicAssetUuid(uuid, getUserUuid())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Public asset holding already exists for user");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "HOLDING_FOR_ASSET_EXISTS");
         }
 
         var publicAssetHolding = publicAssetHoldingRepository.save(
@@ -103,42 +101,54 @@ public class HoldingApi {
                         privateAssetHoldingRepository)
         );
 
-        return new ModelPublicAssetHolding(publicAssetHolding);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ModelPublicAssetHolding(publicAssetHolding));
     }
 
     @GetMapping("/asset_holding/public")
-    public Set<ModelPublicAssetHolding> GetPublicAssetHoldings() {
-        return publicAssetHoldingRepository.GetAssetsOfUser(getUserUuid()).stream().map(ModelPublicAssetHolding::new).collect(Collectors.toSet());
+    public ModelPublicAssetHolding[] GetPublicAssetHoldings() {
+        var holdings = publicAssetHoldingRepository.GetAssetsOfUser(getUserUuid()).stream().map(ModelPublicAssetHolding::new).toArray(ModelPublicAssetHolding[]::new);
+        return holdings;
+    }
+
+    @DeleteMapping("/asset_holding/public/{holdingUuid}")
+    public HttpStatus DeletePublicAssetHolding(@PathVariable String holdingUuid) {
+        publicAssetHoldingRepository.deleteById(UUID.fromString(holdingUuid));
+        return HttpStatus.OK;
     }
 
     @PostMapping("/asset_holding/private")
-    @ResponseStatus(HttpStatus.CREATED)
-    public ModelPrivateAssetHolding PostPrivateAssetHolding(@RequestBody PostPrivateAssetHoldingRequest postPrivateAssetHoldingRequest) {
+    public ResponseEntity<ModelPrivateAssetHolding> PostPrivateAssetHolding(@RequestBody PostPrivateAssetHoldingRequest postPrivateAssetHoldingRequest) {
         var privateAssetHolding = privateAssetHoldingRepository.save(postPrivateAssetHoldingRequest.toPrivateAssetHolding(getUserUuid(), userRepository, privateAssetHoldingRepository, publicAssetHoldingRepository));
-        return new ModelPrivateAssetHolding(privateAssetHolding);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ModelPrivateAssetHolding(privateAssetHolding));
     }
 
     @GetMapping("/asset_holding/private")
-    public Set<ModelPrivateAssetHolding> GetPrivateAssetsHoldings() {
-        return privateAssetHoldingRepository.GetAssetsOfUser(getUserUuid()).stream().map(ModelPrivateAssetHolding::new).collect(Collectors.toSet());
+    public ModelPrivateAssetHolding[] GetPrivateAssetsHoldings() {
+        return privateAssetHoldingRepository.GetAssetsOfUser(getUserUuid()).stream().map(ModelPrivateAssetHolding::new).toArray(ModelPrivateAssetHolding[]::new);
     }
 
-    @PostMapping("/asset_holding/grouping")
+    @DeleteMapping("/asset_holding/private/{holdingUuid}")
+    public HttpStatus DeletePrivateAssetHolding(@PathVariable String holdingUuid){
+        privateAssetHoldingRepository.deleteById(UUID.fromString(holdingUuid));
+        return HttpStatus.OK;
+    }
+
+    @PostMapping("/asset_holding/group")
     @ResponseStatus(HttpStatus.CREATED)
-    public ModelAssetHoldingGrouping PostAssetHoldingGrouping(@RequestBody PostAssetHoldingGroupingRequest postAssetHoldingGroupingRequest) {
-        var assetGrouping = assetHoldingGroupingRepository.save(postAssetHoldingGroupingRequest.toAssetHoldingGrouping(getUserUuid(), userRepository, publicAssetHoldingRepository, privateAssetHoldingRepository));
-        return new ModelAssetHoldingGrouping(assetGrouping);
+    public ModelAssetHoldingGroup PostAssetHoldingGroup(@RequestBody PostAssetHoldingGroupRequest postAssetHoldingGroupRequest) {
+        var assetGrouping = assetHoldingGroupRepository.save(postAssetHoldingGroupRequest.toAssetHoldingGrouping(getUserUuid(), userRepository, publicAssetHoldingRepository, privateAssetHoldingRepository));
+        return new ModelAssetHoldingGroup(assetGrouping);
     }
 
-    @GetMapping("/asset_holding/grouping")
-    public Set<ModelAssetHoldingGrouping> GetAssetHoldingGroupings() {
-        return assetHoldingGroupingRepository.GetByUserUuid(getUserUuid()).stream().map(ModelAssetHoldingGrouping::new).collect(Collectors.toSet());
+    @GetMapping("/asset_holding/group")
+    public ModelAssetHoldingGroup[] GetAssetHoldingGroups() {
+        return assetHoldingGroupRepository.GetByUserUuid(getUserUuid()).stream().map(ModelAssetHoldingGroup::new).toArray(ModelAssetHoldingGroup[]::new);
     }
 
-    @DeleteMapping("/asset_holding/grouping/{groupingUuid}")
-    public HttpStatus DeleteAssetHoldingGrouping(@PathVariable String groupingUuid) {
-        var assetGroupingUuid = UUID.fromString(groupingUuid);
-        assetHoldingGroupingRepository.deleteById(assetGroupingUuid);
+    @DeleteMapping("/asset_holding/group/{groupUuid}")
+    public HttpStatus DeleteAssetHoldingGroup(@PathVariable String groupUuid) {
+        var assetGroupingUuid = UUID.fromString(groupUuid);
+        assetHoldingGroupRepository.deleteById(assetGroupingUuid);
         return HttpStatus.OK;
     }
 }
