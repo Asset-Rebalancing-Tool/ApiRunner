@@ -26,20 +26,13 @@ public class ModelPublicAsset {
       var recordComp = Comparator.comparing(AssetPriceRecord::GetTimeOfPrice).reversed();
 
       // create map
-      dbAsset.AssetPriceRecords.stream().sorted(recordComp).forEach(pr -> {
-         var modelPr = new ModelPublicAssetPriceRecord(pr);
-         if(!currencyPriceRecordMap.containsKey(pr.currency)){
-            currencyPriceRecordMap.put(pr.currency, new ArrayList<>());
-         }
-         currencyPriceRecordMap.get(pr.currency).add(modelPr);
-
-      });
+      assetPriceRecords = dbAsset.AssetPriceRecords.stream().sorted(recordComp).map(ModelAssetPriceRecord::new).toList();
       assetInformation = dbAsset.AssetInformation.stream().map(ModelPublicAssetInformation::new).filter(mai -> mai.stringValue != null).toList();
       availableUnitTypes = dbAsset.unit_type.GetConvertibleUnitTypes();
       availableCurrencies = dbAsset.getAvailableCurrencies().toArray(Currency[]::new);
    }
 
-   public Map<Currency, List<ModelPublicAssetPriceRecord>> currencyPriceRecordMap = new HashMap<>();
+   public List<ModelAssetPriceRecord> assetPriceRecords;
 
    public List<ModelPublicAssetInformation> assetInformation;
 

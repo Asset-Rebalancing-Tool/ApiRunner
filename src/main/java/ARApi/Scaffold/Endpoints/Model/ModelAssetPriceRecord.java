@@ -6,15 +6,15 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.time.LocalDateTime;
 
-public class ModelPublicAssetPriceRecord {
+public class ModelAssetPriceRecord {
 
-    public ModelPublicAssetPriceRecord(AssetPriceRecord assetPriceRecord) {
+    public ModelAssetPriceRecord(AssetPriceRecord assetPriceRecord) {
         tsPrice = assetPriceRecord.ts_price;
         price = assetPriceRecord.price;
         currency = assetPriceRecord.currency;
     }
 
-    public ModelPublicAssetPriceRecord(){
+    public ModelAssetPriceRecord(){
 
     }
 
