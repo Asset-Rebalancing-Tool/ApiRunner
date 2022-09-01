@@ -1,5 +1,6 @@
 package ARApi.Scaffold.Endpoints.Requests;
 
+import ARApi.Scaffold.Database.Entities.PublicAsset.HoldingOrigin;
 import ARApi.Scaffold.Database.Entities.PublicAsset.PublicAssetHolding;
 import ARApi.Scaffold.Database.Repos.PrivateAssetHoldingRepository;
 import ARApi.Scaffold.Database.Repos.PublicAssetRepository;
@@ -36,18 +37,18 @@ public class PostPublicAssetHoldingRequest {
         var publicAsset = publicAssetRepository.findById(UUID.fromString(publicAssetUuid)).orElseThrow();
 
         // validate selected currency
-        if(!publicAsset.getAvailableCurrencies().contains(currency)){
+        if(currency != null && !publicAsset.getAvailableCurrencies().contains(currency)){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "SELECTED_CURRENCY_NOT_AVAILABLE available are: " + publicAsset.getAvailableCurrencies().stream().map(Currency::toString).collect(Collectors.joining(", ")));
         }
 
         // validate selected unit type
-        if(!List.of(publicAsset.unit_type.GetConvertibleUnitTypes()).contains(selectedUnitType)){
+        if(selectedUnitType != null && !List.of(publicAsset.unit_type.GetConvertibleUnitTypes()).contains(selectedUnitType)){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "SELECTED_UNIT_TYPE_NOT_AVAILABLE - available are: " + Stream.of(publicAsset.unit_type.GetConvertibleUnitTypes()).map(UnitType::toString).collect(Collectors.joining(", ")));
         }
 
         // validate currency collision with other asset holdings
         var publicAssetHoldings = publicAssetHoldingsRepo.GetAssetsOfUser(userUuid);
-        if (!publicAssetHoldings.isEmpty() && publicAssetHoldings.get(0).selected_currency != currency){
+        if (currency != null && !publicAssetHoldings.isEmpty() && publicAssetHoldings.get(0).selected_currency != currency){
             throw new ResponseStatusException(HttpStatus.CONFLICT, "CURRENCY_MISMATCH");
         }
 
@@ -62,6 +63,7 @@ public class PostPublicAssetHoldingRequest {
         publicOwnedAsset.custom_name = customName;
         publicOwnedAsset.selected_currency = currency;
         publicOwnedAsset.selected_unit_type = selectedUnitType;
+        publicOwnedAsset.holding_origin = HoldingOrigin.ManualEntry;
 
         return publicOwnedAsset;
     }

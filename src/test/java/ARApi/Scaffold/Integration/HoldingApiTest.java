@@ -9,6 +9,7 @@ import ARApi.Scaffold.Endpoints.Model.ModelPublicAssetHolding;
 import ARApi.Scaffold.Endpoints.Requests.*;
 import ARApi.Scaffold.Shared.Enums.AssetType;
 import ARApi.Scaffold.Shared.Enums.Currency;
+import ARApi.Scaffold.Shared.Enums.UnitType;
 import liquibase.repackaged.org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -168,7 +169,7 @@ public class HoldingApiTest {
     }
 
     private PublicAsset ForceAssetFlags(PublicAsset asset, Currency currency, AssetType assetType){
-        asset.asset_type = assetType;
+
 
         if(!asset.getAvailableCurrencies().contains(currency)){
             // rewrite random record to eur
@@ -199,6 +200,7 @@ public class HoldingApiTest {
         postAssetHoldingRequest.shouldDisplayCustomName = true;
         postAssetHoldingRequest.targetPercentage = 10;
         postAssetHoldingRequest.ownedQuantity = 10;
+        postAssetHoldingRequest.selectedUnitType = UnitType.Kilos;
 
         // post
         AddAuth(webTestClient.post().uri("/holding_api/asset_holding/public"))

@@ -23,6 +23,7 @@ public class ARUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
+        var all = userRepository.findAll();
         var optUser = userRepository.findByEmail(username);
         if(optUser.isPresent()){
             return optUser.get();

@@ -447,4 +447,6 @@ databaseChangeLog:
             referencedTableName: public_asset_holding
   - includeAll:
       path: db\changelog\2022\08
+  - includeAll:
+      path: db\changelog\2022\09
 
