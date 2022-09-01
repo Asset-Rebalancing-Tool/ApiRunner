@@ -1,33 +1,22 @@
 package ARApi.Scaffold.Shared.Enums;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public enum UnitType {
     Piece, Ounce, Grams, Kilos, Liters, Milliliters, Unknown;
 
-    // TODO: define properly
-    public UnitType GetUnitTypeIfKnown(AssetType assetType){
-        var availableTypes = GetAvailableUnitTypes(assetType);
-        if(availableTypes.size() == 1){
-            return availableTypes.get(0);
-        }
-        return Unknown;
-    }
-
     /**
      * Some unit types can be converted to other unit types
-     * @param unitType
-     * @return
+     * @return convertible types
      */
-    public static UnitType[] GetConvertibleUnitTypes(UnitType unitType){
+    public UnitType[] GetConvertibleUnitTypes(){
         UnitType[][] convertibleTypeGroups = new UnitType[][]{
                 new UnitType[]{Ounce, Grams, Kilos},
                 new UnitType[]{Liters, Milliliters}
         };
 
-        return Arrays.stream(convertibleTypeGroups).filter(ut -> Arrays.asList(ut).contains(unitType)).findFirst().orElse(new UnitType[]{});
+        return Arrays.stream(convertibleTypeGroups).filter(ut -> Arrays.asList(ut).contains(this)).findFirst().orElse(new UnitType[]{this});
     }
 
     /**
@@ -36,7 +25,7 @@ public enum UnitType {
      * @param assetType
      * @return
      */
-    public static List<UnitType> GetAvailableUnitTypes(AssetType assetType){
+    public static List<UnitType> AvailableForAssetType(AssetType assetType){
         switch (assetType){
             case Etf, Fond, Stock, Crypto -> {
                 return List.of(Piece);

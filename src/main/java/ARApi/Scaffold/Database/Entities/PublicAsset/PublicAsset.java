@@ -3,6 +3,7 @@ package ARApi.Scaffold.Database.Entities.PublicAsset;
 import ARApi.Scaffold.Database.Entities.BaseEntity;
 import ARApi.Scaffold.Shared.Enums.AssetType;
 import ARApi.Scaffold.Shared.Enums.Currency;
+import ARApi.Scaffold.Shared.Enums.UnitType;
 import com.sun.istack.NotNull;
 
 
@@ -20,7 +21,11 @@ public class PublicAsset extends BaseEntity {
     @NotNull
     public String asset_name;
 
+    @NotNull
+    public UnitType unit_type;
+
     @Enumerated(EnumType.STRING)
+    @NotNull
     public AssetType asset_type;
 
     @Column(unique = true)
@@ -31,10 +36,10 @@ public class PublicAsset extends BaseEntity {
     // property of DbAssetPriceRecord => tells hibernate that this property is used for mapping
     // cascade is used when saving and deleting
     @OneToMany(mappedBy= "Asset", cascade = CascadeType.ALL)
-    public Set<PublicAssetPriceRecord> AssetPriceRecords = new HashSet<>();
+    public Set<AssetPriceRecord> AssetPriceRecords = new HashSet<>();
 
     @OneToMany(mappedBy= "Asset", cascade = CascadeType.ALL)
-    public Set<PublicAssetInformation> AssetInformation = new HashSet<>();
+    public Set<AssetInformation> AssetInformation = new HashSet<>();
 
     public long searchHitsTotal = 1;
 

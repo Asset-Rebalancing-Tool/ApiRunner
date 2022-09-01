@@ -1,5 +1,7 @@
 package ARApi.Scaffold.Shared.Enums;
 
+import java.util.List;
+
 public enum AssetType {
     Stock, Fond, Etf, Commodity, PreciousMetals, Crypto, Other;
 
@@ -11,4 +13,6 @@ public enum AssetType {
         }
         return AssetType.Other;
     }
+
+
 }

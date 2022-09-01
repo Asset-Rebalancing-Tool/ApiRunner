@@ -32,7 +32,6 @@ public class AssetHoldingGroup extends BaseUserEntity{
     public boolean InternalPercentagesMatch(){
         double percentageCounter = 0;
         percentageCounter+=PublicAssetHoldings.stream().mapToDouble(value -> value.target_percentage).sum();
-        percentageCounter+=PrivateAssetHoldings.stream().mapToDouble(value -> value.target_percentage).sum();
         return percentageCounter == 100d;
     }
 }

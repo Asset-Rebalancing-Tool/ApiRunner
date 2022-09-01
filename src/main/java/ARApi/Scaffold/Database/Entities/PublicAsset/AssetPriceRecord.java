@@ -2,6 +2,7 @@ package ARApi.Scaffold.Database.Entities.PublicAsset;
 
 import ARApi.Scaffold.Database.Entities.BaseEntity;
 import ARApi.Scaffold.Shared.Enums.Currency;
+import ARApi.Scaffold.Shared.Enums.UnitType;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -11,7 +12,7 @@ import java.util.Comparator;
  * Price record of a publicly sold and registered asset.
  */
 @Entity
-public class PublicAssetPriceRecord extends BaseEntity {
+public class AssetPriceRecord extends BaseEntity {
 
     @ManyToOne
     // set the column name where we store the uuid of the asset
@@ -31,7 +32,7 @@ public class PublicAssetPriceRecord extends BaseEntity {
         return ts_price;
     }
 
-    public static Comparator<PublicAssetPriceRecord> GetComp(){
-        return Comparator.comparing(PublicAssetPriceRecord::GetTimeOfPrice).reversed();
+    public static Comparator<AssetPriceRecord> GetComp(){
+        return Comparator.comparing(AssetPriceRecord::GetTimeOfPrice).reversed();
     }
 }

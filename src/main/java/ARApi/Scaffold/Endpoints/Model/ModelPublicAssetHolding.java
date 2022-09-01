@@ -1,5 +1,6 @@
 package ARApi.Scaffold.Endpoints.Model;
 
+import ARApi.Scaffold.Database.Entities.PublicAsset.HoldingOrigin;
 import ARApi.Scaffold.Database.Entities.PublicAsset.PublicAssetHolding;
 
 public class ModelPublicAssetHolding {
@@ -14,7 +15,7 @@ public class ModelPublicAssetHolding {
 
     public double targetPercentage;
 
-    public boolean brokerConnected;
+    public HoldingOrigin holdingOrigin;
 
     public double ownedQuantity;
 
@@ -23,7 +24,7 @@ public class ModelPublicAssetHolding {
         customName = publicAssetHolding.custom_name;
         displayCustomName = publicAssetHolding.display_custom_name;
         targetPercentage = publicAssetHolding.target_percentage;
-        brokerConnected = publicAssetHolding.broker_connected;
+        holdingOrigin = publicAssetHolding.holding_origin;
         ownedQuantity = publicAssetHolding.owned_quantity;
         holdingUuid = publicAssetHolding.uuid.toString();
     }

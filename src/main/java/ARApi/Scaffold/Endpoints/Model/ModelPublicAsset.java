@@ -1,6 +1,6 @@
 package ARApi.Scaffold.Endpoints.Model;
 
-import ARApi.Scaffold.Database.Entities.PublicAsset.PublicAssetPriceRecord;
+import ARApi.Scaffold.Database.Entities.PublicAsset.AssetPriceRecord;
 import ARApi.Scaffold.Database.Entities.PublicAsset.PublicAsset;
 import ARApi.Scaffold.Shared.Enums.AssetType;
 import ARApi.Scaffold.Shared.Enums.Currency;
@@ -23,7 +23,7 @@ public class ModelPublicAsset {
       isin = dbAsset.isin;
       symbol = dbAsset.symbol;
 
-      var recordComp = Comparator.comparing(PublicAssetPriceRecord::GetTimeOfPrice).reversed();
+      var recordComp = Comparator.comparing(AssetPriceRecord::GetTimeOfPrice).reversed();
 
       // create map
       dbAsset.AssetPriceRecords.stream().sorted(recordComp).forEach(pr -> {
@@ -34,12 +34,14 @@ public class ModelPublicAsset {
          currencyPriceRecordMap.get(pr.currency).add(modelPr);
 
       });
-      assetInformations = dbAsset.AssetInformation.stream().map(ModelPublicAssetInformation::new).filter(mai -> mai.stringValue != null).toList();
+      assetInformation = dbAsset.AssetInformation.stream().map(ModelPublicAssetInformation::new).filter(mai -> mai.stringValue != null).toList();
+      availableUnitTypes = dbAsset.unit_type.GetConvertibleUnitTypes();
+      availableCurrencies = dbAsset.getAvailableCurrencies().toArray(Currency[]::new);
    }
 
    public Map<Currency, List<ModelPublicAssetPriceRecord>> currencyPriceRecordMap = new HashMap<>();
 
-   public List<ModelPublicAssetInformation> assetInformations;
+   public List<ModelPublicAssetInformation> assetInformation;
 
    public String uuid;
 
@@ -52,4 +54,8 @@ public class ModelPublicAsset {
 
    @Nullable
    public String symbol;
+
+   public UnitType[] availableUnitTypes;
+
+   public Currency[] availableCurrencies;
 }

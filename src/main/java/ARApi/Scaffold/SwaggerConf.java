@@ -18,7 +18,6 @@ public class SwaggerConf {
 
     @Bean
     public Docket api() {
-
         return new Docket(DocumentationType.OAS_30)
                 .securitySchemes(Collections.singletonList(HttpAuthenticationScheme.JWT_BEARER_BUILDER
                         .name("JWT")

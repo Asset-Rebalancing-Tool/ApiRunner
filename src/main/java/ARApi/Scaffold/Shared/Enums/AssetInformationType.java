@@ -1,6 +1,6 @@
 package ARApi.Scaffold.Shared.Enums;
 
-import ARApi.Scaffold.Database.Entities.PublicAsset.PublicAssetInformation;
+import ARApi.Scaffold.Database.Entities.PublicAsset.AssetInformation;
 import ARApi.Scaffold.Endpoints.Model.ModelPublicAssetInformation;
 import org.springframework.util.SerializationUtils;
 
@@ -8,7 +8,7 @@ import java.text.NumberFormat;
 import java.util.Locale;
 
 /**
- * Special information type keys used in {@link PublicAssetInformation} and {@link ModelPublicAssetInformation}
+ * Special information type keys used in {@link AssetInformation} and {@link ModelPublicAssetInformation}
  */
 public enum AssetInformationType {
     MarketCapitalization, Sector, Industry, Region, NumberEmployees;

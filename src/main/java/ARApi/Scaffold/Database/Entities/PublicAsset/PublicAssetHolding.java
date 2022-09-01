@@ -2,6 +2,7 @@ package ARApi.Scaffold.Database.Entities.PublicAsset;
 
 import ARApi.Scaffold.Database.Entities.BaseUserEntity;
 import ARApi.Scaffold.Shared.Enums.Currency;
+import ARApi.Scaffold.Shared.Enums.UnitType;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import javax.persistence.*;
@@ -26,9 +27,12 @@ public class PublicAssetHolding extends BaseUserEntity {
 
     public boolean display_custom_name;
 
-    public boolean broker_connected = false;
+    @Enumerated(EnumType.STRING)
+    public HoldingOrigin holding_origin;
 
-    public Currency currency;
+    public Currency selected_currency;
+
+    public UnitType selected_unit_type;
 
     public void setPublicAsset(UUID asset_uuid, JpaRepository<PublicAsset, UUID> repository){
         public_asset = repository.getReferenceById(asset_uuid);

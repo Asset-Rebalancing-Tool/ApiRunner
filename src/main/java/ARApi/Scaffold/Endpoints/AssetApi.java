@@ -51,8 +51,6 @@ public class AssetApi {
         this.publicAssetFetcher = publicAssetFetcher;
     }
 
-
-
     @PostMapping("/asset/search")
     public List<ModelPublicAsset> SearchAssets(@RequestBody SearchAssetRequest searchAssetRequest) {
 

@@ -1,6 +1,7 @@
 package ARApi.Scaffold.Endpoints;
 
 
+import ARApi.Scaffold.Database.Entities.PublicAsset.HoldingOrigin;
 import ARApi.Scaffold.Database.Entities.User;
 import ARApi.Scaffold.Database.Repos.*;
 import ARApi.Scaffold.Endpoints.Model.*;
@@ -9,6 +10,7 @@ import ARApi.Scaffold.Endpoints.Requests.PostPrivateAssetHoldingRequest;
 import ARApi.Scaffold.Endpoints.Requests.PostPublicAssetHoldingRequest;
 import ARApi.Scaffold.Endpoints.Requests.PrivateCategoryRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -87,8 +89,9 @@ public class HoldingApi {
     @PostMapping("/asset_holding/public")
     public ResponseEntity<ModelPublicAssetHolding> PostPublicAssetHolding(@RequestBody PostPublicAssetHoldingRequest postPublicAssetHoldingRequest) {
         var uuid = UUID.fromString(postPublicAssetHoldingRequest.publicAssetUuid);
-        if (publicAssetHoldingRepository.existsByPublicAssetUuid(uuid, getUserUuid())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "HOLDING_FOR_ASSET_EXISTS");
+
+        if (publicAssetHoldingRepository.holdingExists(uuid, getUserUuid(), HoldingOrigin.ManualEntry)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "HOLDING_EXISTS");
         }
 
         var publicAssetHolding = publicAssetHoldingRepository.save(
@@ -116,8 +119,13 @@ public class HoldingApi {
 
     @PostMapping("/asset_holding/private")
     public ResponseEntity<ModelPrivateAssetHolding> PostPrivateAssetHolding(@RequestBody PostPrivateAssetHoldingRequest postPrivateAssetHoldingRequest) {
-        var privateAssetHolding = privateAssetHoldingRepository.save(postPrivateAssetHoldingRequest.toPrivateAssetHolding(getUserUuid(), userRepository, privateAssetHoldingRepository, publicAssetHoldingRepository));
-        return ResponseEntity.status(HttpStatus.CREATED).body(new ModelPrivateAssetHolding(privateAssetHolding));
+        try{
+            var privateAssetHolding = privateAssetHoldingRepository.save(postPrivateAssetHoldingRequest
+                    .toPrivateAssetHolding(getUserUuid(), userRepository, privateAssetHoldingRepository, publicAssetHoldingRepository));
+            return ResponseEntity.status(HttpStatus.CREATED).body(new ModelPrivateAssetHolding(privateAssetHolding));
+        }catch (DataIntegrityViolationException e){
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "TITLE_ALREADY_EXISTS");
+        }
     }
 
     @GetMapping("/asset_holding/private")

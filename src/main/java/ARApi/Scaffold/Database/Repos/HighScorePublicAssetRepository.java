@@ -13,11 +13,7 @@ import java.util.*;
 @Service
 public class HighScorePublicAssetRepository {
 
-
-
     private final int MIN_FUZZY_SCORE = 3;
-
-
 
     @Autowired
     public PublicAssetRepository publicAssetRepository;

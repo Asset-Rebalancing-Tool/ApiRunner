@@ -1,5 +1,6 @@
 package ARApi.Scaffold.Database.Repos;
 
+import ARApi.Scaffold.Database.Entities.PublicAsset.HoldingOrigin;
 import ARApi.Scaffold.Database.Entities.PublicAsset.PublicAssetHolding;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -13,8 +14,8 @@ import java.util.UUID;
 @Repository
 public interface PublicAssetHoldingRepository extends JpaRepository<PublicAssetHolding, UUID> {
 
-    @Query("select count(opa) > 0 from PublicAssetHolding opa where opa.public_asset.uuid = :asset_uuid and opa.user.uuid = :user_uuid")
-    boolean existsByPublicAssetUuid(@Param("asset_uuid") UUID assetUuid, @Param("user_uuid") UUID userUuid);
+    @Query("select count(opa) > 0 from PublicAssetHolding opa where opa.public_asset.uuid = :asset_uuid and opa.user.uuid = :user_uuid and opa.holding_origin = :holding_origin")
+    boolean holdingExists(@Param("asset_uuid") UUID assetUuid, @Param("user_uuid") UUID userUuid, @Param("holding_origin") HoldingOrigin holdingOrigin);
 
     @Nullable
     @Query("select opa from PublicAssetHolding opa where opa.public_asset.uuid = :asset_uuid and opa.user.uuid = :user_uuid")
