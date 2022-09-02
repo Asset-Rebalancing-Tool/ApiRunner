@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Optional;
 import java.util.UUID;
 
 // TODO: rename everything to possession...
@@ -106,8 +107,16 @@ public class HoldingApi {
     }
 
     @GetMapping("/asset_holding/public")
-    public ModelPublicAssetHolding[] GetPublicAssetHoldings() {
-        var holdings = publicAssetHoldingRepository.GetAssetsOfUser(getUserUuid()).stream().map(ModelPublicAssetHolding::new).toArray(ModelPublicAssetHolding[]::new);
+    public ModelPublicAssetHolding[] GetPublicAssetHoldings(@RequestParam Optional<Boolean> groupless) {
+
+        var userHoldings = publicAssetHoldingRepository.GetAssetsOfUser(getUserUuid());
+        if(groupless.isPresent() && groupless.get()){
+            var groupsOfUser = assetHoldingGroupRepository.GetByUserUuid(getUserUuid());
+            userHoldings = userHoldings.stream().filter(holding -> groupsOfUser.stream().noneMatch(group -> group.ContainsHolding(holding.uuid))).toList();
+        }
+
+        var holdings = userHoldings.stream().map(ModelPublicAssetHolding::new).toArray(ModelPublicAssetHolding[]::new);
+
         return holdings;
     }
 
@@ -129,8 +138,15 @@ public class HoldingApi {
     }
 
     @GetMapping("/asset_holding/private")
-    public ModelPrivateAssetHolding[] GetPrivateAssetHoldings() {
-        return privateAssetHoldingRepository.GetAssetsOfUser(getUserUuid()).stream().map(ModelPrivateAssetHolding::new).toArray(ModelPrivateAssetHolding[]::new);
+    public ModelPrivateAssetHolding[] GetPrivateAssetHoldings(@RequestParam Optional<Boolean> groupless) {
+
+        var userHoldings = privateAssetHoldingRepository.GetAssetsOfUser(getUserUuid());
+        if(groupless.isPresent() && groupless.get()){
+            var groupsOfUser = assetHoldingGroupRepository.GetByUserUuid(getUserUuid());
+            userHoldings = userHoldings.stream().filter(holding -> groupsOfUser.stream().noneMatch(group -> group.ContainsHolding(holding.uuid))).toList();
+        }
+
+        return userHoldings.stream().map(ModelPrivateAssetHolding::new).toArray(ModelPrivateAssetHolding[]::new);
     }
 
     @DeleteMapping("/asset_holding/private/{holdingUuid}")

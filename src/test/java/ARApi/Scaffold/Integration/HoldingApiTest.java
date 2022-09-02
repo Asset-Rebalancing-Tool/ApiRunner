@@ -169,8 +169,6 @@ public class HoldingApiTest {
     }
 
     private PublicAsset ForceAssetFlags(PublicAsset asset, Currency currency, AssetType assetType){
-
-
         if(!asset.getAvailableCurrencies().contains(currency)){
             // rewrite random record to eur
             asset.AssetPriceRecords.stream().findAny().get().currency = currency;
@@ -193,14 +191,15 @@ public class HoldingApiTest {
         ForceAssetFlags(secondAssetToPublish, mainCurrency, AssetType.Commodity);
         // find asset with other currency or create one
 
+        var firstAsset = assets.removeFirst();
         var postAssetHoldingRequest = new PostPublicAssetHoldingRequest();
-        postAssetHoldingRequest.publicAssetUuid = ForceAssetFlags(assets.removeFirst(), mainCurrency, AssetType.Commodity).uuid.toString();
+        postAssetHoldingRequest.publicAssetUuid = ForceAssetFlags(firstAsset, mainCurrency, AssetType.Commodity).uuid.toString();
         postAssetHoldingRequest.currency = mainCurrency;
         postAssetHoldingRequest.customName = "testname";
         postAssetHoldingRequest.shouldDisplayCustomName = true;
         postAssetHoldingRequest.targetPercentage = 10;
         postAssetHoldingRequest.ownedQuantity = 10;
-        postAssetHoldingRequest.selectedUnitType = UnitType.Kilos;
+        postAssetHoldingRequest.selectedUnitType = firstAsset.unit_type;
 
         // post
         AddAuth(webTestClient.post().uri("/holding_api/asset_holding/public"))
@@ -223,19 +222,24 @@ public class HoldingApiTest {
                 .expectStatus().isEqualTo(HttpStatus.CONFLICT);
 
         // post same success
+        var sameSuccess = ForceAssetFlags(assets.removeFirst(), mainCurrency, AssetType.Commodity);
         postAssetHoldingRequest.currency = mainCurrency;
-        postAssetHoldingRequest.publicAssetUuid = ForceAssetFlags(assets.removeFirst(), mainCurrency, AssetType.Commodity).uuid.toString();
+        postAssetHoldingRequest.selectedUnitType = sameSuccess.unit_type;
+        postAssetHoldingRequest.publicAssetUuid = sameSuccess.uuid.toString();
         AddAuth(webTestClient.post().uri("/holding_api/asset_holding/public"))
                 .body(BodyInserters.fromValue(postAssetHoldingRequest))
                 .exchange()
                 .expectStatus().isCreated();
 
-        // post managed fail
-        postAssetHoldingRequest.publicAssetUuid = ForceAssetFlags(assets.removeFirst(), mainCurrency, AssetType.Etf).uuid.toString();
+        // post another success
+        var anotherSuccess = ForceAssetFlags(assets.removeFirst(), mainCurrency, AssetType.Commodity);
+        postAssetHoldingRequest.currency = mainCurrency;
+        postAssetHoldingRequest.selectedUnitType = anotherSuccess.unit_type;
+        postAssetHoldingRequest.publicAssetUuid = anotherSuccess.uuid.toString();
         AddAuth(webTestClient.post().uri("/holding_api/asset_holding/public"))
                 .body(BodyInserters.fromValue(postAssetHoldingRequest))
                 .exchange()
-                .expectStatus().isBadRequest();
+                .expectStatus().isCreated();
 
         // get
         var holdings = AddAuth(webTestClient.get().uri("/holding_api/asset_holding/public"))

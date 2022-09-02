@@ -5,6 +5,7 @@ import ARApi.Scaffold.Database.Entities.PublicAsset.PublicAssetHolding;
 
 import javax.persistence.*;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 public class AssetHoldingGroup extends BaseUserEntity{
@@ -33,5 +34,10 @@ public class AssetHoldingGroup extends BaseUserEntity{
         double percentageCounter = 0;
         percentageCounter+=PublicAssetHoldings.stream().mapToDouble(value -> value.target_percentage).sum();
         return percentageCounter == 100d;
+    }
+
+    public boolean ContainsHolding(UUID holdingUuid){
+        return PublicAssetHoldings.stream().anyMatch(holding -> holding.uuid.equals(holdingUuid)) ||
+                PrivateAssetHoldings.stream().anyMatch(holding -> holding.uuid.equals(holdingUuid));
     }
 }
