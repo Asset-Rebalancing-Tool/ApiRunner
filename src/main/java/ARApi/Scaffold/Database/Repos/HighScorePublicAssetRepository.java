@@ -60,8 +60,7 @@ public class HighScorePublicAssetRepository {
         // find the highest fuzzy score based on other fields
         var symbolScore = asset.symbol == null ? 0 : fuzzyScore.fuzzyScore(asset.symbol, SearchString);
         var assetNameScore = asset.asset_name == null ? 0 : fuzzyScore.fuzzyScore(asset.asset_name, SearchString);
-        var isinScore = asset.isin == null ? 0 : fuzzyScore.fuzzyScore(asset.isin, SearchString);
 
-        return Collections.max(Arrays.asList(symbolScore, assetNameScore, isinScore));
+        return Collections.max(Arrays.asList(symbolScore, assetNameScore));
     }
 }
