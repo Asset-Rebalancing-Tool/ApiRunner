@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1662148028167-1
+      author: tobi (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addColumn:
+            columns:
+              - column:
+                  name: icon
+                  type: BLOB
+            tableName: public_asset
+

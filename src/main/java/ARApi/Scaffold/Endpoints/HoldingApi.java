@@ -6,7 +6,7 @@ import ARApi.Scaffold.Database.Entities.User;
 import ARApi.Scaffold.Database.Repos.*;
 import ARApi.Scaffold.Endpoints.Model.*;
 import ARApi.Scaffold.Endpoints.Requests.PostAssetHoldingGroupRequest;
-import ARApi.Scaffold.Endpoints.Requests.PostPrivateAssetHoldingRequest;
+import ARApi.Scaffold.Endpoints.Requests.PrivateAssetHoldingRequest;
 import ARApi.Scaffold.Endpoints.Requests.PostPublicAssetHoldingRequest;
 import ARApi.Scaffold.Endpoints.Requests.PrivateCategoryRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -127,14 +127,19 @@ public class HoldingApi {
     }
 
     @PostMapping("/asset_holding/private")
-    public ResponseEntity<ModelPrivateAssetHolding> PostPrivateAssetHolding(@RequestBody PostPrivateAssetHoldingRequest postPrivateAssetHoldingRequest) {
+    public ResponseEntity<ModelPrivateAssetHolding> PostPrivateAssetHolding(@RequestBody PrivateAssetHoldingRequest privateAssetHoldingRequest) {
         try{
-            var privateAssetHolding = privateAssetHoldingRepository.save(postPrivateAssetHoldingRequest
+            var privateAssetHolding = privateAssetHoldingRepository.save(privateAssetHoldingRequest
                     .toPrivateAssetHolding(getUserUuid(), userRepository));
             return ResponseEntity.status(HttpStatus.CREATED).body(new ModelPrivateAssetHolding(privateAssetHolding));
         }catch (DataIntegrityViolationException e){
             throw new ResponseStatusException(HttpStatus.CONFLICT, "TITLE_ALREADY_EXISTS");
         }
+    }
+
+    @PatchMapping("/asset_holding/private/{holdingUuid}")
+    public ResponseEntity<ModelPrivateAssetHolding> PatchPrivateAssetHolding(@RequestBody PrivateAssetHoldingRequest privateAssetHoldingRequest){
+        return null;
     }
 
     @GetMapping("/asset_holding/private")

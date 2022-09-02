@@ -30,6 +30,7 @@ public class ModelPublicAsset {
       assetInformation = dbAsset.AssetInformation.stream().map(ModelPublicAssetInformation::new).filter(mai -> mai.stringValue != null).toList();
       availableUnitTypes = dbAsset.unit_type.GetConvertibleUnitTypes();
       availableCurrencies = dbAsset.getAvailableCurrencies().toArray(Currency[]::new);
+      iconBase64 = dbAsset.icon != null ? Base64.getEncoder().encodeToString(dbAsset.icon) : null;
    }
 
    public List<ModelAssetPriceRecord> assetPriceRecords;
@@ -51,4 +52,6 @@ public class ModelPublicAsset {
    public UnitType[] availableUnitTypes;
 
    public Currency[] availableCurrencies;
+
+   public String iconBase64;
 }

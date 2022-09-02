@@ -33,6 +33,9 @@ public class PublicAsset extends BaseEntity {
 
     public String symbol;
 
+    @Lob
+    public byte[] icon;
+
     // property of DbAssetPriceRecord => tells hibernate that this property is used for mapping
     // cascade is used when saving and deleting
     @OneToMany(mappedBy= "Asset", cascade = CascadeType.ALL)

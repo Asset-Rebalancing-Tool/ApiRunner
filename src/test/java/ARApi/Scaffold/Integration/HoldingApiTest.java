@@ -9,7 +9,6 @@ import ARApi.Scaffold.Endpoints.Model.ModelPublicAssetHolding;
 import ARApi.Scaffold.Endpoints.Requests.*;
 import ARApi.Scaffold.Shared.Enums.AssetType;
 import ARApi.Scaffold.Shared.Enums.Currency;
-import ARApi.Scaffold.Shared.Enums.UnitType;
 import liquibase.repackaged.org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -99,7 +98,7 @@ public class HoldingApiTest {
 
     @Test
     public void PrivateAssetHolding(){
-        var postRequest = new PostPrivateAssetHoldingRequest();
+        var postRequest = new PrivateAssetHoldingRequest();
         postRequest.assetType = AssetType.Etf;
         postRequest.currentPrice = 20;
         postRequest.title = "test private asset";
