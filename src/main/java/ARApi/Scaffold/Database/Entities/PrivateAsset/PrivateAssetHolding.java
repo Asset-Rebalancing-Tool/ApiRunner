@@ -19,4 +19,6 @@ public class PrivateAssetHolding extends BaseUserEntity {
     public AssetType asset_type;
 
     public double current_price;
+
+    public double target_percentage;
 }

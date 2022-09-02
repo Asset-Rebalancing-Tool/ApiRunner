@@ -17,12 +17,15 @@ public class PostPrivateAssetHoldingRequest {
 
     public String title;
 
-    public PrivateAssetHolding toPrivateAssetHolding(UUID userUuid, UserRepository userRepository, PrivateAssetHoldingRepository privateOwnedAssetRepository, PublicAssetHoldingRepository publicOwnedAssetRepository){
+    public double targetPrecentage;
+
+    public PrivateAssetHolding toPrivateAssetHolding(UUID userUuid, UserRepository userRepository){
         PrivateAssetHolding privateAssetHolding = new PrivateAssetHolding();
         privateAssetHolding.asset_type = assetType;
         privateAssetHolding.title = title;
         privateAssetHolding.current_price = currentPrice;
         privateAssetHolding.SetUser(userUuid, userRepository);
+        privateAssetHolding.target_percentage = targetPrecentage;
 
         return privateAssetHolding;
     }

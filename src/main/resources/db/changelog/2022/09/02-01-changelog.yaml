@@ -1,0 +1,22 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1662123211650-1
+      author: tobi (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addColumn:
+            columns:
+              - column:
+                  name: target_percentage
+                  type: DOUBLE
+            tableName: private_asset_holding
+  - changeSet:
+      id: 1662123211650-2
+      author: tobi (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addNotNullConstraint:
+            columnDataType: DOUBLE
+            columnName: target_percentage
+            tableName: private_asset_holding
+

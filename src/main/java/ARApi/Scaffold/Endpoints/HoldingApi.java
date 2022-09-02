@@ -130,7 +130,7 @@ public class HoldingApi {
     public ResponseEntity<ModelPrivateAssetHolding> PostPrivateAssetHolding(@RequestBody PostPrivateAssetHoldingRequest postPrivateAssetHoldingRequest) {
         try{
             var privateAssetHolding = privateAssetHoldingRepository.save(postPrivateAssetHoldingRequest
-                    .toPrivateAssetHolding(getUserUuid(), userRepository, privateAssetHoldingRepository, publicAssetHoldingRepository));
+                    .toPrivateAssetHolding(getUserUuid(), userRepository));
             return ResponseEntity.status(HttpStatus.CREATED).body(new ModelPrivateAssetHolding(privateAssetHolding));
         }catch (DataIntegrityViolationException e){
             throw new ResponseStatusException(HttpStatus.CONFLICT, "TITLE_ALREADY_EXISTS");
