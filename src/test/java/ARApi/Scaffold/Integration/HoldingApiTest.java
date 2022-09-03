@@ -1,6 +1,9 @@
 package ARApi.Scaffold.Integration;
 
+import ARApi.Scaffold.AuthTestUserService;
+import ARApi.Scaffold.BaseIntegrationTest;
 import ARApi.Scaffold.Database.Entities.PublicAsset.PublicAsset;
+import ARApi.Scaffold.Database.Entities.PublicAsset.PublicAssetHolding;
 import ARApi.Scaffold.Database.Repos.PublicAssetRepository;
 import ARApi.Scaffold.Endpoints.Model.ModelAssetHoldingGroup;
 import ARApi.Scaffold.Endpoints.Model.ModelPrivateAssetHolding;
@@ -27,41 +30,26 @@ import java.util.Arrays;
 import static org.junit.jupiter.api.Assertions.fail;
 
 
-@AutoConfigureWebTestClient
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class HoldingApiTest {
 
-    @Autowired
-    private WebTestClient webTestClient;
+public class HoldingApiTest extends BaseIntegrationTest {
 
     @Autowired
     private PublicAssetRepository publicAssetRepository;
+    
+    @Test
+    public void patchHoldings(){
+        PublicAssetHolding();
+        PrivateAssetHolding();
 
-    private static String token = null;
+        var publicHoldings = authService.AddAuth(webTestClient.get().uri("/holding_api/asset_holding/public")).exchange().expectBody(ModelPublicAssetHolding[].class).returnResult().getResponseBody();
+        if(publicHoldings.length < 2){
+            fail("too little assets in test db to perform");
+        }
 
-    @BeforeEach
-    public void RegisterAndGetToken(){
-        if(token != null) return;
-
-        var authRequest = new AuthRequest();
-        authRequest.email = RandomStringUtils.randomAlphanumeric(10) + "@test.com";
-        authRequest.password = "testpassword";
-
-        webTestClient.post().uri("/auth_api/register")
-                .contentType(MediaType.APPLICATION_JSON).body(BodyInserters.fromValue(authRequest))
-                .exchange().expectStatus().isCreated();
-
-        var result = webTestClient.post().uri("/auth_api/login")
-                .body(BodyInserters.fromValue(authRequest)).exchange().expectStatus().isOk().expectBody(String.class);
-
-        token = "Bearer " + result.returnResult().getResponseBody();
-    }
-
-    private  WebTestClient.RequestBodySpec AddAuth(WebTestClient.RequestBodySpec spec){
-        return spec.header("Authorization", token);
-    }
-    private <T extends WebTestClient.RequestHeadersSpec<T>> WebTestClient.RequestHeadersSpec<T> AddAuth(WebTestClient.RequestHeadersSpec<T> spec){
-        return spec.header("Authorization", token);
+        var privateHoldings = authService.AddAuth(webTestClient.get().uri("/holding_api/asset_holding/private")).exchange().expectBody(ModelPrivateAssetHolding[].class).returnResult().getResponseBody();
+        if(privateHoldings.length < 2){
+            fail("too little assets in test db to perform");
+        }
     }
 
     @Test
@@ -69,7 +57,7 @@ public class HoldingApiTest {
         PublicAssetHolding();
 
         // get inserted holdings
-        var publicHoldings = AddAuth(webTestClient.get().uri("/holding_api/asset_holding/public")).exchange().expectBody(ModelPublicAssetHolding[].class).returnResult().getResponseBody();
+        var publicHoldings = authService.AddAuth(webTestClient.get().uri("/holding_api/asset_holding/public")).exchange().expectBody(ModelPublicAssetHolding[].class).returnResult().getResponseBody();
 
         var request = new PostAssetHoldingGroupRequest();
 
@@ -82,17 +70,17 @@ public class HoldingApiTest {
         request.targetPercentage = 50;
 
         // post
-        var holdingGroup = AddAuth(webTestClient.post().uri("/holding_api/asset_holding/group")).body(BodyInserters.fromValue(request))
+        var holdingGroup = authService.AddAuth(webTestClient.post().uri("/holding_api/asset_holding/group")).body(BodyInserters.fromValue(request))
                 .exchange().expectBody(ModelAssetHoldingGroup.class).returnResult().getResponseBody();
         Assert.notNull(holdingGroup, "holding group can't be null");
 
         // get
-        var holdingGroups = AddAuth(webTestClient.get().uri("/holding_api/asset_holding/group")).exchange()
+        var holdingGroups = authService.AddAuth(webTestClient.get().uri("/holding_api/asset_holding/group")).exchange()
                 .expectBody(ModelAssetHoldingGroup[].class).returnResult().getResponseBody();
         Assert.notEmpty(holdingGroups, "holding groups should at least return the one created");
 
         // delete
-        AddAuth(webTestClient.delete().uri("/holding_api/asset_holding/group/" + holdingGroups[0].uuid)).exchange()
+        authService.AddAuth(webTestClient.delete().uri("/holding_api/asset_holding/group/" + holdingGroups[0].uuid)).exchange()
                 .expectStatus().isOk();
     }
 
@@ -100,13 +88,13 @@ public class HoldingApiTest {
     public void PrivateAssetHolding(){
         var postRequest = new PrivateAssetHoldingRequest();
         postRequest.assetType = AssetType.Etf;
-        postRequest.currentPrice = 20;
+        postRequest.currentPrice = 20d;
         postRequest.title = "test private asset";
 
         var endpoint = "/holding_api/asset_holding/private";
 
         // post
-        var postedHolding = AddAuth(webTestClient.post().uri(endpoint))
+        var postedHolding = authService.AddAuth(webTestClient.post().uri(endpoint))
                 .body(BodyInserters.fromValue(postRequest))
                 .exchange()
                 .expectStatus().isCreated()
@@ -116,13 +104,13 @@ public class HoldingApiTest {
         Assert.notNull(postedHolding, "posted holding is null");
 
         // post name conflict
-        AddAuth(webTestClient.post().uri(endpoint)).body(BodyInserters.fromValue(postRequest))
+        authService.AddAuth(webTestClient.post().uri(endpoint)).body(BodyInserters.fromValue(postRequest))
                 .exchange()
                 .expectStatus().isEqualTo(HttpStatus.CONFLICT);
 
         // post working second
         postRequest.title = "heuhuee";
-        AddAuth(webTestClient.post().uri(endpoint))
+        authService.AddAuth(webTestClient.post().uri(endpoint))
                 .body(BodyInserters.fromValue(postRequest))
                 .exchange()
                 .expectStatus().isCreated()
@@ -130,14 +118,14 @@ public class HoldingApiTest {
                 .returnResult().getResponseBody();
 
         // get
-        var holdings = AddAuth(webTestClient.get().uri(endpoint))
+        var holdings = authService.AddAuth(webTestClient.get().uri(endpoint))
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody(ModelPrivateAssetHolding[].class).returnResult().getResponseBody();
         Assert.notEmpty(holdings, "holdings are empty");
 
         // delete
-        AddAuth(webTestClient.delete().uri(endpoint + "/" + postedHolding.holdingUuid))
+        authService.AddAuth(webTestClient.delete().uri(endpoint + "/" + postedHolding.holdingUuid))
                 .exchange()
                 .expectStatus().isOk();
     }
@@ -148,13 +136,13 @@ public class HoldingApiTest {
         request.categoryName = "testcat";
 
         // post
-        AddAuth(webTestClient.post().uri("/holding_api/category"))
+        authService.AddAuth(webTestClient.post().uri("/holding_api/category"))
                 .body(BodyInserters.fromValue(request))
                 .exchange()
                 .expectStatus().isCreated();
 
         // get
-        var result = AddAuth(webTestClient.get().uri("/holding_api/category"))
+        var result = authService.AddAuth(webTestClient.get().uri("/holding_api/category"))
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody(ModelPrivateCategory[].class).returnResult().getResponseBody();
@@ -162,7 +150,7 @@ public class HoldingApiTest {
         Assert.notEmpty(result, "Categories empty even tho one just got posted");
 
         // delete
-        AddAuth(webTestClient.delete().uri("/holding_api/category/" + result[0].categoryUuid))
+        authService.AddAuth(webTestClient.delete().uri("/holding_api/category/" + result[0].categoryUuid))
                 .exchange()
                 .expectStatus().isOk();
     }
@@ -177,7 +165,6 @@ public class HoldingApiTest {
         return asset;
     }
 
-
     public void PublicAssetHolding(){
         var assets = new ArrayDeque<>(publicAssetRepository.GetFullAssets());
         if(assets.size() < 4){
@@ -191,23 +178,23 @@ public class HoldingApiTest {
         // find asset with other currency or create one
 
         var firstAsset = assets.removeFirst();
-        var postAssetHoldingRequest = new PostPublicAssetHoldingRequest();
+        var postAssetHoldingRequest = new PublicAssetHoldingRequest();
         postAssetHoldingRequest.publicAssetUuid = ForceAssetFlags(firstAsset, mainCurrency).uuid.toString();
         postAssetHoldingRequest.currency = mainCurrency;
         postAssetHoldingRequest.customName = "testname";
         postAssetHoldingRequest.shouldDisplayCustomName = true;
-        postAssetHoldingRequest.targetPercentage = 10;
-        postAssetHoldingRequest.ownedQuantity = 10;
+        postAssetHoldingRequest.targetPercentage = 10d;
+        postAssetHoldingRequest.ownedQuantity = 10d;
         postAssetHoldingRequest.selectedUnitType = firstAsset.unit_type;
 
         // post
-        AddAuth(webTestClient.post().uri("/holding_api/asset_holding/public"))
+        authService.AddAuth(webTestClient.post().uri("/holding_api/asset_holding/public"))
                 .body(BodyInserters.fromValue(postAssetHoldingRequest))
                 .exchange()
                 .expectStatus().isCreated();
 
         // post duplicate
-        AddAuth(webTestClient.post().uri("/holding_api/asset_holding/public"))
+        authService.AddAuth(webTestClient.post().uri("/holding_api/asset_holding/public"))
                 .body(BodyInserters.fromValue(postAssetHoldingRequest))
                 .exchange()
                 .expectStatus().isEqualTo(HttpStatus.CONFLICT);
@@ -215,7 +202,7 @@ public class HoldingApiTest {
         // post different currency
         postAssetHoldingRequest.currency = subCurrency;
         postAssetHoldingRequest.publicAssetUuid = ForceAssetFlags(assets.removeFirst(), subCurrency).uuid.toString();
-        AddAuth(webTestClient.post().uri("/holding_api/asset_holding/public"))
+        authService.AddAuth(webTestClient.post().uri("/holding_api/asset_holding/public"))
                 .body(BodyInserters.fromValue(postAssetHoldingRequest))
                 .exchange()
                 .expectStatus().isEqualTo(HttpStatus.CONFLICT);
@@ -225,7 +212,7 @@ public class HoldingApiTest {
         postAssetHoldingRequest.currency = mainCurrency;
         postAssetHoldingRequest.selectedUnitType = sameSuccess.unit_type;
         postAssetHoldingRequest.publicAssetUuid = sameSuccess.uuid.toString();
-        AddAuth(webTestClient.post().uri("/holding_api/asset_holding/public"))
+        authService.AddAuth(webTestClient.post().uri("/holding_api/asset_holding/public"))
                 .body(BodyInserters.fromValue(postAssetHoldingRequest))
                 .exchange()
                 .expectStatus().isCreated();
@@ -235,13 +222,13 @@ public class HoldingApiTest {
         postAssetHoldingRequest.currency = mainCurrency;
         postAssetHoldingRequest.selectedUnitType = anotherSuccess.unit_type;
         postAssetHoldingRequest.publicAssetUuid = anotherSuccess.uuid.toString();
-        AddAuth(webTestClient.post().uri("/holding_api/asset_holding/public"))
+        authService.AddAuth(webTestClient.post().uri("/holding_api/asset_holding/public"))
                 .body(BodyInserters.fromValue(postAssetHoldingRequest))
                 .exchange()
                 .expectStatus().isCreated();
 
         // get
-        var holdings = AddAuth(webTestClient.get().uri("/holding_api/asset_holding/public"))
+        var holdings = authService.AddAuth(webTestClient.get().uri("/holding_api/asset_holding/public"))
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody( ModelPublicAssetHolding[].class)
@@ -250,7 +237,7 @@ public class HoldingApiTest {
         Assert.notEmpty(holdings, "posted holding should be returned");
 
         // delete
-        AddAuth(webTestClient.delete().uri("/holding_api/asset_holding/public/" + Arrays.stream(holdings).findAny().get().holdingUuid))
+        authService.AddAuth(webTestClient.delete().uri("/holding_api/asset_holding/public/" + Arrays.stream(holdings).findAny().get().holdingUuid))
                 .exchange()
                 .expectStatus().isOk();
     }

@@ -16,21 +16,26 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class PostPublicAssetHoldingRequest {
+public class PublicAssetHoldingRequest {
 
     public String publicAssetUuid;
 
     public String customName;
 
-    public double ownedQuantity;
+    public Double ownedQuantity;
 
-    public double targetPercentage;
+    public Double targetPercentage;
 
-    public boolean shouldDisplayCustomName;
+    public Boolean shouldDisplayCustomName;
 
     public Currency currency;
 
     public UnitType selectedUnitType;
+
+    public PublicAssetHolding patchAssetHolding(PublicAssetHolding publicAssetHolding){
+        setEditableFields(publicAssetHolding);
+        return publicAssetHolding;
+    }
 
     public PublicAssetHolding toPublicAssetHolding(UUID userUuid, UserRepository userRepository, PublicAssetHoldingRepository publicAssetHoldingsRepo, PublicAssetRepository publicAssetRepository, PrivateAssetHoldingRepository privateOwnedAssetRepository){
 
@@ -57,14 +62,26 @@ public class PostPublicAssetHoldingRequest {
         publicOwnedAsset.SetUser(userUuid, userRepository);
 
         publicOwnedAsset.public_asset = publicAsset;
-        publicOwnedAsset.target_percentage = targetPercentage;
-        publicOwnedAsset.owned_quantity = ownedQuantity;
-        publicOwnedAsset.display_custom_name = shouldDisplayCustomName;
-        publicOwnedAsset.custom_name = customName;
-        publicOwnedAsset.selected_currency = currency;
-        publicOwnedAsset.selected_unit_type = selectedUnitType;
         publicOwnedAsset.holding_origin = HoldingOrigin.ManualEntry;
 
+        setEditableFields(publicOwnedAsset);
+
         return publicOwnedAsset;
+    }
+
+    private void setEditableFields(PublicAssetHolding publicOwnedAsset){
+
+        var notEditableFieldsSpecified = ownedQuantity != null || selectedUnitType != null || currency != null;
+        if(publicOwnedAsset.holding_origin != HoldingOrigin.ManualEntry && notEditableFieldsSpecified){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Cannot patch some specified fields on non manual holding");
+        }
+
+        if(ownedQuantity != null) publicOwnedAsset.owned_quantity = ownedQuantity;
+        if(currency != null) publicOwnedAsset.selected_currency = currency;
+        if(selectedUnitType != null) publicOwnedAsset.selected_unit_type = selectedUnitType;
+
+        if(targetPercentage != null) publicOwnedAsset.target_percentage = targetPercentage;
+        if(shouldDisplayCustomName != null) publicOwnedAsset.display_custom_name = shouldDisplayCustomName;
+        if(customName != null)publicOwnedAsset.custom_name = customName;
     }
 }

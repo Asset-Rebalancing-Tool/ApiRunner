@@ -7,7 +7,7 @@ import ARApi.Scaffold.Database.Repos.*;
 import ARApi.Scaffold.Endpoints.Model.*;
 import ARApi.Scaffold.Endpoints.Requests.PostAssetHoldingGroupRequest;
 import ARApi.Scaffold.Endpoints.Requests.PrivateAssetHoldingRequest;
-import ARApi.Scaffold.Endpoints.Requests.PostPublicAssetHoldingRequest;
+import ARApi.Scaffold.Endpoints.Requests.PublicAssetHoldingRequest;
 import ARApi.Scaffold.Endpoints.Requests.PrivateCategoryRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -88,15 +88,15 @@ public class HoldingApi {
     }
 
     @PostMapping("/asset_holding/public")
-    public ResponseEntity<ModelPublicAssetHolding> PostPublicAssetHolding(@RequestBody PostPublicAssetHoldingRequest postPublicAssetHoldingRequest) {
-        var uuid = UUID.fromString(postPublicAssetHoldingRequest.publicAssetUuid);
+    public ResponseEntity<ModelPublicAssetHolding> PostPublicAssetHolding(@RequestBody PublicAssetHoldingRequest publicAssetHoldingRequest) {
+        var uuid = UUID.fromString(publicAssetHoldingRequest.publicAssetUuid);
 
         if (publicAssetHoldingRepository.holdingExists(uuid, getUserUuid(), HoldingOrigin.ManualEntry)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "HOLDING_EXISTS");
         }
 
         var publicAssetHolding = publicAssetHoldingRepository.save(
-                postPublicAssetHoldingRequest.toPublicAssetHolding(getUserUuid(),
+                publicAssetHoldingRequest.toPublicAssetHolding(getUserUuid(),
                         userRepository,
                         publicAssetHoldingRepository,
                         publicAssetRepository,
@@ -137,9 +137,26 @@ public class HoldingApi {
         }
     }
 
+    @PatchMapping("/asset_holding/public/{holdingUuid}")
+    public ResponseEntity<ModelPublicAssetHolding> PatchPublicAssetHolding(@RequestBody PublicAssetHoldingRequest publicAssetHoldingRequest, @PathVariable String holdingUuid){
+        var uuid = UUID.fromString(holdingUuid);
+        var assetHolding = publicAssetHoldingRepository.findById(uuid)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No holding found for uuid"));
+
+        assetHolding = publicAssetHoldingRepository.saveAndFlush(publicAssetHoldingRequest.patchAssetHolding(assetHolding));
+
+        return ResponseEntity.ok(new ModelPublicAssetHolding(assetHolding));
+    }
+
     @PatchMapping("/asset_holding/private/{holdingUuid}")
-    public ResponseEntity<ModelPrivateAssetHolding> PatchPrivateAssetHolding(@RequestBody PrivateAssetHoldingRequest privateAssetHoldingRequest){
-        return null;
+    public ResponseEntity<ModelPrivateAssetHolding> PatchPrivateAssetHolding(@RequestBody PrivateAssetHoldingRequest holdingRequest, @PathVariable String holdingUuid){
+        var uuid = UUID.fromString(holdingUuid);
+        var assetHolding = privateAssetHoldingRepository.findById(uuid)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No holding found for uuid"));
+
+        assetHolding = privateAssetHoldingRepository.saveAndFlush(holdingRequest.patchPrivateAssetHolding(assetHolding));
+
+        return ResponseEntity.ok(new ModelPrivateAssetHolding(assetHolding));
     }
 
     @GetMapping("/asset_holding/private")

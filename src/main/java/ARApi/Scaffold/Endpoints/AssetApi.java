@@ -5,28 +5,20 @@ import ARApi.Scaffold.AssetFetchers.IPublicAssetFetcher;
 import ARApi.Scaffold.Database.Entities.PublicAsset.PublicAsset;
 
 
-import ARApi.Scaffold.Database.Entities.User;
-import ARApi.Scaffold.Database.Repos.HighScorePublicAssetRepository;
+import ARApi.Scaffold.Database.Repos.PublicAssetMatcher;
 import ARApi.Scaffold.Database.Entities.DuplicateAwareInserter;
 import ARApi.Scaffold.Endpoints.Model.ModelPublicAsset;
 import ARApi.Scaffold.Endpoints.Requests.SearchAssetRequest;
-import ARApi.Scaffold.Services.StringProcessingService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import ARApi.Scaffold.Services.SearchSupervisor;
+import ARApi.Scaffold.Services.SearchCompareHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
-import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.ReactiveSecurityContextHolder;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.security.Principal;
 import java.util.*;
 
 @RestController
@@ -38,17 +30,22 @@ public class AssetApi {
 
     private final int MIN_SEARCH_STRING_LENGHT = 3;
 
-    private StringProcessingService fuzzyScore;
+    private final int MAX_SEARCH_STRING_LENGHT = 255;
 
-    private HighScorePublicAssetRepository highScorePublicAssetRepository;
+    private SearchCompareHelper fuzzyScore;
+
+    private PublicAssetMatcher publicAssetMatcher;
 
     private IPublicAssetFetcher publicAssetFetcher;
 
+    private final SearchSupervisor searchSupervisor;
+
     @Autowired
-    public AssetApi(StringProcessingService fuzzyScore, HighScorePublicAssetRepository highScorePublicAssetRepository, IPublicAssetFetcher publicAssetFetcher) {
+    public AssetApi(SearchCompareHelper fuzzyScore, PublicAssetMatcher publicAssetMatcher, IPublicAssetFetcher publicAssetFetcher, SearchSupervisor searchSupervisor) {
         this.fuzzyScore = fuzzyScore;
-        this.highScorePublicAssetRepository = highScorePublicAssetRepository;
+        this.publicAssetMatcher = publicAssetMatcher;
         this.publicAssetFetcher = publicAssetFetcher;
+        this.searchSupervisor = searchSupervisor;
     }
 
     @PostMapping("/asset/search")
@@ -56,32 +53,37 @@ public class AssetApi {
 
         if(searchAssetRequest.SearchString.length() < MIN_SEARCH_STRING_LENGHT){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "SearchString has to be longer than " + (MIN_SEARCH_STRING_LENGHT -1));
+                    "searchString has to be  " + MIN_SEARCH_STRING_LENGHT + " or higher");
         }
 
-        var matchingResult = highScorePublicAssetRepository.GetMatchingResult(searchAssetRequest.SearchString);
-        PublicAsset fullMatch = matchingResult.a;
-        List<HighScoreAsset> highScoreAssets = matchingResult.b;
+        if(searchAssetRequest.SearchString.length() > MAX_SEARCH_STRING_LENGHT){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "searchString cannot be longer than " + MAX_SEARCH_STRING_LENGHT);
+        }
 
-        highScoreAssets.forEach(ha -> highScorePublicAssetRepository.publicAssetRepository.IncreaseSearchHitCount(ha.publicAsset.uuid));
+        var matchingResult = publicAssetMatcher.GetMatchingResult(searchAssetRequest.SearchString);
+
+        matchingResult.looseMatches.forEach(ha -> publicAssetMatcher.publicAssetRepository.IncreaseSearchHitCount(ha.uuid));
 
         // check if db results are satisfactory enough ro return
-        if (fullMatch != null || highScoreAssets.size() >= MIN_FUZZY_MATCHES) {
+        // or if fetch is not permitted
+        if (matchingResult.exactMatch != null || matchingResult.looseMatches.size() >= MIN_FUZZY_MATCHES
+                || !searchSupervisor.fetchPermitted(fuzzyScore.Process(searchAssetRequest.SearchString))) {
             var modelAssetList = new ArrayList<ModelPublicAsset>();
-            if (fullMatch != null) {
-                modelAssetList.add(0, new ModelPublicAsset(fullMatch));
+            if (matchingResult.exactMatch != null) {
+                modelAssetList.add(0, new ModelPublicAsset(matchingResult.exactMatch));
             }
-            highScoreAssets.forEach(hA -> modelAssetList.add(new ModelPublicAsset(hA.publicAsset)));
+            matchingResult.looseMatches.forEach(pa -> modelAssetList.add(new ModelPublicAsset(pa)));
 
             return modelAssetList;
         }
-
+        
         // run fetchers to get information of asset
         var fetchedAssets = publicAssetFetcher.FetchViaSearchString(fuzzyScore.Process(searchAssetRequest.SearchString));
 
         // insert fetched assets safely
-        var newAssets = DuplicateAwareInserter.InsertAll(highScorePublicAssetRepository.publicAssetRepository, fetchedAssets,
-                failedInsert -> highScorePublicAssetRepository.publicAssetRepository.findByIsin(failedInsert.isin));
+        var newAssets = DuplicateAwareInserter.InsertAll(publicAssetMatcher.publicAssetRepository, fetchedAssets,
+                failedInsert -> publicAssetMatcher.publicAssetRepository.findByIsin(failedInsert.isin));
 
         // map to model and return
         return newAssets.stream().map(ModelPublicAsset::new).toList();

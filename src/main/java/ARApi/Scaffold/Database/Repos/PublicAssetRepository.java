@@ -1,8 +1,6 @@
 package ARApi.Scaffold.Database.Repos;
 
 import ARApi.Scaffold.Database.Entities.PublicAsset.PublicAsset;
-import ARApi.Scaffold.Endpoints.HighScoreAsset;
-import liquibase.pro.packaged.Q;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

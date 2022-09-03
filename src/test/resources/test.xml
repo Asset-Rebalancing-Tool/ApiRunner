@@ -6,12 +6,12 @@
     <bean class="ARApi.Scaffold.AssetFetchers.DbAssetFetcher"/>
     <bean class="ARApi.Scaffold.AssetFetchers.AssetFetcherManager"/>
     <bean class="ARApi.Scaffold.WebDriver.LocalChromeProvider"/>
-    <bean class="ARApi.Scaffold.Services.StringProcessingService"/>
+    <bean class="ARApi.Scaffold.Services.SearchCompareHelper"/>
     <bean class="ARApi.Scaffold.Services.LocaleProvider"/>
 
     <jpa:repositories base-package="ARApi.Scaffold.Database.Repos"/>
 
-    <bean class="ARApi.Scaffold.Database.Repos.HighScorePublicAssetRepository"/>
+    <bean class="ARApi.Scaffold.Database.Repos.PublicAssetMatcher"/>
 
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver" />

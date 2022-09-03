@@ -10,12 +10,12 @@ import java.util.Locale;
  * Process strings, compare them / get their fuzzy matching score
  */
 @Service
-public class StringProcessingService {
+public class SearchCompareHelper {
 
     private final Locale locale;
 
     @Autowired
-    public StringProcessingService(LocaleProvider localeProvider) {
+    public SearchCompareHelper(LocaleProvider localeProvider) {
         this.locale = localeProvider.GetLocale();
     }
 

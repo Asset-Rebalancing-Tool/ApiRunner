@@ -1,7 +1,7 @@
 package ARApi.Scaffold.AssetFetchers;
 
 import ARApi.Scaffold.Database.Entities.PublicAsset.PublicAsset;
-import ARApi.Scaffold.Database.Repos.HighScorePublicAssetRepository;
+import ARApi.Scaffold.Database.Repos.PublicAssetMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -13,22 +13,21 @@ import java.util.List;
 public class DbAssetFetcher implements IPublicAssetFetcher {
 
     @Autowired
-    HighScorePublicAssetRepository highScorePublicAssetRepository;
+    PublicAssetMatcher publicAssetMatcher;
 
     @Override
     public List<PublicAsset> FetchViaSearchString(String searchString) {
-        var result = highScorePublicAssetRepository.GetMatchingResult(searchString);
-        var assets = new ArrayList<>(result.b.stream().map(ha -> ha.publicAsset).toList());
-        if(result.a != null){
-            assets.add(0, result.a);
+        var result = publicAssetMatcher.GetMatchingResult(searchString);
+        var assets = result.looseMatches;
+        if(result.exactMatch != null){
+            assets.add(0, result.exactMatch);
         }
-
         return assets;
     }
 
     @Override
     public PublicAsset FetchViaIsin(String isin) {
-        return highScorePublicAssetRepository.publicAssetRepository.findByIsin(isin);
+        return publicAssetMatcher.publicAssetRepository.findByIsin(isin);
     }
 
 }

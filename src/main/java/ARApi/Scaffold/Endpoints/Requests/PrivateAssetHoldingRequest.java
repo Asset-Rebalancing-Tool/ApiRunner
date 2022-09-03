@@ -6,24 +6,35 @@ import ARApi.Scaffold.Shared.Enums.AssetType;
 
 import java.util.UUID;
 
+/**
+ * Is same for POST and PATCH
+ */
 public class PrivateAssetHoldingRequest {
 
     public AssetType assetType;
 
-    public double currentPrice;
+    public Double currentPrice;
 
     public String title;
 
-    public double targetPrecentage;
+    public Double targetPrecentage;
 
     public PrivateAssetHolding toPrivateAssetHolding(UUID userUuid, UserRepository userRepository){
         PrivateAssetHolding privateAssetHolding = new PrivateAssetHolding();
-        privateAssetHolding.asset_type = assetType;
-        privateAssetHolding.title = title;
-        privateAssetHolding.current_price = currentPrice;
+        setEditableFields(privateAssetHolding);
         privateAssetHolding.SetUser(userUuid, userRepository);
-        privateAssetHolding.target_percentage = targetPrecentage;
-
         return privateAssetHolding;
+    }
+
+    public PrivateAssetHolding patchPrivateAssetHolding(PrivateAssetHolding privateAssetHolding){
+        setEditableFields(privateAssetHolding);
+        return privateAssetHolding;
+    }
+
+    private void setEditableFields(PrivateAssetHolding privateAssetHolding){
+        if(assetType != null) privateAssetHolding.asset_type = assetType;
+        if(title != null) privateAssetHolding.title = title;
+        if(currentPrice != null) privateAssetHolding.current_price = currentPrice;
+        if(targetPrecentage != null) privateAssetHolding.target_percentage = targetPrecentage;
     }
 }
