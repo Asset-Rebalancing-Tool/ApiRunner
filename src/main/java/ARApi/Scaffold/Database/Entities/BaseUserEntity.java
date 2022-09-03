@@ -1,12 +1,11 @@
 package ARApi.Scaffold.Database.Entities;
 
 import com.sun.istack.NotNull;
-import org.springframework.data.annotation.PersistenceConstructor;
-import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import javax.persistence.*;
-import java.time.LocalDateTime;
+import javax.persistence.JoinColumn;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.OneToOne;
 import java.util.UUID;
 
 @MappedSuperclass

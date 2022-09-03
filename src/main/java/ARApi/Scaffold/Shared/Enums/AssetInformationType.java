@@ -35,6 +35,6 @@ public enum AssetInformationType {
                 return Long.toString((long) SerializationUtils.deserialize(byteArray));
             }
         }
-        throw new IllegalArgumentException(this.toString() + " type not defined for enum");
+        throw new IllegalArgumentException(this + " type not defined for enum");
     }
 }

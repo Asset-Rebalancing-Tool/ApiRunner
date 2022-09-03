@@ -3,7 +3,10 @@ package ARApi.Scaffold.Database.Entities;
 import ARApi.Scaffold.Database.Entities.PrivateAsset.PrivateAssetHolding;
 import ARApi.Scaffold.Database.Entities.PublicAsset.PublicAssetHolding;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import java.util.Set;
 import java.util.UUID;
 

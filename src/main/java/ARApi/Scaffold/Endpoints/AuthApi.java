@@ -83,7 +83,7 @@ public class AuthApi {
     private String GetJwtForUserPricipal(User user){
         var dbUser = userRepository.findByEmail(user.getUsername()).orElseGet(ARApi.Scaffold.Database.Entities.User::new);
 
-        var secret  = environment.getProperty(Constants.ENV_VAR_JWT_SECRET);;
+        var secret  = environment.getProperty(Constants.ENV_VAR_JWT_SECRET);
 
         Algorithm algorithm = Algorithm.HMAC256(secret);
 

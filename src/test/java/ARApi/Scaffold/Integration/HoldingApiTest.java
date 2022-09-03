@@ -1,26 +1,21 @@
 package ARApi.Scaffold.Integration;
 
-import ARApi.Scaffold.AuthTestUserService;
 import ARApi.Scaffold.BaseIntegrationTest;
 import ARApi.Scaffold.Database.Entities.PublicAsset.PublicAsset;
-import ARApi.Scaffold.Database.Entities.PublicAsset.PublicAssetHolding;
 import ARApi.Scaffold.Database.Repos.PublicAssetRepository;
 import ARApi.Scaffold.Endpoints.Model.ModelAssetHoldingGroup;
 import ARApi.Scaffold.Endpoints.Model.ModelPrivateAssetHolding;
 import ARApi.Scaffold.Endpoints.Model.ModelPrivateCategory;
 import ARApi.Scaffold.Endpoints.Model.ModelPublicAssetHolding;
-import ARApi.Scaffold.Endpoints.Requests.*;
+import ARApi.Scaffold.Endpoints.Requests.PostAssetHoldingGroupRequest;
+import ARApi.Scaffold.Endpoints.Requests.PrivateAssetHoldingRequest;
+import ARApi.Scaffold.Endpoints.Requests.PrivateCategoryRequest;
+import ARApi.Scaffold.Endpoints.Requests.PublicAssetHoldingRequest;
 import ARApi.Scaffold.Shared.Enums.AssetType;
 import ARApi.Scaffold.Shared.Enums.Currency;
-import liquibase.repackaged.org.apache.commons.lang3.RandomStringUtils;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.util.Assert;
 import org.springframework.web.reactive.function.BodyInserters;
 
@@ -35,7 +30,7 @@ public class HoldingApiTest extends BaseIntegrationTest {
 
     @Autowired
     private PublicAssetRepository publicAssetRepository;
-    
+
     @Test
     public void patchHoldings(){
         PublicAssetHolding();

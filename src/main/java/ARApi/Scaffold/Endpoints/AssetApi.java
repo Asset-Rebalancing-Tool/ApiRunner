@@ -2,24 +2,23 @@ package ARApi.Scaffold.Endpoints;
 
 
 import ARApi.Scaffold.AssetFetchers.IPublicAssetFetcher;
-import ARApi.Scaffold.Database.Entities.PublicAsset.PublicAsset;
-
-
-import ARApi.Scaffold.Database.Repos.PublicAssetMatcher;
 import ARApi.Scaffold.Database.Entities.DuplicateAwareInserter;
+import ARApi.Scaffold.Database.Repos.PublicAssetMatcher;
 import ARApi.Scaffold.Endpoints.Model.ModelPublicAsset;
 import ARApi.Scaffold.Endpoints.Requests.SearchAssetRequest;
-import ARApi.Scaffold.Services.SearchSupervisor;
 import ARApi.Scaffold.Services.SearchCompareHelper;
+import ARApi.Scaffold.Services.SearchSupervisor;
 import org.springframework.beans.factory.annotation.Autowired;
-
-
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @Component
@@ -32,11 +31,11 @@ public class AssetApi {
 
     private final int MAX_SEARCH_STRING_LENGHT = 255;
 
-    private SearchCompareHelper fuzzyScore;
+    private final SearchCompareHelper fuzzyScore;
 
-    private PublicAssetMatcher publicAssetMatcher;
+    private final PublicAssetMatcher publicAssetMatcher;
 
-    private IPublicAssetFetcher publicAssetFetcher;
+    private final IPublicAssetFetcher publicAssetFetcher;
 
     private final SearchSupervisor searchSupervisor;
 
@@ -77,7 +76,7 @@ public class AssetApi {
 
             return modelAssetList;
         }
-        
+
         // run fetchers to get information of asset
         var fetchedAssets = publicAssetFetcher.FetchViaSearchString(fuzzyScore.Process(searchAssetRequest.SearchString));
 

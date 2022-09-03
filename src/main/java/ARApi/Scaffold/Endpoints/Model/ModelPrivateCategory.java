@@ -2,8 +2,6 @@ package ARApi.Scaffold.Endpoints.Model;
 
 import ARApi.Scaffold.Database.Entities.PrivateAsset.PrivateCategory;
 
-import java.util.UUID;
-
 public class ModelPrivateCategory {
 
     public String categoryName;

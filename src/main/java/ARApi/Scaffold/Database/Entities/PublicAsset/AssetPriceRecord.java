@@ -2,7 +2,6 @@ package ARApi.Scaffold.Database.Entities.PublicAsset;
 
 import ARApi.Scaffold.Database.Entities.BaseEntity;
 import ARApi.Scaffold.Shared.Enums.Currency;
-import ARApi.Scaffold.Shared.Enums.UnitType;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

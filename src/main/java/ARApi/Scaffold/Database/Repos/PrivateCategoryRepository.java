@@ -1,7 +1,6 @@
 package ARApi.Scaffold.Database.Repos;
 
 import ARApi.Scaffold.Database.Entities.PrivateAsset.PrivateCategory;
-import ARApi.Scaffold.Database.Entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

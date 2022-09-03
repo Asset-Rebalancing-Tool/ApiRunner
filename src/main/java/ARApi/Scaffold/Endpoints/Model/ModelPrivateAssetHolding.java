@@ -2,7 +2,6 @@ package ARApi.Scaffold.Endpoints.Model;
 
 import ARApi.Scaffold.Database.Entities.PrivateAsset.PrivateAssetHolding;
 import ARApi.Scaffold.Shared.Enums.AssetType;
-import ARApi.Scaffold.Shared.Enums.UnitType;
 
 public class ModelPrivateAssetHolding {
 

@@ -1,6 +1,5 @@
 package ARApi.Scaffold.Database.Entities.PublicAsset;
 
-import ARApi.Scaffold.Database.Entities.AssetHoldingGroup;
 import ARApi.Scaffold.Database.Entities.BaseUserEntity;
 import ARApi.Scaffold.Shared.Enums.Currency;
 import ARApi.Scaffold.Shared.Enums.UnitType;

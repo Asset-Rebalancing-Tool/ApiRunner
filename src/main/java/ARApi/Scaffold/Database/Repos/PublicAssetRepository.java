@@ -9,7 +9,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
-import java.util.*;
+import java.util.Collection;
+import java.util.UUID;
 
 @Repository
 public interface PublicAssetRepository extends JpaRepository<PublicAsset, UUID> {

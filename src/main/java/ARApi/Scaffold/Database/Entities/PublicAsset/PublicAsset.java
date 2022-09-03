@@ -6,7 +6,6 @@ import ARApi.Scaffold.Shared.Enums.Currency;
 import ARApi.Scaffold.Shared.Enums.UnitType;
 import com.sun.istack.NotNull;
 
-
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
