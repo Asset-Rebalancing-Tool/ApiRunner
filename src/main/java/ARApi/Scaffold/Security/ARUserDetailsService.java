@@ -47,6 +47,27 @@ public class ARUserDetailsService extends DefaultOAuth2UserService implements Us
         throw new UsernameNotFoundException(username);
     }
 
+    /**
+     *
+     * @param user user from oauth flow
+     * @return system specific jwt
+     */
+    public String processOAuthPostLogin(DefaultOidcUser user, HttpServletResponse response) throws IOException {
+        var optUser = userRepository.findByEmail(user.getEmail());
+        if(optUser.isPresent()){
+            var dbUser = optUser.get();
+            if(dbUser.registration_origin != RegistrationOrigin.OAuthRegistration){
+                return null;
+            }
+            return GetJwtForUserPricipal(dbUser);
+        }
+
+        // user is new from flow, has to be registered in database
+        var dbUserInsert = new User();
+        dbUserInsert.email = user.getEmail();
+        dbUserInsert.registration_origin = RegistrationOrigin.OAuthRegistration;
+        return GetJwtForUserPricipal(userRepository.saveAndFlush(dbUserInsert));
+    }
 
     public String GetJwtForUserPricipal(User user){
         var dbUser = userRepository.findByEmail(user.getUsername()).orElseGet(ARApi.Scaffold.Database.Entities.User::new);

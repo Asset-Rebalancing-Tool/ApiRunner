@@ -17,6 +17,7 @@ dependencies {
 
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 	implementation 'org.springframework:spring-context:5.3.22'
 	implementation 'io.springfox:springfox-boot-starter:3.0.0'
@@ -59,6 +60,9 @@ bootJar {
 bootRun {
 	environment "MYSQL_HOST", "localhost"
 	environment "JWT_SECRET", "devSecret"
+	environment "GOOGLE_CLIENT_ID", "223827203924-t8nhjlc6ublss7sak87rkpt258uda7ql.apps.googleusercontent.com"
+	environment "GOOGLE_CLIENT_SECRET", "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"
+
 }
 
 // env vars for test
