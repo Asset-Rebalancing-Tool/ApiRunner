@@ -69,19 +69,18 @@ public class PublicAssetHoldingRequest {
         return publicOwnedAsset;
     }
 
-    private void setEditableFields(PublicAssetHolding publicOwnedAsset){
+    private void setEditableFields(PublicAssetHolding assetHolding){
 
         var notEditableFieldsSpecified = ownedQuantity != null || selectedUnitType != null || currency != null;
-        if(publicOwnedAsset.holding_origin != HoldingOrigin.ManualEntry && notEditableFieldsSpecified){
+        if(assetHolding.holding_origin != HoldingOrigin.ManualEntry && notEditableFieldsSpecified){
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Cannot patch some specified fields on non manual holding");
         }
+        if(ownedQuantity != null) assetHolding.owned_quantity = ownedQuantity;
+        if(currency != null) assetHolding.selected_currency = currency;
+        if(selectedUnitType != null) assetHolding.selected_unit_type = selectedUnitType;
 
-        if(ownedQuantity != null) publicOwnedAsset.owned_quantity = ownedQuantity;
-        if(currency != null) publicOwnedAsset.selected_currency = currency;
-        if(selectedUnitType != null) publicOwnedAsset.selected_unit_type = selectedUnitType;
-
-        if(targetPercentage != null) publicOwnedAsset.target_percentage = targetPercentage;
-        if(shouldDisplayCustomName != null) publicOwnedAsset.display_custom_name = shouldDisplayCustomName;
-        if(customName != null)publicOwnedAsset.custom_name = customName;
+        if(targetPercentage != null) assetHolding.target_percentage = targetPercentage;
+        if(shouldDisplayCustomName != null) assetHolding.display_custom_name = shouldDisplayCustomName;
+        if(customName != null)assetHolding.custom_name = customName;
     }
 }
