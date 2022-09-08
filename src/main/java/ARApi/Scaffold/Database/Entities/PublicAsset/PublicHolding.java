@@ -13,7 +13,7 @@ import java.util.UUID;
  */
 @Entity
 @Table(indexes = {@Index(columnList = "user_uuid")})
-public class PublicAssetHolding extends BaseUserEntity {
+public class PublicHolding extends BaseUserEntity {
 
     @OneToOne
     @JoinColumn(name="asset_uuid")

@@ -11,7 +11,7 @@ import javax.persistence.*;
  */
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"user_uuid", "title"})})
 @Entity
-public class PrivateAssetHolding extends BaseUserEntity {
+public class PrivateHolding extends BaseUserEntity {
 
     public String title;
 

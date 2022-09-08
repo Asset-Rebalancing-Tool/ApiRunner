@@ -1,8 +1,9 @@
 package ARApi.Scaffold.Endpoints.Requests;
 
-import ARApi.Scaffold.Database.Entities.PrivateAsset.PrivateAssetHolding;
+import ARApi.Scaffold.Database.Entities.PrivateAsset.PrivateHolding;
 import ARApi.Scaffold.Database.Repos.UserRepository;
 import ARApi.Scaffold.Shared.Enums.AssetType;
+import io.swagger.annotations.ApiModelProperty;
 
 import java.util.UUID;
 
@@ -19,22 +20,23 @@ public class PrivateAssetHoldingRequest {
 
     public Double targetPrecentage;
 
-    public PrivateAssetHolding toPrivateAssetHolding(UUID userUuid, UserRepository userRepository){
-        PrivateAssetHolding privateAssetHolding = new PrivateAssetHolding();
-        setEditableFields(privateAssetHolding);
-        privateAssetHolding.SetUser(userUuid, userRepository);
-        return privateAssetHolding;
+    public PrivateHolding toPrivateAssetHolding(UUID userUuid, UserRepository userRepository){
+        PrivateHolding privateHolding = new PrivateHolding();
+        setEditableFields(privateHolding);
+        privateHolding.SetUser(userUuid, userRepository);
+        return privateHolding;
     }
 
-    public PrivateAssetHolding patchPrivateAssetHolding(PrivateAssetHolding privateAssetHolding){
-        setEditableFields(privateAssetHolding);
-        return privateAssetHolding;
+    public PrivateHolding patchPrivateAssetHolding(PrivateHolding privateHolding){
+        setEditableFields(privateHolding);
+        return privateHolding;
     }
 
-    private void setEditableFields(PrivateAssetHolding privateAssetHolding){
-        if(assetType != null) privateAssetHolding.asset_type = assetType;
-        if(title != null) privateAssetHolding.title = title;
-        if(currentPrice != null) privateAssetHolding.current_price = currentPrice;
-        if(targetPrecentage != null) privateAssetHolding.target_percentage = targetPrecentage;
+    @ApiModelProperty(hidden = true)
+    private void setEditableFields(PrivateHolding privateHolding){
+        if(assetType != null) privateHolding.asset_type = assetType;
+        if(title != null) privateHolding.title = title;
+        if(currentPrice != null) privateHolding.current_price = currentPrice;
+        if(targetPrecentage != null) privateHolding.target_percentage = targetPrecentage;
     }
 }

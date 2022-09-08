@@ -13,4 +13,7 @@ public interface IPublicAssetFetcher {
     List<PublicAsset> FetchViaSearchString(String searchString);
 
     PublicAsset FetchViaIsin(String isin);
+
+    // todo: see if really needed
+    // long NeededRequestsPerFetch();
 }

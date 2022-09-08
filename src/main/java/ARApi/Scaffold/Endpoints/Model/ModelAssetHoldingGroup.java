@@ -10,8 +10,8 @@ public class ModelAssetHoldingGroup {
         groupName = assetHoldingGroup.group_name;
         uuid = assetHoldingGroup.uuid.toString();
         targetPercentage = assetHoldingGroup.target_percentage;
-        privateAssetHoldings = assetHoldingGroup.PrivateAssetHoldings.stream().map(ModelPrivateAssetHolding::new).toList();
-        publicAssetHoldings = assetHoldingGroup.PublicAssetHoldings.stream().map(ModelPublicAssetHolding::new).toList();
+        privateHoldings = assetHoldingGroup.privateHoldings.stream().map(ModelPrivateHolding::new).toList();
+        publicHoldings = assetHoldingGroup.publicHoldings.stream().map(ModelPublicHolding::new).toList();
         targetPercentagesAddUp = assetHoldingGroup.InternalPercentagesMatch();
     }
 
@@ -21,9 +21,9 @@ public class ModelAssetHoldingGroup {
 
     public boolean targetPercentagesAddUp;
 
-    public List<ModelPrivateAssetHolding> privateAssetHoldings;
+    public List<ModelPrivateHolding> privateHoldings;
 
-    public List<ModelPublicAssetHolding> publicAssetHoldings;
+    public List<ModelPublicHolding> publicHoldings;
 
     public String groupName;
 

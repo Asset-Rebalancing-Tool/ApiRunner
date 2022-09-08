@@ -5,10 +5,10 @@ import ARApi.Scaffold.Database.Entities.PublicAsset.HoldingOrigin;
 import ARApi.Scaffold.Database.Entities.User;
 import ARApi.Scaffold.Database.Repos.*;
 import ARApi.Scaffold.Endpoints.Model.ModelAssetHoldingGroup;
-import ARApi.Scaffold.Endpoints.Model.ModelPrivateAssetHolding;
+import ARApi.Scaffold.Endpoints.Model.ModelPrivateHolding;
 import ARApi.Scaffold.Endpoints.Model.ModelPrivateCategory;
-import ARApi.Scaffold.Endpoints.Model.ModelPublicAssetHolding;
-import ARApi.Scaffold.Endpoints.Requests.PostAssetHoldingGroupRequest;
+import ARApi.Scaffold.Endpoints.Model.ModelPublicHolding;
+import ARApi.Scaffold.Endpoints.Requests.PostHoldingGroupRequest;
 import ARApi.Scaffold.Endpoints.Requests.PrivateAssetHoldingRequest;
 import ARApi.Scaffold.Endpoints.Requests.PrivateCategoryRequest;
 import ARApi.Scaffold.Endpoints.Requests.PublicAssetHoldingRequest;
@@ -91,7 +91,7 @@ public class HoldingApi {
     }
 
     @PostMapping("/asset_holding/public")
-    public ResponseEntity<ModelPublicAssetHolding> PostPublicAssetHolding(@RequestBody PublicAssetHoldingRequest publicAssetHoldingRequest) {
+    public ResponseEntity<ModelPublicHolding> PostPublicAssetHolding(@RequestBody PublicAssetHoldingRequest publicAssetHoldingRequest) {
         var uuid = UUID.fromString(publicAssetHoldingRequest.publicAssetUuid);
 
         if (publicAssetHoldingRepository.holdingExists(uuid, getUserUuid(), HoldingOrigin.ManualEntry)) {
@@ -106,19 +106,19 @@ public class HoldingApi {
                         privateAssetHoldingRepository)
         );
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(new ModelPublicAssetHolding(publicAssetHolding));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ModelPublicHolding(publicAssetHolding));
     }
 
     @GetMapping("/asset_holding/public")
-    public ModelPublicAssetHolding[] GetPublicAssetHoldings(@RequestParam Optional<Boolean> groupless) {
+    public ModelPublicHolding[] GetPublicAssetHoldings(@RequestParam Optional<Boolean> groupLess) {
 
         var userHoldings = publicAssetHoldingRepository.GetAssetsOfUser(getUserUuid());
-        if(groupless.isPresent() && groupless.get()){
+        if(groupLess.isPresent() && groupLess.get()){
             var groupsOfUser = assetHoldingGroupRepository.GetByUserUuid(getUserUuid());
             userHoldings = userHoldings.stream().filter(holding -> groupsOfUser.stream().noneMatch(group -> group.ContainsHolding(holding.uuid))).toList();
         }
 
-        var holdings = userHoldings.stream().map(ModelPublicAssetHolding::new).toArray(ModelPublicAssetHolding[]::new);
+        var holdings = userHoldings.stream().map(ModelPublicHolding::new).toArray(ModelPublicHolding[]::new);
 
         return holdings;
     }
@@ -130,48 +130,48 @@ public class HoldingApi {
     }
 
     @PostMapping("/asset_holding/private")
-    public ResponseEntity<ModelPrivateAssetHolding> PostPrivateAssetHolding(@RequestBody PrivateAssetHoldingRequest privateAssetHoldingRequest) {
+    public ResponseEntity<ModelPrivateHolding> PostPrivateAssetHolding(@RequestBody PrivateAssetHoldingRequest privateAssetHoldingRequest) {
         try{
             var privateAssetHolding = privateAssetHoldingRepository.save(privateAssetHoldingRequest
                     .toPrivateAssetHolding(getUserUuid(), userRepository));
-            return ResponseEntity.status(HttpStatus.CREATED).body(new ModelPrivateAssetHolding(privateAssetHolding));
+            return ResponseEntity.status(HttpStatus.CREATED).body(new ModelPrivateHolding(privateAssetHolding));
         }catch (DataIntegrityViolationException e){
             throw new ResponseStatusException(HttpStatus.CONFLICT, "TITLE_ALREADY_EXISTS");
         }
     }
 
     @PatchMapping("/asset_holding/public/{holdingUuid}")
-    public ResponseEntity<ModelPublicAssetHolding> PatchPublicAssetHolding(@RequestBody PublicAssetHoldingRequest publicAssetHoldingRequest, @PathVariable String holdingUuid){
+    public ResponseEntity<ModelPublicHolding> PatchPublicAssetHolding(@RequestBody PublicAssetHoldingRequest publicAssetHoldingRequest, @PathVariable String holdingUuid){
         var uuid = UUID.fromString(holdingUuid);
         var assetHolding = publicAssetHoldingRepository.findById(uuid)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No holding found for uuid"));
 
         assetHolding = publicAssetHoldingRepository.saveAndFlush(publicAssetHoldingRequest.patchAssetHolding(assetHolding));
 
-        return ResponseEntity.ok(new ModelPublicAssetHolding(assetHolding));
+        return ResponseEntity.ok(new ModelPublicHolding(assetHolding));
     }
 
     @PatchMapping("/asset_holding/private/{holdingUuid}")
-    public ResponseEntity<ModelPrivateAssetHolding> PatchPrivateAssetHolding(@RequestBody PrivateAssetHoldingRequest holdingRequest, @PathVariable String holdingUuid){
+    public ResponseEntity<ModelPrivateHolding> PatchPrivateAssetHolding(@RequestBody PrivateAssetHoldingRequest holdingRequest, @PathVariable String holdingUuid){
         var uuid = UUID.fromString(holdingUuid);
         var assetHolding = privateAssetHoldingRepository.findById(uuid)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No holding found for uuid"));
 
         assetHolding = privateAssetHoldingRepository.saveAndFlush(holdingRequest.patchPrivateAssetHolding(assetHolding));
 
-        return ResponseEntity.ok(new ModelPrivateAssetHolding(assetHolding));
+        return ResponseEntity.ok(new ModelPrivateHolding(assetHolding));
     }
 
     @GetMapping("/asset_holding/private")
-    public ModelPrivateAssetHolding[] GetPrivateAssetHoldings(@RequestParam Optional<Boolean> groupless) {
+    public ModelPrivateHolding[] GetPrivateAssetHoldings(@RequestParam Optional<Boolean> groupLess) {
 
         var userHoldings = privateAssetHoldingRepository.GetAssetsOfUser(getUserUuid());
-        if(groupless.isPresent() && groupless.get()){
+        if(groupLess.isPresent() && groupLess.get()){
             var groupsOfUser = assetHoldingGroupRepository.GetByUserUuid(getUserUuid());
             userHoldings = userHoldings.stream().filter(holding -> groupsOfUser.stream().noneMatch(group -> group.ContainsHolding(holding.uuid))).toList();
         }
 
-        return userHoldings.stream().map(ModelPrivateAssetHolding::new).toArray(ModelPrivateAssetHolding[]::new);
+        return userHoldings.stream().map(ModelPrivateHolding::new).toArray(ModelPrivateHolding[]::new);
     }
 
     @DeleteMapping("/asset_holding/private/{holdingUuid}")
@@ -182,7 +182,7 @@ public class HoldingApi {
 
     @PostMapping("/asset_holding/group")
     @ResponseStatus(HttpStatus.CREATED)
-    public ModelAssetHoldingGroup PostAssetHoldingGroup(@RequestBody PostAssetHoldingGroupRequest postAssetHoldingGroupRequest) {
+    public ModelAssetHoldingGroup PostAssetHoldingGroup(@RequestBody PostHoldingGroupRequest postAssetHoldingGroupRequest) {
         var assetGrouping = assetHoldingGroupRepository.save(postAssetHoldingGroupRequest.toAssetHoldingGrouping(getUserUuid(), userRepository, publicAssetHoldingRepository, privateAssetHoldingRepository));
         return new ModelAssetHoldingGroup(assetGrouping);
     }

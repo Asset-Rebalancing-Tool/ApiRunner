@@ -1,7 +1,7 @@
 package ARApi.Scaffold.Endpoints.Requests;
 
 import ARApi.Scaffold.Database.Entities.PublicAsset.HoldingOrigin;
-import ARApi.Scaffold.Database.Entities.PublicAsset.PublicAssetHolding;
+import ARApi.Scaffold.Database.Entities.PublicAsset.PublicHolding;
 import ARApi.Scaffold.Database.Repos.PrivateAssetHoldingRepository;
 import ARApi.Scaffold.Database.Repos.PublicAssetHoldingRepository;
 import ARApi.Scaffold.Database.Repos.PublicAssetRepository;
@@ -32,12 +32,12 @@ public class PublicAssetHoldingRequest {
 
     public UnitType selectedUnitType;
 
-    public PublicAssetHolding patchAssetHolding(PublicAssetHolding publicAssetHolding){
-        setEditableFields(publicAssetHolding);
-        return publicAssetHolding;
+    public PublicHolding patchAssetHolding(PublicHolding publicHolding){
+        setEditableFields(publicHolding);
+        return publicHolding;
     }
 
-    public PublicAssetHolding toPublicAssetHolding(UUID userUuid, UserRepository userRepository, PublicAssetHoldingRepository publicAssetHoldingsRepo, PublicAssetRepository publicAssetRepository, PrivateAssetHoldingRepository privateOwnedAssetRepository){
+    public PublicHolding toPublicAssetHolding(UUID userUuid, UserRepository userRepository, PublicAssetHoldingRepository publicAssetHoldingsRepo, PublicAssetRepository publicAssetRepository, PrivateAssetHoldingRepository privateOwnedAssetRepository){
 
         var publicAsset = publicAssetRepository.findById(UUID.fromString(publicAssetUuid)).orElseThrow();
 
@@ -58,7 +58,7 @@ public class PublicAssetHoldingRequest {
         }
 
         // create the db holding
-        var publicOwnedAsset = new PublicAssetHolding();
+        var publicOwnedAsset = new PublicHolding();
         publicOwnedAsset.SetUser(userUuid, userRepository);
 
         publicOwnedAsset.public_asset = publicAsset;
@@ -69,7 +69,7 @@ public class PublicAssetHoldingRequest {
         return publicOwnedAsset;
     }
 
-    private void setEditableFields(PublicAssetHolding assetHolding){
+    private void setEditableFields(PublicHolding assetHolding){
 
         var notEditableFieldsSpecified = ownedQuantity != null || selectedUnitType != null || currency != null;
         if(assetHolding.holding_origin != HoldingOrigin.ManualEntry && notEditableFieldsSpecified){

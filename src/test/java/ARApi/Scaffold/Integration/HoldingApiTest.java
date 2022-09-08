@@ -4,10 +4,10 @@ import ARApi.Scaffold.BaseIntegrationTest;
 import ARApi.Scaffold.Database.Entities.PublicAsset.PublicAsset;
 import ARApi.Scaffold.Database.Repos.PublicAssetRepository;
 import ARApi.Scaffold.Endpoints.Model.ModelAssetHoldingGroup;
-import ARApi.Scaffold.Endpoints.Model.ModelPrivateAssetHolding;
+import ARApi.Scaffold.Endpoints.Model.ModelPrivateHolding;
 import ARApi.Scaffold.Endpoints.Model.ModelPrivateCategory;
-import ARApi.Scaffold.Endpoints.Model.ModelPublicAssetHolding;
-import ARApi.Scaffold.Endpoints.Requests.PostAssetHoldingGroupRequest;
+import ARApi.Scaffold.Endpoints.Model.ModelPublicHolding;
+import ARApi.Scaffold.Endpoints.Requests.PostHoldingGroupRequest;
 import ARApi.Scaffold.Endpoints.Requests.PrivateAssetHoldingRequest;
 import ARApi.Scaffold.Endpoints.Requests.PrivateCategoryRequest;
 import ARApi.Scaffold.Endpoints.Requests.PublicAssetHoldingRequest;
@@ -36,12 +36,12 @@ public class HoldingApiTest extends BaseIntegrationTest {
         PublicAssetHolding();
         PrivateAssetHolding();
 
-        var publicHoldings = authService.AddAuth(webTestClient.get().uri("/holding_api/asset_holding/public")).exchange().expectBody(ModelPublicAssetHolding[].class).returnResult().getResponseBody();
+        var publicHoldings = authService.AddAuth(webTestClient.get().uri("/holding_api/asset_holding/public")).exchange().expectBody(ModelPublicHolding[].class).returnResult().getResponseBody();
         if(publicHoldings.length < 2){
             fail("too little assets in test db to perform");
         }
 
-        var privateHoldings = authService.AddAuth(webTestClient.get().uri("/holding_api/asset_holding/private")).exchange().expectBody(ModelPrivateAssetHolding[].class).returnResult().getResponseBody();
+        var privateHoldings = authService.AddAuth(webTestClient.get().uri("/holding_api/asset_holding/private")).exchange().expectBody(ModelPrivateHolding[].class).returnResult().getResponseBody();
         if(privateHoldings.length < 2){
             fail("too little assets in test db to perform");
         }
@@ -52,15 +52,15 @@ public class HoldingApiTest extends BaseIntegrationTest {
         PublicAssetHolding();
 
         // get inserted holdings
-        var publicHoldings = authService.AddAuth(webTestClient.get().uri("/holding_api/asset_holding/public")).exchange().expectBody(ModelPublicAssetHolding[].class).returnResult().getResponseBody();
+        var publicHoldings = authService.AddAuth(webTestClient.get().uri("/holding_api/asset_holding/public")).exchange().expectBody(ModelPublicHolding[].class).returnResult().getResponseBody();
 
-        var request = new PostAssetHoldingGroupRequest();
+        var request = new PostHoldingGroupRequest();
 
         if(publicHoldings.length < 2){
             fail("too little assets in test db to perform");
         }
-        request.publicAssetHoldingUuids = Arrays.stream(publicHoldings).map(pa -> pa.holdingUuid).toArray(String[]::new);
-        request.privateAssetHoldingUuids = new String[]{};
+        request.publicHoldingUuids = Arrays.stream(publicHoldings).map(pa -> pa.holdingUuid).toArray(String[]::new);
+        request.privateHoldingUuids = new String[]{};
         request.groupName = "testgroup";
         request.targetPercentage = 50;
 
@@ -93,7 +93,7 @@ public class HoldingApiTest extends BaseIntegrationTest {
                 .body(BodyInserters.fromValue(postRequest))
                 .exchange()
                 .expectStatus().isCreated()
-                .expectBody(ModelPrivateAssetHolding.class)
+                .expectBody(ModelPrivateHolding.class)
                 .returnResult().getResponseBody();
 
         Assert.notNull(postedHolding, "posted holding is null");
@@ -109,14 +109,14 @@ public class HoldingApiTest extends BaseIntegrationTest {
                 .body(BodyInserters.fromValue(postRequest))
                 .exchange()
                 .expectStatus().isCreated()
-                .expectBody(ModelPrivateAssetHolding.class)
+                .expectBody(ModelPrivateHolding.class)
                 .returnResult().getResponseBody();
 
         // get
         var holdings = authService.AddAuth(webTestClient.get().uri(endpoint))
                 .exchange()
                 .expectStatus().isOk()
-                .expectBody(ModelPrivateAssetHolding[].class).returnResult().getResponseBody();
+                .expectBody(ModelPrivateHolding[].class).returnResult().getResponseBody();
         Assert.notEmpty(holdings, "holdings are empty");
 
         // delete
@@ -226,7 +226,7 @@ public class HoldingApiTest extends BaseIntegrationTest {
         var holdings = authService.AddAuth(webTestClient.get().uri("/holding_api/asset_holding/public"))
                 .exchange()
                 .expectStatus().isOk()
-                .expectBody( ModelPublicAssetHolding[].class)
+                .expectBody( ModelPublicHolding[].class)
                 .returnResult().getResponseBody();
         Assert.notNull(holdings, "holdings shouldn`t be null");
         Assert.notEmpty(holdings, "posted holding should be returned");
