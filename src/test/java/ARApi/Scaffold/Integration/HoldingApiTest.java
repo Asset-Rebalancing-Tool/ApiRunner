@@ -3,11 +3,11 @@ package ARApi.Scaffold.Integration;
 import ARApi.Scaffold.BaseIntegrationTest;
 import ARApi.Scaffold.Database.Entities.PublicAsset.PublicAsset;
 import ARApi.Scaffold.Database.Repos.PublicAssetRepository;
-import ARApi.Scaffold.Endpoints.Model.ModelAssetHoldingGroup;
+import ARApi.Scaffold.Endpoints.Model.ModelHoldingGroup;
 import ARApi.Scaffold.Endpoints.Model.ModelPrivateHolding;
 import ARApi.Scaffold.Endpoints.Model.ModelPrivateCategory;
 import ARApi.Scaffold.Endpoints.Model.ModelPublicHolding;
-import ARApi.Scaffold.Endpoints.Requests.PostHoldingGroupRequest;
+import ARApi.Scaffold.Endpoints.Requests.HoldingGroupRequest;
 import ARApi.Scaffold.Endpoints.Requests.PrivateAssetHoldingRequest;
 import ARApi.Scaffold.Endpoints.Requests.PrivateCategoryRequest;
 import ARApi.Scaffold.Endpoints.Requests.PublicAssetHoldingRequest;
@@ -47,6 +47,8 @@ public class HoldingApiTest extends BaseIntegrationTest {
         }
     }
 
+
+    // TODO: fix test paralellism with same account => change authservice to authsession provider
     @Test
     public void BothHoldingsAndHoldingGroups(){
         PublicAssetHolding();
@@ -54,7 +56,7 @@ public class HoldingApiTest extends BaseIntegrationTest {
         // get inserted holdings
         var publicHoldings = authService.AddAuth(webTestClient.get().uri("/holding_api/asset_holding/public")).exchange().expectBody(ModelPublicHolding[].class).returnResult().getResponseBody();
 
-        var request = new PostHoldingGroupRequest();
+        var request = new HoldingGroupRequest();
 
         if(publicHoldings.length < 2){
             fail("too little assets in test db to perform");
@@ -62,24 +64,34 @@ public class HoldingApiTest extends BaseIntegrationTest {
         request.publicHoldingUuids = Arrays.stream(publicHoldings).map(pa -> pa.holdingUuid).toArray(String[]::new);
         request.privateHoldingUuids = new String[]{};
         request.groupName = "testgroup";
-        request.targetPercentage = 50;
+        request.targetPercentage = 50d;
 
         // post
         var holdingGroup = authService.AddAuth(webTestClient.post().uri("/holding_api/asset_holding/group")).body(BodyInserters.fromValue(request))
-                .exchange().expectBody(ModelAssetHoldingGroup.class).returnResult().getResponseBody();
+                .exchange().expectBody(ModelHoldingGroup.class).returnResult().getResponseBody();
         Assert.notNull(holdingGroup, "holding group can't be null");
 
         // get
         var holdingGroups = authService.AddAuth(webTestClient.get().uri("/holding_api/asset_holding/group")).exchange()
-                .expectBody(ModelAssetHoldingGroup[].class).returnResult().getResponseBody();
+                .expectBody(ModelHoldingGroup[].class).returnResult().getResponseBody();
         Assert.notEmpty(holdingGroups, "holding groups should at least return the one created");
+
+        // patch
+        var patchRequest = new HoldingGroupRequest();
+        patchRequest.targetPercentage = 20d;
+        request.publicHoldingUuids = new String[]{};
+        request.groupName = "testgro34up";
+        request.privateHoldingUuids = new String[]{};
+
+        authService.AddAuth(webTestClient.patch().uri("/holding_api/asset_holding/group/" + holdingGroups[0].uuid)).body(BodyInserters.fromValue(patchRequest)).exchange()
+                        .expectStatus().isOk();
 
         // delete
         authService.AddAuth(webTestClient.delete().uri("/holding_api/asset_holding/group/" + holdingGroups[0].uuid)).exchange()
                 .expectStatus().isOk();
     }
 
-    @Test
+
     public void PrivateAssetHolding(){
         var postRequest = new PrivateAssetHoldingRequest();
         postRequest.assetType = AssetType.Etf;
@@ -105,6 +117,15 @@ public class HoldingApiTest extends BaseIntegrationTest {
 
         // post working second
         postRequest.title = "heuhuee";
+        authService.AddAuth(webTestClient.post().uri(endpoint))
+                .body(BodyInserters.fromValue(postRequest))
+                .exchange()
+                .expectStatus().isCreated()
+                .expectBody(ModelPrivateHolding.class)
+                .returnResult().getResponseBody();
+
+        // post working third
+        postRequest.title = "heuhuengvne";
         authService.AddAuth(webTestClient.post().uri(endpoint))
                 .body(BodyInserters.fromValue(postRequest))
                 .exchange()

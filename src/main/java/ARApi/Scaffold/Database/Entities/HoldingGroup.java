@@ -11,7 +11,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @Entity
-public class AssetHoldingGroup extends BaseUserEntity{
+public class HoldingGroup extends BaseUserEntity {
 
     @ManyToMany
     @JoinTable(

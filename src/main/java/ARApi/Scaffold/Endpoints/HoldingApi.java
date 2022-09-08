@@ -4,11 +4,11 @@ package ARApi.Scaffold.Endpoints;
 import ARApi.Scaffold.Database.Entities.PublicAsset.HoldingOrigin;
 import ARApi.Scaffold.Database.Entities.User;
 import ARApi.Scaffold.Database.Repos.*;
-import ARApi.Scaffold.Endpoints.Model.ModelAssetHoldingGroup;
+import ARApi.Scaffold.Endpoints.Model.ModelHoldingGroup;
 import ARApi.Scaffold.Endpoints.Model.ModelPrivateHolding;
 import ARApi.Scaffold.Endpoints.Model.ModelPrivateCategory;
 import ARApi.Scaffold.Endpoints.Model.ModelPublicHolding;
-import ARApi.Scaffold.Endpoints.Requests.PostHoldingGroupRequest;
+import ARApi.Scaffold.Endpoints.Requests.HoldingGroupRequest;
 import ARApi.Scaffold.Endpoints.Requests.PrivateAssetHoldingRequest;
 import ARApi.Scaffold.Endpoints.Requests.PrivateCategoryRequest;
 import ARApi.Scaffold.Endpoints.Requests.PublicAssetHoldingRequest;
@@ -162,6 +162,7 @@ public class HoldingApi {
         return ResponseEntity.ok(new ModelPrivateHolding(assetHolding));
     }
 
+
     @GetMapping("/asset_holding/private")
     public ModelPrivateHolding[] GetPrivateAssetHoldings(@RequestParam Optional<Boolean> groupLess) {
 
@@ -180,16 +181,30 @@ public class HoldingApi {
         return HttpStatus.OK;
     }
 
+
+    @PatchMapping("/asset_holding/group/{groupUuid}")
+    public ResponseEntity<ModelHoldingGroup> PatchHoldingGroup(@RequestBody HoldingGroupRequest holdingGroupRequest, @PathVariable String groupUuid){
+        var uuid = UUID.fromString(groupUuid);
+
+        var holdingGroup = assetHoldingGroupRepository.findById(uuid).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No group holding found for uuid"));
+
+        holdingGroup = assetHoldingGroupRepository.saveAndFlush(holdingGroupRequest.patchHoldingGroup(holdingGroup, publicAssetHoldingRepository, privateAssetHoldingRepository));
+
+        return ResponseEntity.ok(new ModelHoldingGroup(holdingGroup));
+    }
+
     @PostMapping("/asset_holding/group")
     @ResponseStatus(HttpStatus.CREATED)
-    public ModelAssetHoldingGroup PostAssetHoldingGroup(@RequestBody PostHoldingGroupRequest postAssetHoldingGroupRequest) {
-        var assetGrouping = assetHoldingGroupRepository.save(postAssetHoldingGroupRequest.toAssetHoldingGrouping(getUserUuid(), userRepository, publicAssetHoldingRepository, privateAssetHoldingRepository));
-        return new ModelAssetHoldingGroup(assetGrouping);
+    public ModelHoldingGroup PostAssetHoldingGroup(@RequestBody HoldingGroupRequest postAssetHoldingGroupRequest) {
+        var groupingDb = postAssetHoldingGroupRequest.toAssetHoldingGrouping(getUserUuid(), userRepository, publicAssetHoldingRepository, privateAssetHoldingRepository);
+        var assetGrouping = assetHoldingGroupRepository.saveAndFlush(groupingDb);
+        return new ModelHoldingGroup(assetGrouping);
     }
 
     @GetMapping("/asset_holding/group")
-    public ModelAssetHoldingGroup[] GetAssetHoldingGroups() {
-        return assetHoldingGroupRepository.GetByUserUuid(getUserUuid()).stream().map(ModelAssetHoldingGroup::new).toArray(ModelAssetHoldingGroup[]::new);
+    public ModelHoldingGroup[] GetAssetHoldingGroups() {
+        var holdingGroups = assetHoldingGroupRepository.GetByUserUuid(getUserUuid());
+        return holdingGroups.stream().map(ModelHoldingGroup::new).toArray(ModelHoldingGroup[]::new);
     }
 
     @DeleteMapping("/asset_holding/group/{groupUuid}")
