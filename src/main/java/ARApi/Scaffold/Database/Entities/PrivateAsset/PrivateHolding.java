@@ -2,6 +2,7 @@ package ARApi.Scaffold.Database.Entities.PrivateAsset;
 
 import ARApi.Scaffold.Database.Entities.BaseUserEntity;
 import ARApi.Scaffold.Shared.Enums.AssetType;
+import ARApi.Scaffold.Shared.Enums.UnitType;
 
 import javax.persistence.*;
 
@@ -18,7 +19,11 @@ public class PrivateHolding extends BaseUserEntity {
     @Enumerated(EnumType.STRING)
     public AssetType asset_type;
 
-    public double current_price;
+    public double price_per_unit;
+
+    public double owned_quantity;
+
+    public UnitType unit_type;
 
     public double target_percentage;
 }

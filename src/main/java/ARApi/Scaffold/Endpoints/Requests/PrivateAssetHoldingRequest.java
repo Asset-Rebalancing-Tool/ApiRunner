@@ -3,6 +3,8 @@ package ARApi.Scaffold.Endpoints.Requests;
 import ARApi.Scaffold.Database.Entities.PrivateAsset.PrivateHolding;
 import ARApi.Scaffold.Database.Repos.UserRepository;
 import ARApi.Scaffold.Shared.Enums.AssetType;
+import ARApi.Scaffold.Shared.Enums.Currency;
+import ARApi.Scaffold.Shared.Enums.UnitType;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.util.UUID;
@@ -14,11 +16,17 @@ public class PrivateAssetHoldingRequest {
 
     public AssetType assetType;
 
-    public Double currentPrice;
-
     public String title;
 
     public Double targetPrecentage;
+
+    public Double ownedQuantity;
+
+    public Double pricePerUnit;
+
+    public Currency currency;
+
+    public UnitType unitType;
 
     public PrivateHolding toPrivateAssetHolding(UUID userUuid, UserRepository userRepository){
         PrivateHolding privateHolding = new PrivateHolding();
@@ -36,7 +44,9 @@ public class PrivateAssetHoldingRequest {
     private void setEditableFields(PrivateHolding privateHolding){
         if(assetType != null) privateHolding.asset_type = assetType;
         if(title != null) privateHolding.title = title;
-        if(currentPrice != null) privateHolding.current_price = currentPrice;
+        if(pricePerUnit != null) privateHolding.price_per_unit = pricePerUnit;
         if(targetPrecentage != null) privateHolding.target_percentage = targetPrecentage;
+        if(ownedQuantity != null) privateHolding.owned_quantity = ownedQuantity;
+        if(unitType != null) privateHolding.unit_type = unitType;
     }
 }

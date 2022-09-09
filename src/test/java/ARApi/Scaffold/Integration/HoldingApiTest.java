@@ -13,6 +13,7 @@ import ARApi.Scaffold.Endpoints.Requests.PrivateCategoryRequest;
 import ARApi.Scaffold.Endpoints.Requests.PublicAssetHoldingRequest;
 import ARApi.Scaffold.Shared.Enums.AssetType;
 import ARApi.Scaffold.Shared.Enums.Currency;
+import ARApi.Scaffold.Shared.Enums.UnitType;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -95,8 +96,10 @@ public class HoldingApiTest extends BaseIntegrationTest {
     public void PrivateAssetHolding(){
         var postRequest = new PrivateAssetHoldingRequest();
         postRequest.assetType = AssetType.Etf;
-        postRequest.currentPrice = 20d;
+        postRequest.pricePerUnit = 20d;
         postRequest.title = "test private asset";
+        postRequest.unitType = UnitType.Grams;
+        postRequest.ownedQuantity = 400d;
 
         var endpoint = "/holding_api/asset_holding/private";
 

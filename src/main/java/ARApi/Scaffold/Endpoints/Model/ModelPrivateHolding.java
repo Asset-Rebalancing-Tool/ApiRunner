@@ -2,6 +2,7 @@ package ARApi.Scaffold.Endpoints.Model;
 
 import ARApi.Scaffold.Database.Entities.PrivateAsset.PrivateHolding;
 import ARApi.Scaffold.Shared.Enums.AssetType;
+import ARApi.Scaffold.Shared.Enums.UnitType;
 
 public class ModelPrivateHolding {
 
@@ -9,7 +10,11 @@ public class ModelPrivateHolding {
 
     public AssetType assetType;
 
-    public double currentPrice;
+    public UnitType unitType;
+
+    public double ownedQuantity;
+
+    public double pricePerUnit;
 
     public String uuid;
 
@@ -18,10 +23,13 @@ public class ModelPrivateHolding {
     public ModelPrivateHolding(PrivateHolding privateHolding){
         title = privateHolding.title;
         assetType = privateHolding.asset_type;
-        currentPrice = privateHolding.current_price;
         uuid = privateHolding.uuid.toString();
         targetPercentage = privateHolding.target_percentage;
+        unitType = privateHolding.unit_type;
+        pricePerUnit =privateHolding.price_per_unit;
+        ownedQuantity = privateHolding.owned_quantity;
     }
+
     public ModelPrivateHolding(){
 
     }

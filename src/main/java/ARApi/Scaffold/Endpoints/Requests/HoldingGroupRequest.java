@@ -44,6 +44,5 @@ public class HoldingGroupRequest {
                 .map(holding -> privateAssetHoldings.getReferenceById(UUID.fromString(holding))).collect(Collectors.toSet());
         if(groupName != null) privateHolding.group_name = groupName;
         if(targetPercentage != null) privateHolding.target_percentage = targetPercentage;
-
     }
 }
