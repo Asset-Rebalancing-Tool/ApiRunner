@@ -9,7 +9,7 @@ public class ModelPublicHolding {
 
     public ModelPublicAsset publicAsset;
 
-    public String holdingUuid;
+    public String uuid;
 
     public String customName;
 
@@ -32,7 +32,7 @@ public class ModelPublicHolding {
         targetPercentage = publicHolding.target_percentage;
         holdingOrigin = publicHolding.holding_origin;
         ownedQuantity = publicHolding.owned_quantity;
-        holdingUuid = publicHolding.uuid.toString();
+        uuid = publicHolding.uuid.toString();
         selectedUnitType = publicHolding.selected_unit_type;
         selectedCurrency = publicHolding.selected_currency;
     }

@@ -61,7 +61,7 @@ public class HoldingApiTest extends BaseIntegrationTest {
         if(publicHoldings.length < 2){
             fail("too little assets in test db to perform");
         }
-        request.publicHoldingUuids = Arrays.stream(publicHoldings).map(pa -> pa.holdingUuid).toArray(String[]::new);
+        request.publicHoldingUuids = Arrays.stream(publicHoldings).map(pa -> pa.uuid).toArray(String[]::new);
         request.privateHoldingUuids = new String[]{};
         request.groupName = "testgroup";
         request.targetPercentage = 50d;
@@ -141,7 +141,7 @@ public class HoldingApiTest extends BaseIntegrationTest {
         Assert.notEmpty(holdings, "holdings are empty");
 
         // delete
-        authService.AddAuth(webTestClient.delete().uri(endpoint + "/" + postedHolding.holdingUuid))
+        authService.AddAuth(webTestClient.delete().uri(endpoint + "/" + postedHolding.uuid))
                 .exchange()
                 .expectStatus().isOk();
     }
@@ -253,7 +253,7 @@ public class HoldingApiTest extends BaseIntegrationTest {
         Assert.notEmpty(holdings, "posted holding should be returned");
 
         // delete
-        authService.AddAuth(webTestClient.delete().uri("/holding_api/asset_holding/public/" + Arrays.stream(holdings).findAny().get().holdingUuid))
+        authService.AddAuth(webTestClient.delete().uri("/holding_api/asset_holding/public/" + Arrays.stream(holdings).findAny().get().uuid))
                 .exchange()
                 .expectStatus().isOk();
     }
