@@ -12,17 +12,17 @@ steps:
         from_secret: th_nexus_user
       MAVEN_PASSWORD:
         from_secret: th_nexus_password
-
 trigger:
   branch:
     - master
   event:
     - push
+
 ---
 
 kind: pipeline
 type: ssh
-name: defaultssh
+name: default
 
 server:
   host:
@@ -33,14 +33,14 @@ server:
 
 steps:
   - name: deploy
-      environment:
-        JWT_SECRET:
-          from_secret: jwt_secret
-        MYSQL_HOST: "mysql"
-        COMPOSE_PROJECT_NAME: ar_tool
-      commands:
-        - docker compose build
-        - docker compose up -d
+    environment:
+      JWT_SECRET:
+        from_secret: jwt_secret
+      MYSQL_HOST: "mysql"
+      COMPOSE_PROJECT_NAME: ar_tool
+    commands:
+      - docker compose build
+      - docker compose up -d
 
 trigger:
   branch:
