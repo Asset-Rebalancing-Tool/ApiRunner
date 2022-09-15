@@ -1,6 +1,6 @@
 kind: pipeline
 type: docker
-name: default
+name: publish_snapshot_artifact
 
 steps:
   - name: build
@@ -22,7 +22,7 @@ trigger:
 
 kind: pipeline
 type: ssh
-name: default
+name: deploy_local_dev
 
 server:
   host:
