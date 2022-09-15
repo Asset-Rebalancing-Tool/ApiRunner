@@ -18,3 +18,32 @@ trigger:
     - master
   event:
     - push
+---
+
+kind: pipeline
+type: ssh
+name: defaultssh
+
+server:
+  host:
+    from_secret: ssh_host
+  user: tobi
+  password:
+    from_secret: ssh_password
+
+steps:
+  - name: deploy
+      environment:
+        JWT_SECRET:
+          from_secret: jwt_secret
+        MYSQL_HOST: "mysql"
+        COMPOSE_PROJECT_NAME: ar_tool
+      commands:
+        - docker compose build
+        - docker compose up -d
+
+trigger:
+  branch:
+    - master
+  event:
+    - push
