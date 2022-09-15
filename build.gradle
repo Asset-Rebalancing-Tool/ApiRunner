@@ -60,9 +60,6 @@ bootJar {
 bootRun {
 	environment "MYSQL_HOST", "localhost"
 	environment "JWT_SECRET", "devSecret"
-	environment "GOOGLE_CLIENT_ID", "223827203924-t8nhjlc6ublss7sak87rkpt258uda7ql.apps.googleusercontent.com"
-	environment "GOOGLE_CLIENT_SECRET", "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"
-
 }
 
 // env vars for test
