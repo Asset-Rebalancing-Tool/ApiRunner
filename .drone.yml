@@ -38,6 +38,10 @@ steps:
         from_secret: jwt_secret
       MYSQL_HOST: "mysql"
       COMPOSE_PROJECT_NAME: ar_tool
+      GOOGLE_CLIENT_ID:
+        from_secret: google_client_id
+      GOOGLE_CLIENT_SECRET:
+        from_secret: google_client_secret
     commands:
       - docker compose build
       - docker compose up -d
