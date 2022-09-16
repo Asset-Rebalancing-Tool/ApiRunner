@@ -57,13 +57,13 @@ bootJar {
 
 // set / edit variables for dev start here
 bootRun {
-	environment "MYSQL_HOST", "localhost"
+	environment "MYSQL_HOST", "192.168.1.52"
 	environment "JWT_SECRET", "devSecret"
 }
 
 // env vars for test
 test {
-	environment "MYSQL_HOST", "localhost"
+	environment "MYSQL_HOST", "192.168.1.52"
 	environment "JWT_SECRET", "devSecret"
 	useJUnitPlatform()
 }
