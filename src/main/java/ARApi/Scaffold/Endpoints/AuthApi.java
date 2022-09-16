@@ -1,14 +1,12 @@
 package ARApi.Scaffold.Endpoints;
 
 
-import ARApi.Scaffold.Constants;
 import ARApi.Scaffold.Database.Entities.User;
 import ARApi.Scaffold.Database.Repos.UserRepository;
 import ARApi.Scaffold.Endpoints.Requests.AuthRequest;
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
+import ARApi.Scaffold.Security.ARUserDetailsService;
+import ARApi.Scaffold.Shared.Enums.RegistrationOrigin;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,9 +16,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 
 @RestController
 @Component
@@ -33,14 +28,14 @@ public class AuthApi {
 
     final PasswordEncoder passwordEncoder;
 
-    final Environment environment;
+    final ARUserDetailsService userDetailsService;
 
     @Autowired
-    public AuthApi(AuthenticationManager authenticationManager, UserRepository userRepository, PasswordEncoder passwordEncoder, Environment environment) {
+    public AuthApi(AuthenticationManager authenticationManager, UserRepository userRepository, PasswordEncoder passwordEncoder, ARUserDetailsService userDetailsService) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.environment = environment;
+        this.userDetailsService = userDetailsService;
     }
 
     @PostMapping("/register")
@@ -53,10 +48,11 @@ public class AuthApi {
         var user = new ARApi.Scaffold.Database.Entities.User();
         user.email = request.email;
         user.password_hash = passwordEncoder.encode(request.password);
+        user.registration_origin = RegistrationOrigin.PasswordRegistration;
 
         user = userRepository.save(user);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(GetJwtForUserPricipal(user));
+        return ResponseEntity.status(HttpStatus.CREATED).body(userDetailsService.GetJwtForUserPricipal(user));
     }
 
     @GetMapping("/renew")
@@ -64,7 +60,7 @@ public class AuthApi {
         // requires authenticated request
         var auth = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         // TODO: ratelimit in code / nginx conf?
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(GetJwtForUserPricipal(auth));
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(userDetailsService.GetJwtForUserPricipal(auth));
     }
 
     @PostMapping("/login")
@@ -77,21 +73,8 @@ public class AuthApi {
         );
 
         var user = (User) auth.getPrincipal();
-        return GetJwtForUserPricipal(user);
+        return userDetailsService.GetJwtForUserPricipal(user);
     }
 
-    private String GetJwtForUserPricipal(User user){
-        var dbUser = userRepository.findByEmail(user.getUsername()).orElseGet(ARApi.Scaffold.Database.Entities.User::new);
 
-        var secret  = environment.getProperty(Constants.ENV_VAR_JWT_SECRET);
-
-        Algorithm algorithm = Algorithm.HMAC256(secret);
-
-        return JWT.create()
-                .withIssuer("auth0")
-                .withSubject(dbUser.email)
-                .withClaim("uuid", dbUser.uuid.toString())
-                .withExpiresAt(Instant.now().plus(30, ChronoUnit.MINUTES))
-                .sign(algorithm);
-    }
 }

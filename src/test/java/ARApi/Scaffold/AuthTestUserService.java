@@ -11,11 +11,10 @@ import org.springframework.web.reactive.function.BodyInserters;
 @Service
 public class AuthTestUserService implements IAuthService {
 
-    private static String token = null;
+    private String token = null;
 
     @Override
     public void Initialize(WebTestClient webTestClient){
-        if(token != null) return;
 
         var authRequest = new AuthRequest();
         authRequest.email = RandomStringUtils.randomAlphanumeric(10) + "@test.com";

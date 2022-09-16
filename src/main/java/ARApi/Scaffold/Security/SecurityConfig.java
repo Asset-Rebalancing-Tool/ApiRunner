@@ -3,6 +3,7 @@ package ARApi.Scaffold.Security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -11,26 +12,75 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.config.oauth2.client.CommonOAuth2Provider;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
+import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import javax.servlet.ServletException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
     @Autowired
-    public SecurityConfig(ARUserDetailsService userDetailsService, JwtAuthenticationFilter authenticationFilter) {
+    public SecurityConfig(ARUserDetailsService userDetailsService, JwtAuthenticationFilter authenticationFilter, Environment env) {
         this.userDetailsService = userDetailsService;
 
         this.authenticationFilter = authenticationFilter;
+        this.env = env;
     }
 
     private final ARUserDetailsService userDetailsService;
 
     private final JwtAuthenticationFilter authenticationFilter;
+
+    private static String CLIENT_PROPERTY_KEY
+            = "spring.security.oauth2.client.registration.";
+
+
+    private final Environment env;
+
+    private ClientRegistration getRegistration(String client) {
+        String clientId = env.getProperty(
+                CLIENT_PROPERTY_KEY + client + ".client-id");
+
+        if (clientId == null) {
+            return null;
+        }
+
+        String clientSecret = env.getProperty(
+                CLIENT_PROPERTY_KEY + client + ".client-secret");
+
+        if (client.equals("google")) {
+            return CommonOAuth2Provider.GOOGLE.getBuilder(client)
+                    .clientId(clientId).clientSecret(clientSecret).build();
+        }
+
+        return null;
+    }
+
+    private static final List<String> clients = List.of("google");
+
+    @Bean
+    public ClientRegistrationRepository clientRegistrationRepository() {
+        List<ClientRegistration> registrations = clients.stream()
+                .map(this::getRegistration)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+
+        return new InMemoryClientRegistrationRepository(registrations);
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -61,6 +111,25 @@ public class SecurityConfig {
                 .and()
                 .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
+         http.oauth2Login().userInfoEndpoint().userService(userDetailsService)
+                 .and().successHandler((request, response, authentication) -> {
+                     var oauthUser = (DefaultOidcUser) authentication.getPrincipal();
+
+                     var token  = userDetailsService.processOAuthPostLogin(oauthUser, response);
+                     if(token != null){
+                         response.setHeader("Authorization", token);
+                         // success
+                         // TODO: mit sebi redirect url besprechen
+                         response.sendRedirect("/swagger-ui/index.html");
+                     }
+                     // TODO: redirect oauth fail
+                     response.setHeader("Authorization", "nogger");
+                     response.sendRedirect("/swagger-ui/index.html");
+                     //response.sendError(409);
+
+                 });
+
         return http.build();
     }
 }

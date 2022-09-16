@@ -1,7 +1,7 @@
 package ARApi.Scaffold.Database.Entities;
 
-import ARApi.Scaffold.Database.Entities.PrivateAsset.PrivateAssetHolding;
-import ARApi.Scaffold.Database.Entities.PublicAsset.PublicAssetHolding;
+import ARApi.Scaffold.Database.Entities.PrivateAsset.PrivateHolding;
+import ARApi.Scaffold.Database.Entities.PublicAsset.PublicHolding;
 
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -11,7 +11,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @Entity
-public class AssetHoldingGroup extends BaseUserEntity{
+public class HoldingGroup extends BaseUserEntity {
 
     @ManyToMany
     @JoinTable(
@@ -19,7 +19,7 @@ public class AssetHoldingGroup extends BaseUserEntity{
             joinColumns = { @JoinColumn(name = "fk_grouping") },
             inverseJoinColumns = { @JoinColumn(name = "fk_public_asset_holding") }
     )
-    public Set<PublicAssetHolding> PublicAssetHoldings;
+    public Set<PublicHolding> publicHoldings;
 
     @ManyToMany
     @JoinTable(
@@ -27,7 +27,7 @@ public class AssetHoldingGroup extends BaseUserEntity{
             joinColumns = { @JoinColumn(name = "fk_grouping") },
             inverseJoinColumns = { @JoinColumn(name = "fk_private_asset_holding") }
     )
-    public Set<PrivateAssetHolding> PrivateAssetHoldings;
+    public Set<PrivateHolding> privateHoldings;
 
     public double target_percentage;
 
@@ -35,12 +35,12 @@ public class AssetHoldingGroup extends BaseUserEntity{
 
     public boolean InternalPercentagesMatch(){
         double percentageCounter = 0;
-        percentageCounter+=PublicAssetHoldings.stream().mapToDouble(value -> value.target_percentage).sum();
+        percentageCounter+= publicHoldings.stream().mapToDouble(value -> value.target_percentage).sum();
         return percentageCounter == 100d;
     }
 
     public boolean ContainsHolding(UUID holdingUuid){
-        return PublicAssetHoldings.stream().anyMatch(holding -> holding.uuid.equals(holdingUuid)) ||
-                PrivateAssetHoldings.stream().anyMatch(holding -> holding.uuid.equals(holdingUuid));
+        return publicHoldings.stream().anyMatch(holding -> holding.uuid.equals(holdingUuid)) ||
+                privateHoldings.stream().anyMatch(holding -> holding.uuid.equals(holdingUuid));
     }
 }

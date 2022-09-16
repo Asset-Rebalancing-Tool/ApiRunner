@@ -1,11 +1,14 @@
 package ARApi.Scaffold.Database.Entities;
 
+import ARApi.Scaffold.Shared.Enums.RegistrationOrigin;
 import com.sun.istack.NotNull;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -17,6 +20,10 @@ public class User extends BaseEntity implements UserDetails {
 
     @NotNull
     public String password_hash;
+
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    public RegistrationOrigin registration_origin;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

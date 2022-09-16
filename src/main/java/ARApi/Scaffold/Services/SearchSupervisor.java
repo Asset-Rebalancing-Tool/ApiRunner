@@ -28,17 +28,14 @@ public class SearchSupervisor {
 
     public boolean fetchPermitted(String searchString){
         var lastSearchOpt =searchRecordRepository.TryGetMostRecent(contextUuid, searchString);
-        if(lastSearchOpt.isEmpty()){
-            // not searched yet => permit
-            var searchRecord = new SearchRecord();
-            searchRecord.search = searchString;
-            searchRecord.context_uuid = contextUuid;
-            searchRecordRepository.save(searchRecord);
-            return true;
-        }
 
-        // TODO: Create allow research logic?
-        var lastSearch = lastSearchOpt.get();
-        return false;
+        // save search always
+        var searchRecord = new SearchRecord();
+        searchRecord.search = searchString;
+        searchRecord.context_uuid = contextUuid;
+        searchRecordRepository.save(searchRecord);
+
+        // not searched yet => permit
+        return lastSearchOpt.isEmpty();
     }
 }
