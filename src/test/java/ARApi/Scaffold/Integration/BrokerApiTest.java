@@ -35,16 +35,16 @@ public class BrokerApiTest {
                 .uri(new URI(redirectURI))
                 .GET()
                 .build();
-        var response1 = client.send(request, HttpResponse.BodyHandlers.ofString());
+        var response1 = client.send(request2, HttpResponse.BodyHandlers.ofString());
 
         var params = UriComponentsBuilder.fromUriString("https://de.scalable.capital" + response1.headers().firstValue("location").toString())
                     .build().getQueryParams();
-        var state = params.get("state");
-        var formattedString = String.format("https://secure.scalable.capital/u/login?state=%s&ui_locales=%s", state, params.get("ui_locales"));
+        var state = params.getFirst("state");
+        var formattedString = String.format("https://secure.scalable.capital/u/login?state=%s&ui_locales=%s", state, params.getFirst("ui_locales"));
         // First post request
         HttpRequest requestPost = HttpRequest.newBuilder()
                 .headers("Content-Type", "application/x-www-form-urlencoded")
-                .uri(URI.create(String.format("https://secure.scalable.capital/u/login?state=%s&ui_locales=%s", state, params.get("ui_locales"))))
+                .uri(URI.create(String.format("https://secure.scalable.capital/u/login?state=%s&ui_locales=%s", state, params.getFirst("ui_locales"))))
                 .POST(HttpRequest.BodyPublishers.ofString(""))
                 .build();
     }

@@ -76,7 +76,7 @@ public class HoldingApiTest extends BaseIntegrationTest {
         var holdingGroups = authService.AddAuth(webTestClient.get().uri("/holding_api/asset_holding/group")).exchange()
                 .expectBody(ModelHoldingGroup[].class).returnResult().getResponseBody();
         Assert.notEmpty(holdingGroups, "holding groups should at least return the one created");
-
+        
         // patch
         var patchRequest = new HoldingGroupRequest();
         patchRequest.targetPercentage = 20d;
