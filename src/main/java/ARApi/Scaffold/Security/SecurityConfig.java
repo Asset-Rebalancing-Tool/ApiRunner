@@ -36,7 +36,6 @@ public class SecurityConfig {
     @Autowired
     public SecurityConfig(ARUserDetailsService userDetailsService, JwtAuthenticationFilter authenticationFilter, Environment env) {
         this.userDetailsService = userDetailsService;
-
         this.authenticationFilter = authenticationFilter;
         this.env = env;
     }
@@ -47,7 +46,6 @@ public class SecurityConfig {
 
     private static String CLIENT_PROPERTY_KEY
             = "spring.security.oauth2.client.registration.";
-
 
     private final Environment env;
 
@@ -112,6 +110,7 @@ public class SecurityConfig {
                 .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
+         /* TODO: Implement Frontend first
          http.oauth2Login().userInfoEndpoint().userService(userDetailsService)
                  .and().successHandler((request, response, authentication) -> {
                      var oauthUser = (DefaultOidcUser) authentication.getPrincipal();
@@ -129,7 +128,7 @@ public class SecurityConfig {
                      //response.sendError(409);
 
                  });
-
+        */
         return http.build();
     }
 }
