@@ -525,4 +525,6 @@ databaseChangeLog:
             constraintName: fk_gropubasshol_on_public_holding
             referencedColumnNames: uuid
             referencedTableName: public_holding
+  - includeAll:
+      path: db\changelog\2022\10
 

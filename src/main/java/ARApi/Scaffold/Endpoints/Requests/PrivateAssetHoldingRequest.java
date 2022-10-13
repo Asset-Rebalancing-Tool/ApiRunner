@@ -48,5 +48,6 @@ public class PrivateAssetHoldingRequest {
         if(targetPercentage != null) privateHolding.target_percentage = targetPercentage;
         if(ownedQuantity != null) privateHolding.owned_quantity = ownedQuantity;
         if(unitType != null) privateHolding.unit_type = unitType;
+        if(currency != null) privateHolding.currency = currency;
     }
 }
