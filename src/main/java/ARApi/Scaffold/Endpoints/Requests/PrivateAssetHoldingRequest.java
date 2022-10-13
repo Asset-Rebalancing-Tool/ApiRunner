@@ -18,7 +18,7 @@ public class PrivateAssetHoldingRequest {
 
     public String title;
 
-    public Double targetPrecentage;
+    public Double targetPercentage;
 
     public Double ownedQuantity;
 
@@ -45,7 +45,7 @@ public class PrivateAssetHoldingRequest {
         if(assetType != null) privateHolding.asset_type = assetType;
         if(title != null) privateHolding.title = title;
         if(pricePerUnit != null) privateHolding.price_per_unit = pricePerUnit;
-        if(targetPrecentage != null) privateHolding.target_percentage = targetPrecentage;
+        if(targetPercentage != null) privateHolding.target_percentage = targetPercentage;
         if(ownedQuantity != null) privateHolding.owned_quantity = ownedQuantity;
         if(unitType != null) privateHolding.unit_type = unitType;
     }

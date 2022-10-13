@@ -116,13 +116,13 @@ public class HoldingApiTest extends BaseIntegrationTest {
 
         // patch
         var patchRequest = new PrivateAssetHoldingRequest();
-        patchRequest.targetPrecentage = 10d;
+        patchRequest.targetPercentage = 10d;
         var patchedHolding = authService.AddAuth(webTestClient.patch().uri(endpoint + "/" + postedHolding.uuid))
                 .body(BodyInserters.fromValue(patchRequest)).exchange()
                         .expectBody(ModelPrivateHolding.class)
                                 .returnResult().getResponseBody();
 
-        Assert.isTrue(patchRequest.targetPrecentage == patchedHolding.targetPercentage, "target percentage not patched");
+        Assert.isTrue(patchRequest.targetPercentage == patchedHolding.targetPercentage, "target percentage not patched");
 
         // post name conflict
         authService.AddAuth(webTestClient.post().uri(endpoint)).body(BodyInserters.fromValue(postRequest))
