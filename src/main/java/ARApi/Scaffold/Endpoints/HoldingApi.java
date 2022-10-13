@@ -165,7 +165,6 @@ public class HoldingApi {
 
     @GetMapping("/asset_holding/private")
     public ModelPrivateHolding[] GetPrivateAssetHoldings(@RequestParam Optional<Boolean> groupLess) {
-
         var userHoldings = privateAssetHoldingRepository.GetAssetsOfUser(getUserUuid());
         if(groupLess.isPresent() && groupLess.get()){
             var groupsOfUser = assetHoldingGroupRepository.GetByUserUuid(getUserUuid());
@@ -180,7 +179,6 @@ public class HoldingApi {
         privateAssetHoldingRepository.deleteById(UUID.fromString(holdingUuid));
         return HttpStatus.OK;
     }
-
 
     @PatchMapping("/asset_holding/group/{groupUuid}")
     public ResponseEntity<HttpStatus> PatchHoldingGroup(@RequestBody HoldingGroupRequest holdingGroupRequest, @PathVariable String groupUuid){
