@@ -181,14 +181,14 @@ public class HoldingApi {
     }
 
     @PatchMapping("/asset_holding/group/{groupUuid}")
-    public ResponseEntity<HttpStatus> PatchHoldingGroup(@RequestBody HoldingGroupRequest holdingGroupRequest, @PathVariable String groupUuid){
+    public ResponseEntity<ModelHoldingGroup> PatchHoldingGroup(@RequestBody HoldingGroupRequest holdingGroupRequest, @PathVariable String groupUuid){
         var uuid = UUID.fromString(groupUuid);
 
         var holdingGroup = assetHoldingGroupRepository.findById(uuid).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No group holding found for uuid"));
 
-        assetHoldingGroupRepository.saveAndFlush(holdingGroupRequest.patchHoldingGroup(holdingGroup, publicAssetHoldingRepository, privateAssetHoldingRepository));
+        var patchedGroup = assetHoldingGroupRepository.saveAndFlush(holdingGroupRequest.patchHoldingGroup(holdingGroup, publicAssetHoldingRepository, privateAssetHoldingRepository));
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(new ModelHoldingGroup(patchedGroup));
     }
 
     @PostMapping("/asset_holding/group")
