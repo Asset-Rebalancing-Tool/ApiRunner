@@ -106,7 +106,8 @@ public class HoldingApi {
                         privateAssetHoldingRepository)
         );
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(new ModelPublicHolding(publicAssetHolding));
+        var holding = new ModelPublicHolding(publicAssetHolding);
+        return ResponseEntity.status(HttpStatus.CREATED).body(holding);
     }
 
     @GetMapping("/asset_holding/public")
@@ -125,6 +126,16 @@ public class HoldingApi {
 
     @DeleteMapping("/asset_holding/public/{holdingUuid}")
     public HttpStatus DeletePublicAssetHolding(@PathVariable String holdingUuid) {
+
+        // check if holding in group, remove relation first
+        var ph = publicAssetHoldingRepository.findById(UUID.fromString(holdingUuid))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No holding found for uuid"));;
+
+        if(ph.HoldingGroup != null){
+            ph.HoldingGroup.publicHoldings.remove(ph);
+            publicAssetHoldingRepository.saveAndFlush(ph);
+        }
+
         publicAssetHoldingRepository.deleteById(UUID.fromString(holdingUuid));
         return HttpStatus.OK;
     }
@@ -176,6 +187,15 @@ public class HoldingApi {
 
     @DeleteMapping("/asset_holding/private/{holdingUuid}")
     public HttpStatus DeletePrivateAssetHolding(@PathVariable String holdingUuid){
+        // check if holding in group, remove relation first
+        var ph = privateAssetHoldingRepository.findById(UUID.fromString(holdingUuid))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No holding found for uuid"));;
+
+        if(ph.HoldingGroup != null){
+            ph.HoldingGroup.publicHoldings.remove(ph);
+            privateAssetHoldingRepository.saveAndFlush(ph);
+        }
+
         privateAssetHoldingRepository.deleteById(UUID.fromString(holdingUuid));
         return HttpStatus.OK;
     }
@@ -195,7 +215,15 @@ public class HoldingApi {
     @ResponseStatus(HttpStatus.CREATED)
     public ModelHoldingGroup PostAssetHoldingGroup(@RequestBody HoldingGroupRequest postAssetHoldingGroupRequest) {
         var groupingDb = postAssetHoldingGroupRequest.toAssetHoldingGrouping(getUserUuid(), userRepository, publicAssetHoldingRepository, privateAssetHoldingRepository);
+        // save holding groups aswell
+        groupingDb.publicHoldings.forEach(publicHolding -> {
+            publicHolding.HoldingGroup = groupingDb;
+        });
+        groupingDb.privateHoldings.forEach(privateHolding -> {
+            privateHolding.HoldingGroup = groupingDb;
+        });
         var assetGrouping = assetHoldingGroupRepository.saveAndFlush(groupingDb);
+
         return new ModelHoldingGroup(assetGrouping);
     }
 

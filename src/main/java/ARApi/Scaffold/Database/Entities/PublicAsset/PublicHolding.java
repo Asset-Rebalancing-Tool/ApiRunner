@@ -16,7 +16,7 @@ import java.util.UUID;
 @Table(indexes = {@Index(columnList = "user_uuid")})
 public class PublicHolding extends BaseUserEntity {
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="asset_uuid")
     public PublicAsset public_asset;
 

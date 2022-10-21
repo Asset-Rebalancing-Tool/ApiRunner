@@ -37,12 +37,13 @@ public class HoldingGroupRequest {
     }
 
     @ApiModelProperty(hidden = true)
-    private void setEditableFields(HoldingGroup privateHolding,  PublicAssetHoldingRepository publicAssetHoldings, PrivateAssetHoldingRepository privateAssetHoldings){
-        if(publicHoldingUuids != null) privateHolding.publicHoldings = Arrays.stream(publicHoldingUuids)
-                .map(holding -> publicAssetHoldings.getReferenceById(UUID.fromString(holding))).collect(Collectors.toSet());
-        if(privateHoldingUuids != null) privateHolding.privateHoldings= Arrays.stream(privateHoldingUuids)
-                .map(holding -> privateAssetHoldings.getReferenceById(UUID.fromString(holding))).collect(Collectors.toSet());
-        if(groupName != null) privateHolding.group_name = groupName;
-        if(targetPercentage != null) privateHolding.target_percentage = targetPercentage;
+    private void setEditableFields(HoldingGroup holdingGroup,  PublicAssetHoldingRepository publicAssetHoldings, PrivateAssetHoldingRepository privateAssetHoldings){
+        if(publicHoldingUuids != null) holdingGroup.publicHoldings = Arrays.stream(publicHoldingUuids)
+                .map(holding -> publicAssetHoldings.findById(UUID.fromString(holding)).orElseThrow()).collect(Collectors.toSet());
+        if(privateHoldingUuids != null) holdingGroup.privateHoldings= Arrays.stream(privateHoldingUuids)
+                .map(holding -> privateAssetHoldings.findById(UUID.fromString(holding)).orElseThrow()).collect(Collectors.toSet());
+        if(groupName != null) holdingGroup.group_name = groupName;
+        if(targetPercentage != null) holdingGroup.target_percentage = targetPercentage;
+
     }
 }

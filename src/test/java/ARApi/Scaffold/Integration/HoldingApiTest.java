@@ -71,11 +71,16 @@ public class HoldingApiTest extends BaseIntegrationTest {
         var holdingGroup = authService.AddAuth(webTestClient.post().uri("/holding_api/asset_holding/group")).body(BodyInserters.fromValue(request))
                 .exchange().expectBody(ModelHoldingGroup.class).returnResult().getResponseBody();
         Assert.notNull(holdingGroup, "holding group can't be null");
+        Assert.notNull(holdingGroup.publicHoldings, "public holdings can't be null");
+
+        // delete holding
+        authService.AddAuth(webTestClient.delete().uri("/holding_api/asset_holding/public/" + publicHoldings[0].uuid)).exchange().expectStatus().isOk();
 
         // get
         var holdingGroups = authService.AddAuth(webTestClient.get().uri("/holding_api/asset_holding/group")).exchange()
                 .expectBody(ModelHoldingGroup[].class).returnResult().getResponseBody();
         Assert.notEmpty(holdingGroups, "holding groups should at least return the one created");
+
         
         // patch
         var patchRequest = new HoldingGroupRequest();
