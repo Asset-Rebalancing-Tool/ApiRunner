@@ -1,6 +1,7 @@
 package ARApi.Scaffold.Database.Entities.PublicAsset;
 
 import ARApi.Scaffold.Database.Entities.BaseUserEntity;
+import ARApi.Scaffold.Database.Entities.HoldingGroup;
 import ARApi.Scaffold.Shared.Enums.Currency;
 import ARApi.Scaffold.Shared.Enums.UnitType;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -22,6 +23,10 @@ public class PublicHolding extends BaseUserEntity {
     public double target_percentage;
 
     public double owned_quantity;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "holding_group_uuid")
+    public HoldingGroup HoldingGroup;
 
     public String custom_name;
 

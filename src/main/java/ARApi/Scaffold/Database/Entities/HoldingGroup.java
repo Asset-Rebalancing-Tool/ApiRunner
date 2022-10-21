@@ -3,30 +3,18 @@ package ARApi.Scaffold.Database.Entities;
 import ARApi.Scaffold.Database.Entities.PrivateAsset.PrivateHolding;
 import ARApi.Scaffold.Database.Entities.PublicAsset.PublicHolding;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
+import javax.persistence.*;
 import java.util.Set;
 import java.util.UUID;
 
 @Entity
 public class HoldingGroup extends BaseUserEntity {
 
-    @ManyToMany
-    @JoinTable(
-            name = "grouping_public_asset_holdings",
-            joinColumns = { @JoinColumn(name = "fk_grouping") },
-            inverseJoinColumns = { @JoinColumn(name = "fk_public_asset_holding") }
-    )
+    @OneToMany(mappedBy= "HoldingGroup", cascade = CascadeType.ALL)
+
     public Set<PublicHolding> publicHoldings;
 
-    @ManyToMany
-    @JoinTable(
-            name = "grouping_private_asset_holdings",
-            joinColumns = { @JoinColumn(name = "fk_grouping") },
-            inverseJoinColumns = { @JoinColumn(name = "fk_private_asset_holding") }
-    )
+    @OneToMany(mappedBy= "HoldingGroup", cascade = CascadeType.ALL)
     public Set<PrivateHolding> privateHoldings;
 
     public double target_percentage;

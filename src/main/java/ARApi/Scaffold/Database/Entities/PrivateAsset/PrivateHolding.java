@@ -1,6 +1,7 @@
 package ARApi.Scaffold.Database.Entities.PrivateAsset;
 
 import ARApi.Scaffold.Database.Entities.BaseUserEntity;
+import ARApi.Scaffold.Database.Entities.HoldingGroup;
 import ARApi.Scaffold.Shared.Enums.AssetType;
 import ARApi.Scaffold.Shared.Enums.Currency;
 import ARApi.Scaffold.Shared.Enums.UnitType;
@@ -21,6 +22,10 @@ public class PrivateHolding extends BaseUserEntity {
     public AssetType asset_type;
 
     public double price_per_unit;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "holding_group_uuid")
+    public HoldingGroup HoldingGroup;
 
     public double owned_quantity;
 
