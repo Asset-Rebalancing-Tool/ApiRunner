@@ -1,7 +1,7 @@
 version: "3.9"
 
 services:
-  mysql:
+  ab-mysql:
     restart: always
     image: mysql:8.0.26
     cap_add:
@@ -11,7 +11,7 @@ services:
       - MYSQL_DATABASE=asset_rebalancer
       - MYSQL_ROOT_HOST=%
     volumes:
-      - vmysql:/var/lib/mysql
+      - vmysql-prod:/var/lib/mysql
     networks:
       - th_net
 
@@ -21,7 +21,7 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
-      - MYSQL_HOST=${MYSQL_HOST:-mysql}
+      - MYSQL_HOST=${MYSQL_HOST:-ab-mysql}
       - JWT_SECRET=${JWT_SECRET:-devSecret}
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
       - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
