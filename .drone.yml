@@ -27,7 +27,7 @@ steps:
 
 trigger:
   branch:
-    - prod
+    - master
   event:
     - push
 
