@@ -31,3 +31,6 @@ services:
 networks:
   th_net:
     external: true
+
+volumes:
+  vmysql-prod:

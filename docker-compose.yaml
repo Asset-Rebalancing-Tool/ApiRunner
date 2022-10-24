@@ -34,3 +34,6 @@ services:
 networks:
   ar_net:
     external: true
+
+volumes:
+  vmysql:
