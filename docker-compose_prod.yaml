@@ -1,0 +1,33 @@
+version: "3.9"
+
+services:
+  mysql:
+    restart: always
+    image: mysql:8.0.26
+    cap_add:
+      - SYS_NICE
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=asset_rebalancer
+      - MYSQL_ROOT_HOST=%
+    volumes:
+      - vmysql:/var/lib/mysql
+    networks:
+      - th_net
+
+  dbrunner:
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - MYSQL_HOST=${MYSQL_HOST:-mysql}
+      - JWT_SECRET=${JWT_SECRET:-devSecret}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+    networks:
+      - th_net
+
+networks:
+  th_net:
+    external: true

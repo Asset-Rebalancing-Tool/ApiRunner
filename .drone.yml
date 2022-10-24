@@ -1,4 +1,38 @@
 kind: pipeline
+type: ssh
+name: deploy_prod_backend
+
+server:
+  host:
+    from_secret: ssh_host_prod
+  user: root
+  password:
+    from_secret: ssh_password_prod
+
+steps:
+  - name: deploy
+    environment:
+      JWT_SECRET:
+        from_secret: jwt_secret
+      MYSQL_HOST: "ab-mysql"
+      COMPOSE_PROJECT_NAME: webservices
+      GOOGLE_CLIENT_ID:
+        from_secret: google_client_id
+      GOOGLE_CLIENT_SECRET:
+        from_secret: google_client_secret
+    commands:
+      - docker network create th_net
+      - docker compose -f docker-compose_prod.yaml build
+      - docker compose -f docker-compose_prod.yaml up -d
+
+trigger:
+  branch:
+    - prod
+  event:
+    - push
+
+---
+kind: pipeline
 type: docker
 name: publish_snapshot_artifact
 
@@ -26,10 +60,10 @@ name: deploy_local_dev
 
 server:
   host:
-    from_secret: ssh_host
+    from_secret: ssh_host_local_dev
   user: tobi
   password:
-    from_secret: ssh_password
+    from_secret: ssh_password_local_dev
 
 steps:
   - name: deploy
