@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1667037834681-1" author="admin (generated)">
+        <createTable tableName="asset_information">
+            <column name="uuid" type="BINARY(16)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_assetinformation"/>
+            </column>
+            <column name="ts_created" type="DATETIME"/>
+            <column name="asset_uuid" type="BINARY(16)"/>
+            <column name="asset_information_type" type="VARCHAR(255)"/>
+            <column name="byte_value_array" type="BLOB"/>
+            <column name="language" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1667037834681-2" author="admin (generated)">
+        <createTable tableName="asset_price_record">
+            <column name="uuid" type="BINARY(16)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_assetpricerecord"/>
+            </column>
+            <column name="ts_created" type="DATETIME"/>
+            <column name="asset_uuid" type="BINARY(16)"/>
+            <column name="ts_fetched" type="DATETIME"/>
+            <column name="ts_price" type="DATETIME"/>
+            <column name="price" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="currency" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1667037834681-3" author="admin (generated)">
+        <createTable tableName="holding_group">
+            <column name="uuid" type="BINARY(16)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_holdinggroup"/>
+            </column>
+            <column name="user_uuid" type="BINARY(16)"/>
+            <column name="ts_created" type="DATETIME"/>
+            <column name="target_percentage" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="group_name" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1667037834681-4" author="admin (generated)">
+        <createTable tableName="private_category">
+            <column name="uuid" type="BINARY(16)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_privatecategory"/>
+            </column>
+            <column name="user_uuid" type="BINARY(16)"/>
+            <column name="ts_created" type="DATETIME"/>
+            <column name="category_name" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1667037834681-5" author="admin (generated)">
+        <createTable tableName="private_holding">
+            <column name="uuid" type="BINARY(16)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_privateholding"/>
+            </column>
+            <column name="user_uuid" type="BINARY(16)"/>
+            <column name="ts_created" type="DATETIME"/>
+            <column name="title" type="VARCHAR(255)"/>
+            <column name="asset_type" type="VARCHAR(255)"/>
+            <column name="price_per_unit" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="holding_group_uuid" type="BINARY(16)"/>
+            <column name="owned_quantity" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="unit_type" type="INT"/>
+            <column name="target_percentage" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="currency" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1667037834681-6" author="admin (generated)">
+        <createTable tableName="public_asset">
+            <column name="uuid" type="BINARY(16)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_publicasset"/>
+            </column>
+            <column name="ts_created" type="DATETIME"/>
+            <column name="asset_name" type="VARCHAR(255)"/>
+            <column name="unit_type" type="INT"/>
+            <column name="asset_type" type="VARCHAR(255)"/>
+            <column name="isin" type="VARCHAR(255)"/>
+            <column name="symbol" type="VARCHAR(255)"/>
+            <column name="icon" type="BLOB"/>
+            <column name="search_hits_total" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1667037834681-7" author="admin (generated)">
+        <createTable tableName="public_holding">
+            <column name="uuid" type="BINARY(16)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_publicholding"/>
+            </column>
+            <column name="user_uuid" type="BINARY(16)"/>
+            <column name="ts_created" type="DATETIME"/>
+            <column name="asset_uuid" type="BINARY(16)"/>
+            <column name="target_percentage" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="owned_quantity" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="holding_group_uuid" type="BINARY(16)"/>
+            <column name="custom_name" type="VARCHAR(255)"/>
+            <column name="display_custom_name" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="holding_origin" type="VARCHAR(255)"/>
+            <column name="selected_currency" type="INT"/>
+            <column name="selected_unit_type" type="INT"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1667037834681-8" author="admin (generated)">
+        <createTable tableName="search_record">
+            <column name="uuid" type="BINARY(16)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_searchrecord"/>
+            </column>
+            <column name="ts_created" type="DATETIME"/>
+            <column name="context_uuid" type="BINARY(16)"/>
+            <column name="search" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1667037834681-9" author="admin (generated)">
+        <createTable tableName="user">
+            <column name="uuid" type="BINARY(16)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_user"/>
+            </column>
+            <column name="ts_created" type="DATETIME"/>
+            <column name="email" type="VARCHAR(255)"/>
+            <column name="password_hash" type="VARCHAR(255)"/>
+            <column name="registration_origin" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1667037834681-10" author="admin (generated)">
+        <addUniqueConstraint columnNames="user_uuid, title" constraintName="uc_438366e575d32648dc66271a3"
+                             tableName="private_holding"/>
+    </changeSet>
+    <changeSet id="1667037834681-11" author="admin (generated)">
+        <addUniqueConstraint columnNames="isin" constraintName="uc_publicasset_isin" tableName="public_asset"/>
+    </changeSet>
+    <changeSet id="1667037834681-12" author="admin (generated)">
+        <addUniqueConstraint columnNames="email" constraintName="uc_user_email" tableName="user"/>
+    </changeSet>
+    <changeSet id="1667037834681-13" author="admin (generated)">
+        <createIndex indexName="cu_index" tableName="search_record">
+            <column name="context_uuid"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="1667037834681-15" author="admin (generated)">
+        <createIndex indexName="s_index" tableName="search_record">
+            <column name="search"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="1667037834681-16" author="admin (generated)">
+        <addForeignKeyConstraint baseColumnNames="asset_uuid" baseTableName="asset_information"
+                                 constraintName="FK_ASSETINFORMATION_ON_ASSET_UUID" referencedColumnNames="uuid"
+                                 referencedTableName="public_asset"/>
+    </changeSet>
+    <changeSet id="1667037834681-17" author="admin (generated)">
+        <addForeignKeyConstraint baseColumnNames="asset_uuid" baseTableName="asset_price_record"
+                                 constraintName="FK_ASSETPRICERECORD_ON_ASSET_UUID" referencedColumnNames="uuid"
+                                 referencedTableName="public_asset"/>
+    </changeSet>
+    <changeSet id="1667037834681-18" author="admin (generated)">
+        <addForeignKeyConstraint baseColumnNames="user_uuid" baseTableName="holding_group"
+                                 constraintName="FK_HOLDINGGROUP_ON_USER_UUID" referencedColumnNames="uuid"
+                                 referencedTableName="user"/>
+    </changeSet>
+    <changeSet id="1667037834681-19" author="admin (generated)">
+        <addForeignKeyConstraint baseColumnNames="user_uuid" baseTableName="private_category"
+                                 constraintName="FK_PRIVATECATEGORY_ON_USER_UUID" referencedColumnNames="uuid"
+                                 referencedTableName="user"/>
+    </changeSet>
+    <changeSet id="1667037834681-20" author="admin (generated)">
+        <addForeignKeyConstraint baseColumnNames="holding_group_uuid" baseTableName="private_holding"
+                                 constraintName="FK_PRIVATEHOLDING_ON_HOLDING_GROUP_UUID" referencedColumnNames="uuid"
+                                 referencedTableName="holding_group"/>
+    </changeSet>
+    <changeSet id="1667037834681-21" author="admin (generated)">
+        <addForeignKeyConstraint baseColumnNames="user_uuid" baseTableName="private_holding"
+                                 constraintName="FK_PRIVATEHOLDING_ON_USER_UUID" referencedColumnNames="uuid"
+                                 referencedTableName="user"/>
+    </changeSet>
+    <changeSet id="1667037834681-22" author="admin (generated)">
+        <addForeignKeyConstraint baseColumnNames="asset_uuid" baseTableName="public_holding"
+                                 constraintName="FK_PUBLICHOLDING_ON_ASSET_UUID" referencedColumnNames="uuid"
+                                 referencedTableName="public_asset"/>
+    </changeSet>
+    <changeSet id="1667037834681-23" author="admin (generated)">
+        <addForeignKeyConstraint baseColumnNames="holding_group_uuid" baseTableName="public_holding"
+                                 constraintName="FK_PUBLICHOLDING_ON_HOLDING_GROUP_UUID" referencedColumnNames="uuid"
+                                 referencedTableName="holding_group"/>
+    </changeSet>
+    <changeSet id="1667037834681-24" author="admin (generated)">
+        <addForeignKeyConstraint baseColumnNames="user_uuid" baseTableName="public_holding"
+                                 constraintName="FK_PUBLICHOLDING_ON_USER_UUID" referencedColumnNames="uuid"
+                                 referencedTableName="user"/>
+
+        <createIndex indexName="idx_f132d8f5249dfa171d089e6f4" tableName="public_holding">
+            <column name="user_uuid"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>
