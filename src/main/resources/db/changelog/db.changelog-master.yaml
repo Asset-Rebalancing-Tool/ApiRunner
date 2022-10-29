@@ -1,0 +1,471 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1667038754182-1
+      author: admin (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_assetinformation
+                  name: uuid
+                  type: BINARY(16)
+              - column:
+                  name: ts_created
+                  type: DATETIME
+              - column:
+                  name: asset_uuid
+                  type: BINARY(16)
+              - column:
+                  name: asset_information_type
+                  type: VARCHAR(255)
+              - column:
+                  name: byte_value_array
+                  type: BLOB
+              - column:
+                  name: language
+                  type: VARCHAR(255)
+            tableName: asset_information
+  - changeSet:
+      id: 1667038754182-2
+      author: admin (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_assetpricerecord
+                  name: uuid
+                  type: BINARY(16)
+              - column:
+                  name: ts_created
+                  type: DATETIME
+              - column:
+                  name: asset_uuid
+                  type: BINARY(16)
+              - column:
+                  name: ts_fetched
+                  type: DATETIME
+              - column:
+                  name: ts_price
+                  type: DATETIME
+              - column:
+                  constraints:
+                    nullable: false
+                  name: price
+                  type: DOUBLE
+              - column:
+                  name: currency
+                  type: VARCHAR(255)
+            tableName: asset_price_record
+  - changeSet:
+      id: 1667038754182-3
+      author: admin (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_holdinggroup
+                  name: uuid
+                  type: BINARY(16)
+              - column:
+                  name: user_uuid
+                  type: BINARY(16)
+              - column:
+                  name: ts_created
+                  type: DATETIME
+              - column:
+                  constraints:
+                    nullable: false
+                  name: target_percentage
+                  type: DOUBLE
+              - column:
+                  name: group_name
+                  type: VARCHAR(255)
+            tableName: holding_group
+  - changeSet:
+      id: 1667038754182-4
+      author: admin (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_privatecategory
+                  name: uuid
+                  type: BINARY(16)
+              - column:
+                  name: user_uuid
+                  type: BINARY(16)
+              - column:
+                  name: ts_created
+                  type: DATETIME
+              - column:
+                  name: category_name
+                  type: VARCHAR(255)
+            tableName: private_category
+  - changeSet:
+      id: 1667038754182-5
+      author: admin (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_privateholding
+                  name: uuid
+                  type: BINARY(16)
+              - column:
+                  name: user_uuid
+                  type: BINARY(16)
+              - column:
+                  name: ts_created
+                  type: DATETIME
+              - column:
+                  name: title
+                  type: VARCHAR(255)
+              - column:
+                  name: asset_type
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: price_per_unit
+                  type: DOUBLE
+              - column:
+                  name: holding_group_uuid
+                  type: BINARY(16)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: owned_quantity
+                  type: DOUBLE
+              - column:
+                  name: unit_type
+                  type: INT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: target_percentage
+                  type: DOUBLE
+              - column:
+                  name: currency
+                  type: VARCHAR(255)
+            tableName: private_holding
+  - changeSet:
+      id: 1667038754182-6
+      author: admin (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_publicasset
+                  name: uuid
+                  type: BINARY(16)
+              - column:
+                  name: ts_created
+                  type: DATETIME
+              - column:
+                  name: asset_name
+                  type: VARCHAR(255)
+              - column:
+                  name: unit_type
+                  type: INT
+              - column:
+                  name: asset_type
+                  type: VARCHAR(255)
+              - column:
+                  name: isin
+                  type: VARCHAR(255)
+              - column:
+                  name: symbol
+                  type: VARCHAR(255)
+              - column:
+                  name: icon
+                  type: BLOB
+              - column:
+                  constraints:
+                    nullable: false
+                  name: search_hits_total
+                  type: BIGINT
+            tableName: public_asset
+  - changeSet:
+      id: 1667038754182-7
+      author: admin (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_publicholding
+                  name: uuid
+                  type: BINARY(16)
+              - column:
+                  name: user_uuid
+                  type: BINARY(16)
+              - column:
+                  name: ts_created
+                  type: DATETIME
+              - column:
+                  name: asset_uuid
+                  type: BINARY(16)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: target_percentage
+                  type: DOUBLE
+              - column:
+                  constraints:
+                    nullable: false
+                  name: owned_quantity
+                  type: DOUBLE
+              - column:
+                  name: holding_group_uuid
+                  type: BINARY(16)
+              - column:
+                  name: custom_name
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: display_custom_name
+                  type: BOOLEAN
+              - column:
+                  name: holding_origin
+                  type: VARCHAR(255)
+              - column:
+                  name: selected_currency
+                  type: INT
+              - column:
+                  name: selected_unit_type
+                  type: INT
+            tableName: public_holding
+  - changeSet:
+      id: 1667038754182-8
+      author: admin (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_searchrecord
+                  name: uuid
+                  type: BINARY(16)
+              - column:
+                  name: ts_created
+                  type: DATETIME
+              - column:
+                  name: context_uuid
+                  type: BINARY(16)
+              - column:
+                  name: search
+                  type: VARCHAR(255)
+            tableName: search_record
+  - changeSet:
+      id: 1667038754182-9
+      author: admin (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_user
+                  name: uuid
+                  type: BINARY(16)
+              - column:
+                  name: ts_created
+                  type: DATETIME
+              - column:
+                  name: email
+                  type: VARCHAR(255)
+              - column:
+                  name: password_hash
+                  type: VARCHAR(255)
+              - column:
+                  name: registration_origin
+                  type: VARCHAR(255)
+            tableName: user
+  - changeSet:
+      id: 1667038754182-10
+      author: admin (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addUniqueConstraint:
+            columnNames: user_uuid, title
+            constraintName: uc_438366e575d32648dc66271a3
+            tableName: private_holding
+  - changeSet:
+      id: 1667038754182-11
+      author: admin (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addUniqueConstraint:
+            columnNames: isin
+            constraintName: uc_publicasset_isin
+            tableName: public_asset
+  - changeSet:
+      id: 1667038754182-12
+      author: admin (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addUniqueConstraint:
+            columnNames: email
+            constraintName: uc_user_email
+            tableName: user
+  - changeSet:
+      id: 1667038754182-13
+      author: admin (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createIndex:
+            columns:
+              - column:
+                  name: context_uuid
+            indexName: cu_index
+            tableName: search_record
+  - changeSet:
+      id: 1667038754182-15
+      author: admin (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createIndex:
+            columns:
+              - column:
+                  name: search
+            indexName: s_index
+            tableName: search_record
+  - changeSet:
+      id: 1667038754182-16
+      author: admin (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: asset_uuid
+            baseTableName: asset_information
+            constraintName: FK_ASSETINFORMATION_ON_ASSET_UUID
+            referencedColumnNames: uuid
+            referencedTableName: public_asset
+  - changeSet:
+      id: 1667038754182-17
+      author: admin (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: asset_uuid
+            baseTableName: asset_price_record
+            constraintName: FK_ASSETPRICERECORD_ON_ASSET_UUID
+            referencedColumnNames: uuid
+            referencedTableName: public_asset
+  - changeSet:
+      id: 1667038754182-18
+      author: admin (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: user_uuid
+            baseTableName: holding_group
+            constraintName: FK_HOLDINGGROUP_ON_USER_UUID
+            referencedColumnNames: uuid
+            referencedTableName: user
+  - changeSet:
+      id: 1667038754182-19
+      author: admin (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: user_uuid
+            baseTableName: private_category
+            constraintName: FK_PRIVATECATEGORY_ON_USER_UUID
+            referencedColumnNames: uuid
+            referencedTableName: user
+  - changeSet:
+      id: 1667038754182-20
+      author: admin (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: holding_group_uuid
+            baseTableName: private_holding
+            constraintName: FK_PRIVATEHOLDING_ON_HOLDING_GROUP_UUID
+            referencedColumnNames: uuid
+            referencedTableName: holding_group
+  - changeSet:
+      id: 1667038754182-21
+      author: admin (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: user_uuid
+            baseTableName: private_holding
+            constraintName: FK_PRIVATEHOLDING_ON_USER_UUID
+            referencedColumnNames: uuid
+            referencedTableName: user
+  - changeSet:
+      id: 1667038754182-22
+      author: admin (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: asset_uuid
+            baseTableName: public_holding
+            constraintName: FK_PUBLICHOLDING_ON_ASSET_UUID
+            referencedColumnNames: uuid
+            referencedTableName: public_asset
+  - changeSet:
+      id: 1667038754182-23
+      author: admin (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: holding_group_uuid
+            baseTableName: public_holding
+            constraintName: FK_PUBLICHOLDING_ON_HOLDING_GROUP_UUID
+            referencedColumnNames: uuid
+            referencedTableName: holding_group
+  - changeSet:
+      id: 1667038754182-24
+      author: admin (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: user_uuid
+            baseTableName: public_holding
+            constraintName: FK_PUBLICHOLDING_ON_USER_UUID
+            referencedColumnNames: uuid
+            referencedTableName: user
+        - createIndex:
+            columns:
+              - column:
+                  name: user_uuid
+            indexName: idx_f132d8f5249dfa171d089e6f4
+            tableName: public_holding
+
