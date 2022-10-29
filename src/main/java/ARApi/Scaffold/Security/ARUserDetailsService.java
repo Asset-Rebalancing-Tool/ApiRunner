@@ -12,8 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
-import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
@@ -22,7 +20,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
 @Service
-public class ARUserDetailsService extends DefaultOAuth2UserService implements UserDetailsService {
+public class ARUserDetailsService implements UserDetailsService {
 
     UserRepository userRepository;
 
@@ -46,27 +44,6 @@ public class ARUserDetailsService extends DefaultOAuth2UserService implements Us
         throw new UsernameNotFoundException(username);
     }
 
-    /**
-     *
-     * @param user user from oauth flow
-     * @return system specific jwt
-     */
-    public String processOAuthPostLogin(DefaultOidcUser user, HttpServletResponse response) throws IOException {
-        var optUser = userRepository.findByEmail(user.getEmail());
-        if(optUser.isPresent()){
-            var dbUser = optUser.get();
-            if(dbUser.registration_origin != RegistrationOrigin.OAuthRegistration){
-                return null;
-            }
-            return GetJwtForUserPricipal(dbUser);
-        }
-
-        // user is new from flow, has to be registered in database
-        var dbUserInsert = new User();
-        dbUserInsert.email = user.getEmail();
-        dbUserInsert.registration_origin = RegistrationOrigin.OAuthRegistration;
-        return GetJwtForUserPricipal(userRepository.saveAndFlush(dbUserInsert));
-    }
 
     public String GetJwtForUserPricipal(User user){
         var dbUser = userRepository.findByEmail(user.getUsername()).orElseGet(ARApi.Scaffold.Database.Entities.User::new);

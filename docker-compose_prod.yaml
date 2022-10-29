@@ -23,8 +23,6 @@ services:
     environment:
       - MYSQL_HOST=${MYSQL_HOST:-ab-mysql}
       - JWT_SECRET=${JWT_SECRET:-devSecret}
-      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
-      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
     networks:
       - th_net
 

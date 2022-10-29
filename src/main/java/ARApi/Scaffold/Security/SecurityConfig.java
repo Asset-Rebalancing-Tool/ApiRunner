@@ -15,10 +15,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.config.oauth2.client.CommonOAuth2Provider;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.client.registration.ClientRegistration;
-import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
-import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
-import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
+
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -49,36 +46,11 @@ public class SecurityConfig {
 
     private final Environment env;
 
-    private ClientRegistration getRegistration(String client) {
-        String clientId = env.getProperty(
-                CLIENT_PROPERTY_KEY + client + ".client-id");
 
-        if (clientId == null) {
-            return null;
-        }
-
-        String clientSecret = env.getProperty(
-                CLIENT_PROPERTY_KEY + client + ".client-secret");
-
-        if (client.equals("google")) {
-            return CommonOAuth2Provider.GOOGLE.getBuilder(client)
-                    .clientId(clientId).clientSecret(clientSecret).build();
-        }
-
-        return null;
-    }
 
     private static final List<String> clients = List.of("google");
 
-    @Bean
-    public ClientRegistrationRepository clientRegistrationRepository() {
-        List<ClientRegistration> registrations = clients.stream()
-                .map(this::getRegistration)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
 
-        return new InMemoryClientRegistrationRepository(registrations);
-    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
