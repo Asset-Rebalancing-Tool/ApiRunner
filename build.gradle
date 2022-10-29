@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'ARApi'
-version = '1.0.1-SNAPSHOT'
+version = '1.0.2-SNAPSHOT'
 sourceCompatibility = '17'
 
 repositories {
@@ -26,7 +26,6 @@ dependencies {
 	implementation 'org.springframework:spring-orm:5.3.22'
 	implementation 'org.hibernate:hibernate-core:5.6.10.Final'
 	implementation 'mysql:mysql-connector-java:8.0.29'
-	implementation 'org.liquibase:liquibase-core'
 
 	implementation 'io.springfox:springfox-boot-starter:3.0.0'
 	implementation 'org.seleniumhq.selenium:selenium-java:4.3.0'
