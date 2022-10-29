@@ -21,7 +21,6 @@ steps:
       GOOGLE_CLIENT_SECRET:
         from_secret: google_client_secret
     commands:
-      - docker network create th_net
       - docker compose -f docker-compose_prod.yaml build
       - docker compose -f docker-compose_prod.yaml up -d
 
