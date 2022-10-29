@@ -17,7 +17,7 @@ public class AuthTestUserService implements IAuthService {
     public void Initialize(WebTestClient webTestClient){
 
         var authRequest = new AuthRequest();
-        authRequest.email = RandomStringUtils.randomAlphanumeric(10) + "@test.com";
+        authRequest.email = (int) Math.random() + "@test.com";
         authRequest.password = "testpassword";
 
         webTestClient.post().uri("/auth_api/register")

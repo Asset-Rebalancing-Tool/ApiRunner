@@ -5,7 +5,7 @@ import ARApi.Scaffold.Endpoints.Requests.AuthRequest;
 import ARApi.Scaffold.Endpoints.Requests.SearchAssetRequest;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import liquibase.repackaged.org.apache.commons.lang3.RandomStringUtils;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
@@ -33,7 +33,7 @@ public class AuthApiTest {
     @Test
     public void DuplicateRegister() {
         var authRequest = new AuthRequest();
-        authRequest.email = RandomStringUtils.randomAlphanumeric(10) + "@test.com";
+        authRequest.email = (int) Math.random() + "@test.com";
         authRequest.password = "testpassword";
 
         webTestClient.post().uri("/auth_api/register")
@@ -48,7 +48,7 @@ public class AuthApiTest {
     @Test
     public void TokenAccess() throws InterruptedException {
         var authRequest = new AuthRequest();
-        authRequest.email = RandomStringUtils.randomAlphanumeric(10) + "@test.com";
+        authRequest.email = (int) Math.random() + "@test.com";
         authRequest.password = "testpassword";
 
         var tokenOnRegistration = webTestClient.post().uri("/auth_api/register")

@@ -6,7 +6,6 @@ import ARApi.Scaffold.Database.Repos.UserRepository;
 import ARApi.Scaffold.Shared.Enums.RegistrationOrigin;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import liquibase.repackaged.org.apache.commons.collections4.Get;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
