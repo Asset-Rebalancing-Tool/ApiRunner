@@ -23,8 +23,7 @@ public class PrivateHolding extends BaseUserEntity {
 
     public double price_per_unit;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "holding_group_uuid")
+    @ManyToOne
     public HoldingGroup HoldingGroup;
 
     public double owned_quantity;

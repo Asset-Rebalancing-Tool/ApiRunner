@@ -1,7 +1,7 @@
 databaseChangeLog:
   - changeSet:
-      id: 1667038754182-1
-      author: admin (generated)
+      id: 1667053472795-1
+      author: tobi (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - createTable:
@@ -30,8 +30,8 @@ databaseChangeLog:
                   type: VARCHAR(255)
             tableName: asset_information
   - changeSet:
-      id: 1667038754182-2
-      author: admin (generated)
+      id: 1667053472795-2
+      author: tobi (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - createTable:
@@ -65,8 +65,8 @@ databaseChangeLog:
                   type: VARCHAR(255)
             tableName: asset_price_record
   - changeSet:
-      id: 1667038754182-3
-      author: admin (generated)
+      id: 1667053472795-3
+      author: tobi (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - createTable:
@@ -94,8 +94,8 @@ databaseChangeLog:
                   type: VARCHAR(255)
             tableName: holding_group
   - changeSet:
-      id: 1667038754182-4
-      author: admin (generated)
+      id: 1667053472795-4
+      author: tobi (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - createTable:
@@ -118,8 +118,8 @@ databaseChangeLog:
                   type: VARCHAR(255)
             tableName: private_category
   - changeSet:
-      id: 1667038754182-5
-      author: admin (generated)
+      id: 1667053472795-5
+      author: tobi (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - createTable:
@@ -169,8 +169,8 @@ databaseChangeLog:
                   type: VARCHAR(255)
             tableName: private_holding
   - changeSet:
-      id: 1667038754182-6
-      author: admin (generated)
+      id: 1667053472795-6
+      author: tobi (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - createTable:
@@ -210,8 +210,8 @@ databaseChangeLog:
                   type: BIGINT
             tableName: public_asset
   - changeSet:
-      id: 1667038754182-7
-      author: admin (generated)
+      id: 1667053472795-7
+      author: tobi (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - createTable:
@@ -264,8 +264,8 @@ databaseChangeLog:
                   type: INT
             tableName: public_holding
   - changeSet:
-      id: 1667038754182-8
-      author: admin (generated)
+      id: 1667053472795-8
+      author: tobi (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - createTable:
@@ -288,8 +288,8 @@ databaseChangeLog:
                   type: VARCHAR(255)
             tableName: search_record
   - changeSet:
-      id: 1667038754182-9
-      author: admin (generated)
+      id: 1667053472795-9
+      author: tobi (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - createTable:
@@ -315,8 +315,8 @@ databaseChangeLog:
                   type: VARCHAR(255)
             tableName: user
   - changeSet:
-      id: 1667038754182-10
-      author: admin (generated)
+      id: 1667053472795-10
+      author: tobi (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addUniqueConstraint:
@@ -324,8 +324,8 @@ databaseChangeLog:
             constraintName: uc_438366e575d32648dc66271a3
             tableName: private_holding
   - changeSet:
-      id: 1667038754182-11
-      author: admin (generated)
+      id: 1667053472795-11
+      author: tobi (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addUniqueConstraint:
@@ -333,8 +333,8 @@ databaseChangeLog:
             constraintName: uc_publicasset_isin
             tableName: public_asset
   - changeSet:
-      id: 1667038754182-12
-      author: admin (generated)
+      id: 1667053472795-12
+      author: tobi (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addUniqueConstraint:
@@ -342,8 +342,8 @@ databaseChangeLog:
             constraintName: uc_user_email
             tableName: user
   - changeSet:
-      id: 1667038754182-13
-      author: admin (generated)
+      id: 1667053472795-13
+      author: tobi (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - createIndex:
@@ -353,8 +353,8 @@ databaseChangeLog:
             indexName: cu_index
             tableName: search_record
   - changeSet:
-      id: 1667038754182-15
-      author: admin (generated)
+      id: 1667053472795-15
+      author: tobi (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - createIndex:
@@ -364,8 +364,8 @@ databaseChangeLog:
             indexName: s_index
             tableName: search_record
   - changeSet:
-      id: 1667038754182-16
-      author: admin (generated)
+      id: 1667053472795-16
+      author: tobi (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addForeignKeyConstraint:
@@ -375,8 +375,8 @@ databaseChangeLog:
             referencedColumnNames: uuid
             referencedTableName: public_asset
   - changeSet:
-      id: 1667038754182-17
-      author: admin (generated)
+      id: 1667053472795-17
+      author: tobi (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addForeignKeyConstraint:
@@ -386,8 +386,8 @@ databaseChangeLog:
             referencedColumnNames: uuid
             referencedTableName: public_asset
   - changeSet:
-      id: 1667038754182-18
-      author: admin (generated)
+      id: 1667053472795-18
+      author: tobi (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addForeignKeyConstraint:
@@ -397,8 +397,8 @@ databaseChangeLog:
             referencedColumnNames: uuid
             referencedTableName: user
   - changeSet:
-      id: 1667038754182-19
-      author: admin (generated)
+      id: 1667053472795-19
+      author: tobi (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addForeignKeyConstraint:
@@ -408,19 +408,19 @@ databaseChangeLog:
             referencedColumnNames: uuid
             referencedTableName: user
   - changeSet:
-      id: 1667038754182-20
-      author: admin (generated)
+      id: 1667053472795-20
+      author: tobi (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addForeignKeyConstraint:
             baseColumnNames: holding_group_uuid
             baseTableName: private_holding
-            constraintName: FK_PRIVATEHOLDING_ON_HOLDING_GROUP_UUID
+            constraintName: FK_PRIVATEHOLDING_ON_HOLDINGGROUP_UUID
             referencedColumnNames: uuid
             referencedTableName: holding_group
   - changeSet:
-      id: 1667038754182-21
-      author: admin (generated)
+      id: 1667053472795-21
+      author: tobi (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addForeignKeyConstraint:
@@ -430,8 +430,8 @@ databaseChangeLog:
             referencedColumnNames: uuid
             referencedTableName: user
   - changeSet:
-      id: 1667038754182-22
-      author: admin (generated)
+      id: 1667053472795-22
+      author: tobi (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addForeignKeyConstraint:
@@ -441,19 +441,19 @@ databaseChangeLog:
             referencedColumnNames: uuid
             referencedTableName: public_asset
   - changeSet:
-      id: 1667038754182-23
-      author: admin (generated)
+      id: 1667053472795-23
+      author: tobi (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addForeignKeyConstraint:
             baseColumnNames: holding_group_uuid
             baseTableName: public_holding
-            constraintName: FK_PUBLICHOLDING_ON_HOLDING_GROUP_UUID
+            constraintName: FK_PUBLICHOLDING_ON_HOLDINGGROUP_UUID
             referencedColumnNames: uuid
             referencedTableName: holding_group
   - changeSet:
-      id: 1667038754182-24
-      author: admin (generated)
+      id: 1667053472795-24
+      author: tobi (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addForeignKeyConstraint:

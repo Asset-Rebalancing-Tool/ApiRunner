@@ -24,8 +24,7 @@ public class PublicHolding extends BaseUserEntity {
 
     public double owned_quantity;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "holding_group_uuid")
+    @ManyToOne
     public HoldingGroup HoldingGroup;
 
     public String custom_name;
