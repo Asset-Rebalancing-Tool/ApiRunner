@@ -39,9 +39,9 @@ public class HoldingGroupRequest {
     @ApiModelProperty(hidden = true)
     private void setEditableFields(HoldingGroup holdingGroup,  PublicAssetHoldingRepository publicAssetHoldings, PrivateAssetHoldingRepository privateAssetHoldings){
         if(publicHoldingUuids != null) holdingGroup.publicHoldings = Arrays.stream(publicHoldingUuids)
-                .map(holding -> publicAssetHoldings.findById(UUID.fromString(holding)).orElseThrow()).collect(Collectors.toSet());
+                .map(holding -> publicAssetHoldings.findById(UUID.fromString(holding)).orElseThrow()).collect(Collectors.toList());
         if(privateHoldingUuids != null) holdingGroup.privateHoldings= Arrays.stream(privateHoldingUuids)
-                .map(holding -> privateAssetHoldings.findById(UUID.fromString(holding)).orElseThrow()).collect(Collectors.toSet());
+                .map(holding -> privateAssetHoldings.findById(UUID.fromString(holding)).orElseThrow()).collect(Collectors.toList());
         if(groupName != null) holdingGroup.group_name = groupName;
         if(targetPercentage != null) holdingGroup.target_percentage = targetPercentage;
 

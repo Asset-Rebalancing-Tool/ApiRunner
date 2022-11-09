@@ -4,17 +4,18 @@ import ARApi.Scaffold.Database.Entities.PrivateAsset.PrivateHolding;
 import ARApi.Scaffold.Database.Entities.PublicAsset.PublicHolding;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
 @Entity
 public class HoldingGroup extends BaseUserEntity {
 
-    @OneToMany(mappedBy= "HoldingGroup", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    public Set<PublicHolding> publicHoldings;
+    @OneToMany(mappedBy= "HoldingGroup", cascade = CascadeType.ALL)
+    public List<PublicHolding> publicHoldings;
 
-    @OneToMany(mappedBy= "HoldingGroup", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    public Set<PrivateHolding> privateHoldings;
+    @OneToMany(mappedBy= "HoldingGroup", cascade = CascadeType.ALL)
+    public List<PrivateHolding> privateHoldings;
 
     public double target_percentage;
 

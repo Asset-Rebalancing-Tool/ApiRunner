@@ -2,7 +2,6 @@ package ARApi.Scaffold;
 
 
 import ARApi.Scaffold.Endpoints.Requests.AuthRequest;
-import liquibase.repackaged.org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.test.web.reactive.server.WebTestClient;
@@ -17,7 +16,7 @@ public class AuthTestUserService implements IAuthService {
     public void Initialize(WebTestClient webTestClient){
 
         var authRequest = new AuthRequest();
-        authRequest.email = (int) Math.random() + "@test.com";
+        authRequest.email = Math.random() + "@test.com";
         authRequest.password = "testpassword";
 
         webTestClient.post().uri("/auth_api/register")

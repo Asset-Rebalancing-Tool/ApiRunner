@@ -33,7 +33,7 @@ public class AuthApiTest {
     @Test
     public void DuplicateRegister() {
         var authRequest = new AuthRequest();
-        authRequest.email = (int) Math.random() + "@test.com";
+        authRequest.email = Math.random() + "@test.com";
         authRequest.password = "testpassword";
 
         webTestClient.post().uri("/auth_api/register")
@@ -48,7 +48,7 @@ public class AuthApiTest {
     @Test
     public void TokenAccess() throws InterruptedException {
         var authRequest = new AuthRequest();
-        authRequest.email = (int) Math.random() + "@test.com";
+        authRequest.email = Math.random() + "@test.com";
         authRequest.password = "testpassword";
 
         var tokenOnRegistration = webTestClient.post().uri("/auth_api/register")
