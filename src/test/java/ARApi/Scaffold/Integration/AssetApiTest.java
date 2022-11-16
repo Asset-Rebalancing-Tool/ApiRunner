@@ -28,6 +28,9 @@ public class AssetApiTest extends BaseIntegrationTest {
                     .exchange().expectStatus().is2xxSuccessful().expectBody(ModelPublicAsset[].class).returnResult().getResponseBody();
             Assert.notNull(fetchedAssets, "fetched assets can not be null, only empty allowed");
             assets.addAll(Arrays.stream(fetchedAssets).toList());
+            if(!assets.isEmpty()){
+                break; // we are done here
+            }
         }
 
         Assert.notEmpty(assets, "should find at least one asset");

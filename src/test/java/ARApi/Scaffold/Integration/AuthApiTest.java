@@ -1,5 +1,6 @@
 package ARApi.Scaffold.Integration;
 
+import ARApi.Scaffold.BaseIntegrationTest;
 import ARApi.Scaffold.Constants;
 import ARApi.Scaffold.Endpoints.Requests.AuthRequest;
 import ARApi.Scaffold.Endpoints.Requests.SearchAssetRequest;
@@ -17,11 +18,8 @@ import org.springframework.web.reactive.function.BodyInserters;
 
 @AutoConfigureWebTestClient
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class AuthApiTest {
+public class AuthApiTest extends BaseIntegrationTest {
 
-    @Autowired
-    private WebTestClient webTestClient;
-        
     @Test
     public void TestAuthorizationInEffect(){
         SearchAssetRequest searchAssetRequest = new SearchAssetRequest();
