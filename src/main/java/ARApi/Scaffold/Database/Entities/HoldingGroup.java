@@ -11,10 +11,10 @@ import java.util.UUID;
 @Entity
 public class HoldingGroup extends BaseUserEntity {
 
-    @OneToMany(mappedBy= "HoldingGroup", cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
     public List<PublicHolding> publicHoldings;
 
-    @OneToMany(mappedBy= "HoldingGroup", cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
     public List<PrivateHolding> privateHoldings;
 
     public double target_percentage;
