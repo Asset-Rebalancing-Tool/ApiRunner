@@ -80,11 +80,7 @@ public class AssetApi {
         // run fetchers to get information of asset
         var fetchedAssets = publicAssetFetcher.FetchViaSearchString(fuzzyScore.Process(searchAssetRequest.SearchString));
 
-        // insert fetched assets safely
-        var newAssets = DuplicateAwareInserter.InsertAll(publicAssetMatcher.publicAssetRepository, fetchedAssets,
-                failedInsert -> publicAssetMatcher.publicAssetRepository.findByIsin(failedInsert.isin));
-
         // map to model and return
-        return newAssets.stream().map(ModelPublicAsset::new).toList();
+        return fetchedAssets.stream().map(ModelPublicAsset::new).toList();
     }
 }
