@@ -92,6 +92,11 @@ public class HoldingApi {
 
     @PostMapping("/asset_holding/public")
     public ResponseEntity<ModelPublicHolding> PostPublicAssetHolding(@RequestBody PublicAssetHoldingRequest publicAssetHoldingRequest) {
+
+        if(publicAssetHoldingRequest.publicAssetUuid == null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No uuid provided");
+        }
+
         var uuid = UUID.fromString(publicAssetHoldingRequest.publicAssetUuid);
 
         if (publicAssetHoldingRepository.holdingExists(uuid, getUserUuid(), HoldingOrigin.ManualEntry)) {
