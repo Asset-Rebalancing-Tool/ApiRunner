@@ -22,7 +22,7 @@ public class PublicAssetMatcher {
         List<PublicAsset> highScoreAssets = new ArrayList<>();
 
         // check database for perfect / good enough matches
-        var dbAssets = publicAssetRepository.GetFullAssets();
+        var dbAssets = publicAssetRepository.findAll();
 
         for (var asset : dbAssets) {
             // full match check
