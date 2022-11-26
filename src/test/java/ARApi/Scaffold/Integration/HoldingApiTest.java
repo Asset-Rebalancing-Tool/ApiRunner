@@ -16,6 +16,7 @@ import ARApi.Scaffold.Shared.Enums.Currency;
 import ARApi.Scaffold.Shared.Enums.UnitType;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.Assert;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -201,7 +202,7 @@ public class HoldingApiTest extends BaseIntegrationTest {
     }
 
     public void PublicAssetHolding(){
-        var assets = new ArrayDeque<>(publicAssetRepository.GetFullAssets());
+        var assets = new ArrayDeque<>(publicAssetRepository.findAll());
         if(assets.size() < 4){
             fail("too little assets in test db to perform");
         }

@@ -1,6 +1,8 @@
 package ARApi.Scaffold.Database.Repos;
 
 import ARApi.Scaffold.Database.Entities.PublicAsset.PublicAsset;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -10,15 +12,11 @@ import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 @Repository
 public interface PublicAssetRepository extends JpaRepository<PublicAsset, UUID> {
-
-    @Query("Select distinct pa from PublicAsset pa " +
-            "left join fetch pa.AssetPriceRecords apr " +
-            "left join fetch pa.AssetInformation ai")
-    Collection<PublicAsset> GetFullAssets();
 
     @EntityGraph(attributePaths = { "AssetPriceRecords", "AssetInformation"})
     PublicAsset findByIsin(String isin);

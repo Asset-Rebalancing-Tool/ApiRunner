@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
@@ -241,6 +242,10 @@ public class HoldingApi {
     @DeleteMapping("/asset_holding/group/{groupUuid}")
     public HttpStatus DeleteAssetHoldingGroup(@PathVariable String groupUuid) {
         var assetGroupingUuid = UUID.fromString(groupUuid);
+        var group = assetHoldingGroupRepository.findById(assetGroupingUuid).orElseThrow();
+        group.privateHoldings.forEach(ph -> ph.HoldingGroup = null);
+        group.publicHoldings.forEach(ph -> ph.HoldingGroup = null);
+
         assetHoldingGroupRepository.deleteById(assetGroupingUuid);
         return HttpStatus.OK;
     }
