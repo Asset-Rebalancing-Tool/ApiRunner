@@ -25,7 +25,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.Optional;
 import java.util.UUID;
 
-// TODO: rename everything to possession...
+
 @RestController
 @Component
 @RequestMapping("holding_api")
@@ -75,9 +75,8 @@ public class HoldingApi {
     public ModelPrivateCategory[] GetPrivateCategories() {
 
         var categories = privateCategoryRepository.findByUserUuid(getUserUuid());
-        var arr = categories.stream().map(ModelPrivateCategory::new).toArray(ModelPrivateCategory[]::new);
 
-        return arr;
+        return categories.stream().map(ModelPrivateCategory::new).toArray(ModelPrivateCategory[]::new);
     }
 
     @DeleteMapping("/category/{uuidStr}")
@@ -125,9 +124,7 @@ public class HoldingApi {
             userHoldings = userHoldings.stream().filter(holding -> groupsOfUser.stream().noneMatch(group -> group.ContainsHolding(holding.uuid))).toList();
         }
 
-        var holdings = userHoldings.stream().map(ModelPublicHolding::new).toArray(ModelPublicHolding[]::new);
-
-        return holdings;
+        return userHoldings.stream().map(ModelPublicHolding::new).toArray(ModelPublicHolding[]::new);
     }
 
     @DeleteMapping("/asset_holding/public/{holdingUuid}")
@@ -137,6 +134,7 @@ public class HoldingApi {
         var ph = publicAssetHoldingRepository.findById(UUID.fromString(holdingUuid))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No holding found for uuid"));;
 
+        // unlink from group
         if(ph.HoldingGroup != null){
             ph.HoldingGroup.publicHoldings.remove(ph);
             publicAssetHoldingRepository.saveAndFlush(ph);
@@ -197,8 +195,9 @@ public class HoldingApi {
         var ph = privateAssetHoldingRepository.findById(UUID.fromString(holdingUuid))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No holding found for uuid"));;
 
+        // unlink from group
         if(ph.HoldingGroup != null){
-            ph.HoldingGroup.publicHoldings.remove(ph);
+            ph.HoldingGroup.privateHoldings.remove(ph);
             privateAssetHoldingRepository.saveAndFlush(ph);
         }
 
@@ -243,8 +242,18 @@ public class HoldingApi {
     public HttpStatus DeleteAssetHoldingGroup(@PathVariable String groupUuid) {
         var assetGroupingUuid = UUID.fromString(groupUuid);
         var group = assetHoldingGroupRepository.findById(assetGroupingUuid).orElseThrow();
-        group.privateHoldings.forEach(ph -> ph.HoldingGroup = null);
-        group.publicHoldings.forEach(ph -> ph.HoldingGroup = null);
+
+        // holdings have to be unlinked before group can be deleted
+        group.privateHoldings.forEach(ph -> {
+            ph.HoldingGroup = null;
+        });
+
+        group.publicHoldings.forEach(ph -> {
+            ph.HoldingGroup = null;
+        });
+
+        // let cascade persist do its job
+        assetHoldingGroupRepository.saveAndFlush(group);
 
         assetHoldingGroupRepository.deleteById(assetGroupingUuid);
         return HttpStatus.OK;
