@@ -15,7 +15,7 @@ steps:
       JWT_SECRET:
         from_secret: jwt_secret
       MYSQL_HOST: "ab-mysql"
-      COMPOSE_PROJECT_NAME: webservices
+      COMPOSE_PROJECT_NAME: webservicesjitcom
     commands:
       - docker compose -f docker-compose_prod.yaml build
       - docker compose -f docker-compose_prod.yaml up -d
