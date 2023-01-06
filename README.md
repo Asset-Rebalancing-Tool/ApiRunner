@@ -5,6 +5,14 @@
 * `MAVEN_PASSWORD` - th nexus maven password
 * `JWT_SECRET` - the secret key to issue jwt`s with
 
+# Manual Prod Deployment
+
+```
+docker compose -f docker-compose_prod.yaml build
+docker compose -f docker-compose_prod.yaml -p webservicesjitcom up -d
+
+```
+
 # OAuth (Google login)
 
 http://localhost:8080/login
