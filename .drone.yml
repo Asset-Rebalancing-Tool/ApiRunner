@@ -12,6 +12,8 @@ server:
 steps:
   - name: deploy
     environment:
+      loki_sink:
+        from_secret: loki_sink
       JWT_SECRET:
         from_secret: jwt_secret
       MYSQL_HOST: "ab-mysql"
